@@ -41,5 +41,20 @@ Secret: 0ccd083217302f35
         static let SafeSearch = "1"
     }
 }
-
+/*  MARK:  example of photoArray
+ ******************
+ farm = 8;
+ "height_m" = 375;
+ id = 46301705245;
+ isfamily = 0;
+ isfriend = 0;
+ ispublic = 1;
+ owner = "141001302@N08";
+ secret = 73845d6c96;
+ server = 7826;
+ title = "River, water and stream";
+ "url_m" = "https://farm8.staticflickr.com/7826/46301705245_73845d6c96.jpg";
+ "width_m" = 500;
+ ******************
+ */
     
