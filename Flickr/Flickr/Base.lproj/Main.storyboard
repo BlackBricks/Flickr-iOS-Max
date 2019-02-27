@@ -10,10 +10,10 @@
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
-        <!--Image View Controller-->
+        <!--Image Collection View Controller-->
         <scene sceneID="S38-x1-uXe">
             <objects>
-                <viewController id="nwM-E6-0x3" customClass="ImageViewController" customModule="Flickr" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController id="nwM-E6-0x3" customClass="ImageCollectionViewController" customModule="Flickr" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="CKk-4e-jM0">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -87,7 +87,7 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="aYM-57-5yT" userLabel="First Responder" sceneMemberID="firstResponder"/>
                 <exit id="m4z-0U-tRx" userLabel="Exit" sceneMemberID="exit"/>
             </objects>
-            <point key="canvasLocation" x="993" y="-666"/>
+            <point key="canvasLocation" x="1018" y="-636"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="hcA-9A-2w1">

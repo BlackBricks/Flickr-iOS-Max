@@ -20,8 +20,7 @@ class CellSizeProvider {
         cellSizes.append(size)
         return cellSizes
     }
-
-    
+  
     private class func provideFlickrCellSize() -> CGSize {
         return CellSizeProvider.provideRandomCellSize()
     }
