@@ -7,9 +7,17 @@
 //
 
 import Foundation
+import UIKit
 
 struct Constants {
     
+    struct Paddings {
+        static let horizontalContentPadding: CGFloat = 10
+        static let verticalContentPadding: CGFloat = 10
+        static let horizontalCellPadding: CGFloat = 8
+        static let verticalCellPadding: CGFloat = 8
+    }
+
     let keysFlickr = """
 Key: e3ef44dd033985def51d4d02f680a870
 Secret: 0ccd083217302f35

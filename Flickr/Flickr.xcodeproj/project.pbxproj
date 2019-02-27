@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		12873D3401F2AD20A33AEC41 /* Pods_Flickr.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4698E2FD48FED92D193F0B34 /* Pods_Flickr.framework */; };
+		A51B404C2226A16C002E4B45 /* Core.swift in Sources */ = {isa = PBXBuildFile; fileRef = A51B404B2226A16C002E4B45 /* Core.swift */; };
 		A52405502224F0CA00961D68 /* ImageCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A524054F2224F0CA00961D68 /* ImageCollectionViewCell.swift */; };
 		A52405572225528500961D68 /* CellSizeProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = A52405562225528500961D68 /* CellSizeProvider.swift */; };
 		A525D09D221FDB6F00EE7880 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = A525D09C221FDB6F00EE7880 /* AppDelegate.swift */; };
@@ -22,6 +23,7 @@
 /* Begin PBXFileReference section */
 		4698E2FD48FED92D193F0B34 /* Pods_Flickr.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Flickr.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		9A75E615920D9955F4A833A5 /* Pods-Flickr.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Flickr.debug.xcconfig"; path = "Target Support Files/Pods-Flickr/Pods-Flickr.debug.xcconfig"; sourceTree = "<group>"; };
+		A51B404B2226A16C002E4B45 /* Core.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Core.swift; sourceTree = "<group>"; };
 		A524054F2224F0CA00961D68 /* ImageCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageCollectionViewCell.swift; sourceTree = "<group>"; };
 		A52405562225528500961D68 /* CellSizeProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CellSizeProvider.swift; sourceTree = "<group>"; };
 		A525D099221FDB6F00EE7880 /* Flickr.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Flickr.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -60,6 +62,7 @@
 			isa = PBXGroup;
 			children = (
 				A52405562225528500961D68 /* CellSizeProvider.swift */,
+				A51B404B2226A16C002E4B45 /* Core.swift */,
 				A570D6972223DB9E009E3142 /* ModelFlickr.swift */,
 			);
 			name = "Flickr options";
@@ -243,6 +246,7 @@
 				A570D6982223DB9E009E3142 /* ModelFlickr.swift in Sources */,
 				A525D09F221FDB6F00EE7880 /* ViewController.swift in Sources */,
 				A52405502224F0CA00961D68 /* ImageCollectionViewCell.swift in Sources */,
+				A51B404C2226A16C002E4B45 /* Core.swift in Sources */,
 				A570D69A22241644009E3142 /* ImageCollectionViewController.swift in Sources */,
 				A52405572225528500961D68 /* CellSizeProvider.swift in Sources */,
 				A525D09D221FDB6F00EE7880 /* AppDelegate.swift in Sources */,
