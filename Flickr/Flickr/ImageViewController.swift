@@ -8,66 +8,70 @@
 
 import UIKit
 import Alamofire
+import collection_view_layouts
 
-class ImageViewController: UIViewController,
-UICollectionViewDelegate,
-UICollectionViewDataSource,
-UITextFieldDelegate,
-UICollectionViewDelegateFlowLayout {
-    
-    @IBInspectable
-    var maxImagesToShow = 50 // just thinking about this, may be delete this idea.
-    
-    var imageList = [[String: AnyObject]]()
-    
-    
-    @IBAction func searchButtonAction(_ sender: UIButton) {
-        let searchText = searchTextField.text
-        if (searchText!.isEmpty)
-        {
-            displayAlert("Search text cannot be empty")
-            return;
-        }
-        
-        let searchURL = flickrURLFromParameters(searchString: searchText!)
-        print("URL: \(searchURL)")
-        
-        // Send the request
-        performFlickrSearch(searchURL)
-//
-    }
-    
+class ImageViewController: UIViewController, ContentDynamicLayoutDelegate, UICollectionViewDelegate, UICollectionViewDataSource, UITextFieldDelegate {
     
     @IBOutlet weak var collectionView: UICollectionView!
-    
     @IBOutlet weak var searchTextField: UITextField! {
         didSet {
             searchTextField.delegate = self
-            
         }
     }
+    @IBInspectable
+    var maxImagesToShow = 50 // just thinking about this, may be delete this idea.
+    var imageList = [[String: AnyObject]]()
     
+    private var contentFlowLayout: ContentDynamicLayout?
+    private var cellsSizes = [CGSize]()
     
+    override func viewDidLoad() {
+        super.viewDidLoad()
+    }
+
+    func cellSize(indexPath: IndexPath) -> CGSize {
+        return cellsSizes[indexPath.row]
+    }
+    
+    private func showLayout() {
+        contentFlowLayout = FlickrStyleFlowLayout()
+        contentFlowLayout?.delegate = self
+        contentFlowLayout?.contentPadding = ItemsPadding(horizontal: 10, vertical: 10)
+        contentFlowLayout?.cellsPadding = ItemsPadding(horizontal: 8, vertical: 8)
+        collectionView.collectionViewLayout = contentFlowLayout!
+        collectionView.setContentOffset(CGPoint.zero, animated: false)
+        cellsSizes = CellSizeProvider.provideSizes()
+        collectionView.reloadData()
+        }
+
+    
+    @IBAction func searchButtonAction(_ sender: UIButton) {
+        let searchText = searchTextField.text
+        if (searchText!.isEmpty) {
+            displayAlert("Search text cannot be empty")
+            return
+        }
+        let searchURL = flickrURLFromParameters(searchString: searchText!)
+        print("URL: \(searchURL)")
+        // Send the request
+        performFlickrSearch(searchURL)
+    }
+
     func displayAlert(_ message: String)
     {
         let alert = UIAlertController(title: "Alert", message: message, preferredStyle: UIAlertController.Style.alert)
         alert.addAction(UIAlertAction(title: "Click", style: .default, handler: nil))
         self.present(alert, animated: true, completion: nil)
     }
-    
-    
-    
+
     private func flickrURLFromParameters(searchString: String) -> URL {
-        
         // Build base URL
         var components = URLComponents()
         components.scheme = Constants.FlickrURLParams.APIScheme
         components.host = Constants.FlickrURLParams.APIHost
         components.path = Constants.FlickrURLParams.APIPath
-        
         // Build query string
         components.queryItems = [URLQueryItem]()
-        
         // Query components
         components.queryItems!.append(URLQueryItem(name: Constants.FlickrAPIKeys.APIKey,
                                                    value: Constants.FlickrAPIValues.APIKey));
@@ -83,13 +87,11 @@ UICollectionViewDelegateFlowLayout {
                                                    value: Constants.FlickrAPIValues.DisableJSONCallback));
         components.queryItems!.append(URLQueryItem(name: Constants.FlickrAPIKeys.Text,
                                                    value: searchString));
-        
         return components.url!
     }
     
-    
     private func performFlickrSearch(_ searchURL: URL) {
-        
+
         // Perform the request
         let session = URLSession.shared
         let request = URLRequest(url: searchURL)
@@ -148,20 +150,15 @@ UICollectionViewDelegateFlowLayout {
                     //     self.imageList = photosArray
                     self.imageList = photosArray
                     DispatchQueue.main.async(){
-                                self.collectionView!.reloadData()
-                        
-                        
+                    self.collectionView!.reloadData()
+                    self.showLayout()
                     }
-                    
-                    //     Fetch the image
                 }
-                
             } else {
                 self.displayAlert((error?.localizedDescription)!)
             }
         }
         task.resume()
-  
     }
     /*  MARK:  example of photoArray
      ******************
@@ -178,8 +175,7 @@ UICollectionViewDelegateFlowLayout {
     "url_m" = "https://farm8.staticflickr.com/7826/46301705245_73845d6c96.jpg";
     "width_m" = 500;
      ******************
-    */
-    
+    */  
     func getUrlFromArray(photosArray : [[String: AnyObject]], index: Int) -> String? {
         
         let photoDictionary = photosArray[index] as [String: AnyObject]
@@ -196,6 +192,7 @@ UICollectionViewDelegateFlowLayout {
     
     func collectionView(_ collectionView: UICollectionView,
                         numberOfItemsInSection section: Int) -> Int {
+        
         return imageList.count
     }
     
@@ -204,8 +201,10 @@ UICollectionViewDelegateFlowLayout {
         
         let cell = collectionView.dequeueReusableCell( withReuseIdentifier: "image Cell",
                                                        for: indexPath)
+        
         if let imageCell = cell as? ImageCollectionViewCell {
-            guard let gettedUrl = getUrlFromArray(photosArray: imageList, index: indexPath.row) else { return cell }
+            guard let gettedUrl = getUrlFromArray(photosArray: imageList,
+                                                  index: indexPath.row) else { return cell }
             imageCell.fetchImage(url: gettedUrl)
         }
         return cell
@@ -269,6 +268,7 @@ UICollectionViewDelegateFlowLayout {
     //
     //    @IBAction private func toRootViewController(_ sender: UIBarButtonItem) {
     //        _ = navigationController?.popToRootViewController(animated: true)
+        
 }
 
 

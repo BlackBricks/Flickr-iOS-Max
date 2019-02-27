@@ -41,32 +41,7 @@ class ImageTableViewCell: UITableViewCell {
 //                }
 //            }
 //        }
-//
-//    }
-    
-    @IBOutlet weak var imageCell: UIImageView!
-    
-  
-
-    
-    func fetchImage(_ url: String) {
-        
-        let imageURL = URL(string: url)
-        
-        let task = URLSession.shared.dataTask(with: imageURL!) { (data, response, error) in
-            if error == nil {
-                let downloadImage = UIImage(data: data!)!
-                
-                DispatchQueue.main.async(){
-                    self.imageCell.image = downloadImage
-                }
-            }
-        }
-        
-        task.resume()
-    }
-    
-
+    //}
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code
