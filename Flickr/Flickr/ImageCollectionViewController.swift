@@ -47,13 +47,17 @@ class ImageCollectionViewController: UIViewController, ContentDynamicLayoutDeleg
     
     private func showLayout() {
         contentFlowLayout = FlickrStyleFlowLayout()
-        guard let contentFlowLayout = contentFlowLayout else { return }
+        guard let contentFlowLayout = contentFlowLayout else {
+            return
+        }
         contentFlowLayout.delegate = self
         contentFlowLayout.contentPadding = ItemsPadding(horizontal: 10, vertical: 10)
         contentFlowLayout.cellsPadding = ItemsPadding(horizontal: 8, vertical: 8)
+        contentFlowLayout.contentAlign = .left
+        
         collectionView.collectionViewLayout = contentFlowLayout
         collectionView.setContentOffset(CGPoint.zero, animated: false)
-        cellsSizes = CellSizeProvider.provideSizes()
+//        cellsSizes = CellSizeProvider.provideSizes()
         collectionView.reloadData()
     }
     
