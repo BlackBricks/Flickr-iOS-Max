@@ -19,7 +19,7 @@ class ImageViewController: UIViewController, ContentDynamicLayoutDelegate, UICol
         }
     }
     @IBInspectable
-    var maxImagesToShow = 50 // just thinking about this, may be delete this idea.
+    var maxImagesToShow = 50 // just thinking about this, may be delete this idea. //sd
     var imageList = [[String: AnyObject]]()
     
     private var contentFlowLayout: ContentDynamicLayout?
@@ -160,23 +160,8 @@ class ImageViewController: UIViewController, ContentDynamicLayoutDelegate, UICol
         }
         task.resume()
     }
-    /*  MARK:  example of photoArray
-     ******************
-    farm = 8;
-    "height_m" = 375;
-    id = 46301705245;
-    isfamily = 0;
-    isfriend = 0;
-    ispublic = 1;
-    owner = "141001302@N08";
-    secret = 73845d6c96;
-    server = 7826;
-    title = "River, water and stream";
-    "url_m" = "https://farm8.staticflickr.com/7826/46301705245_73845d6c96.jpg";
-    "width_m" = 500;
-     ******************
-    */  
-    func getUrlFromArray(photosArray : [[String: AnyObject]], index: Int) -> String? {
+
+    func getUrlFromArray(photosArray: [[String: AnyObject]], index: Int) -> String? {
         
         let photoDictionary = photosArray[index] as [String: AnyObject]
         guard let imageUrlString = photoDictionary["url_m"] as? String else {
@@ -217,58 +202,7 @@ class ImageViewController: UIViewController, ContentDynamicLayoutDelegate, UICol
     
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
-    }
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    //
-    //    func collectionView(_ collectionView: UICollectionView,
-    //                        layout collectionViewLayout: UICollectionViewLayout,
-    //                        sizeForItemAt indexPath: IndexPath) -> CGSize {
-    //
-    //        let ratio = CGFloat(images[indexPath.row].media.aspectRatio)
-    //        var sizeSetting =  sizePredefined
-    //        if let layoutFlow = collectionViewLayout as? UICollectionViewFlowLayout {
-    //            let maxCellWidth = collectionView.bounds.size.width  -
-    //                layoutFlow.minimumInteritemSpacing * 2.0 -
-    //                layoutFlow.sectionInset.right * 2.0
-    //            sizeSetting = layoutFlow.itemSize
-    //
-    //            let size = CGSize(width: sizeSetting.width * scale,
-    //                              height: sizeSetting.height * scale)
-    //
-    //            let cellWidth = min (max (size.width ,
-    //                                      FlowLayout.MinImageCellWidth),maxCellWidth)
-    //            return (CGSize(width: cellWidth, height: cellWidth / ratio))
-    //        }
-    //        return CGSize(width: sizeSetting.width * scale,
-    //                      height: sizeSetting.height * scale)
-    //    }
-    //
-    //    override func collectionView(_ collectionView: UICollectionView,
-    //                                 canMoveItemAt indexPath: IndexPath) -> Bool {
-    //        return true
-    //    }
-    //
-    //    override func collectionView(_ collectionView: UICollectionView,
-    //                                 moveItemAt sourceIndexPath: IndexPath,
-    //                                 to destinationIndexPath: IndexPath) {
-    //        let temp = images[destinationIndexPath.row]
-    //        images[destinationIndexPath.row] = images[sourceIndexPath.row]
-    //        images[sourceIndexPath.row] = temp
-    //        collectionView.collectionViewLayout.invalidateLayout()
-    //    }
-    //
-    //    @IBAction private func toRootViewController(_ sender: UIBarButtonItem) {
-    //        _ = navigationController?.popToRootViewController(animated: true)
-        
+    }  
 }
 
 

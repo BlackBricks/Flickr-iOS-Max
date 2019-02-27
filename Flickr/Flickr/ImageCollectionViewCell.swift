@@ -13,8 +13,6 @@ import SDWebImage
 class ImageCollectionViewCell: UICollectionViewCell {
     
     var imageArray: [[String: AnyObject]]?
-    
-    
     @IBOutlet weak var imagesView: UIImageView!
     
     func fetchImage(url: String?) {
@@ -23,24 +21,4 @@ class ImageCollectionViewCell: UICollectionViewCell {
         imagesView.sd_setImage(with: URL(string: url), placeholderImage: UIImage(named: "placeholder.png"))
         
     }
-    
-//    func fetchImage1(_ url: String) {
-//
-//        let imageURL = URL(string: url)
-//
-//        let task = URLSession.shared.dataTask(with: imageURL!) { (data, response, error) in
-//            if error == nil {
-//                let downloadImage = UIImage(data: data!)!
-//
-//                DispatchQueue.main.async(){
-//                    self.imagesView.image = downloadImage
-//                }
-//            }
-//        }
-//
-//        task.resume()
-//    }
-    
-    
-    
 }

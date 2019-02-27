@@ -4,14 +4,8 @@ target 'Flickr' do
   use_frameworks!
 
 pod 'Alamofire', '4.4.0'
-pod 'SDWebImage', '~> 4.0'
+pod 'SDWebImage', '4.4.5'
 pod 'collection-view-layouts/Core'
-pod 'collection-view-layouts/TagsLayout'
-pod 'collection-view-layouts/PinterestLayout'
-pod 'collection-view-layouts/Px500Layout'
-pod 'collection-view-layouts/InstagramLayout'
-pod 'collection-view-layouts/FlipboardLayout'
-pod 'collection-view-layouts/FacebookLayout'
 pod 'collection-view-layouts/FlickrLayout'
 
 end

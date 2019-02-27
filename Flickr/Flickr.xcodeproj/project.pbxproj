@@ -17,8 +17,6 @@
 		A525D0A2221FDB6F00EE7880 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A525D0A0221FDB6F00EE7880 /* Main.storyboard */; };
 		A525D0A4221FDB7200EE7880 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A525D0A3221FDB7200EE7880 /* Assets.xcassets */; };
 		A525D0A7221FDB7200EE7880 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A525D0A5221FDB7200EE7880 /* LaunchScreen.storyboard */; };
-		A54267032223C9BF0062E01A /* ImageTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A54267022223C9BF0062E01A /* ImageTableViewController.swift */; };
-		A54267052223CA450062E01A /* ImageTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A54267042223CA450062E01A /* ImageTableViewCell.swift */; };
 		A570D6982223DB9E009E3142 /* ModelFlickr.swift in Sources */ = {isa = PBXBuildFile; fileRef = A570D6972223DB9E009E3142 /* ModelFlickr.swift */; };
 		A570D69A22241644009E3142 /* ImageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A570D69922241644009E3142 /* ImageViewController.swift */; };
 /* End PBXBuildFile section */
@@ -37,8 +35,6 @@
 		A525D0A3221FDB7200EE7880 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		A525D0A6221FDB7200EE7880 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		A525D0A8221FDB7200EE7880 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		A54267022223C9BF0062E01A /* ImageTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageTableViewController.swift; sourceTree = "<group>"; };
-		A54267042223CA450062E01A /* ImageTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageTableViewCell.swift; sourceTree = "<group>"; };
 		A570D6972223DB9E009E3142 /* ModelFlickr.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelFlickr.swift; sourceTree = "<group>"; };
 		A570D69922241644009E3142 /* ImageViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageViewController.swift; sourceTree = "<group>"; };
 		FD0EAD4F0A33EACD75AEC9E5 /* Pods-Flickr.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Flickr.release.xcconfig"; path = "Target Support Files/Pods-Flickr/Pods-Flickr.release.xcconfig"; sourceTree = "<group>"; };
@@ -62,15 +58,6 @@
 				4698E2FD48FED92D193F0B34 /* Pods_Flickr.framework */,
 			);
 			name = Frameworks;
-			sourceTree = "<group>";
-		};
-		A524054E2224F07300961D68 /* will deleted */ = {
-			isa = PBXGroup;
-			children = (
-				A54267022223C9BF0062E01A /* ImageTableViewController.swift */,
-				A54267042223CA450062E01A /* ImageTableViewCell.swift */,
-			);
-			name = "will deleted";
 			sourceTree = "<group>";
 		};
 		A52405552225426B00961D68 /* Flickr options */ = {
@@ -112,7 +99,6 @@
 				A524054F2224F0CA00961D68 /* ImageCollectionViewCell.swift */,
 				A525D0A0221FDB6F00EE7880 /* Main.storyboard */,
 				A525D0A8221FDB7200EE7880 /* Info.plist */,
-				A524054E2224F07300961D68 /* will deleted */,
 			);
 			path = Flickr;
 			sourceTree = "<group>";
@@ -263,9 +249,7 @@
 				A524055222253EF900961D68 /* FlickrStyleFlowLayout.swift in Sources */,
 				A570D6982223DB9E009E3142 /* ModelFlickr.swift in Sources */,
 				A525D09F221FDB6F00EE7880 /* ViewController.swift in Sources */,
-				A54267052223CA450062E01A /* ImageTableViewCell.swift in Sources */,
 				A52405502224F0CA00961D68 /* ImageCollectionViewCell.swift in Sources */,
-				A54267032223C9BF0062E01A /* ImageTableViewController.swift in Sources */,
 				A570D69A22241644009E3142 /* ImageViewController.swift in Sources */,
 				A52405572225528500961D68 /* CellSizeProvider.swift in Sources */,
 				A52405542225423F00961D68 /* Core.swift in Sources */,
