@@ -11,6 +11,10 @@ import UIKit
 
 struct Constants {
     
+    struct SegueIdentifier {
+        static let GallerySegue = "Gallery viewing"
+    }
+    
     struct Paddings {
         static let horizontalContentPadding: CGFloat = 10
         static let verticalContentPadding: CGFloat = 10
@@ -36,6 +40,7 @@ Secret: 0ccd083217302f35
         static let DisableJSONCallback = "nojsoncallback"
         static let SafeSearch = "safe_search"
         static let Text = "text"
+        static let Sort = "sort"
     }
     
     struct FlickrAPIValues {
@@ -43,7 +48,8 @@ Secret: 0ccd083217302f35
         static let APIKey = "e3ef44dd033985def51d4d02f680a870"
         static let ResponseFormat = "json"
         static let DisableJSONCallback = "1"
-        static let MediumURL = "url_m"
+        static let ExtrasValue = "url_m, views"
         static let SafeSearch = "1"
+        static let SortValue = "relevance"
     }
 }

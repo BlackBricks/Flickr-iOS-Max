@@ -8,9 +8,10 @@
 
 /* Begin PBXBuildFile section */
 		12873D3401F2AD20A33AEC41 /* Pods_Flickr.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4698E2FD48FED92D193F0B34 /* Pods_Flickr.framework */; };
-		A51B404C2226A16C002E4B45 /* Core.swift in Sources */ = {isa = PBXBuildFile; fileRef = A51B404B2226A16C002E4B45 /* Core.swift */; };
+		A5225F252227931C007D851D /* GalleryViewingCollectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5225F242227931C007D851D /* GalleryViewingCollectionViewController.swift */; };
+		A5225F2722279356007D851D /* GalleryViewingCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5225F2622279356007D851D /* GalleryViewingCollectionViewCell.swift */; };
+		A5225F2F2227BFFC007D851D /* ModelPhotoData.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5225F2E2227BFFC007D851D /* ModelPhotoData.swift */; };
 		A52405502224F0CA00961D68 /* ImageCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A524054F2224F0CA00961D68 /* ImageCollectionViewCell.swift */; };
-		A52405572225528500961D68 /* CellSizeProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = A52405562225528500961D68 /* CellSizeProvider.swift */; };
 		A525D09D221FDB6F00EE7880 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = A525D09C221FDB6F00EE7880 /* AppDelegate.swift */; };
 		A525D09F221FDB6F00EE7880 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A525D09E221FDB6F00EE7880 /* ViewController.swift */; };
 		A525D0A2221FDB6F00EE7880 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A525D0A0221FDB6F00EE7880 /* Main.storyboard */; };
@@ -23,9 +24,10 @@
 /* Begin PBXFileReference section */
 		4698E2FD48FED92D193F0B34 /* Pods_Flickr.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Flickr.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		9A75E615920D9955F4A833A5 /* Pods-Flickr.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Flickr.debug.xcconfig"; path = "Target Support Files/Pods-Flickr/Pods-Flickr.debug.xcconfig"; sourceTree = "<group>"; };
-		A51B404B2226A16C002E4B45 /* Core.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Core.swift; sourceTree = "<group>"; };
+		A5225F242227931C007D851D /* GalleryViewingCollectionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GalleryViewingCollectionViewController.swift; sourceTree = "<group>"; };
+		A5225F2622279356007D851D /* GalleryViewingCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GalleryViewingCollectionViewCell.swift; sourceTree = "<group>"; };
+		A5225F2E2227BFFC007D851D /* ModelPhotoData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelPhotoData.swift; sourceTree = "<group>"; };
 		A524054F2224F0CA00961D68 /* ImageCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageCollectionViewCell.swift; sourceTree = "<group>"; };
-		A52405562225528500961D68 /* CellSizeProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CellSizeProvider.swift; sourceTree = "<group>"; };
 		A525D099221FDB6F00EE7880 /* Flickr.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Flickr.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A525D09C221FDB6F00EE7880 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		A525D09E221FDB6F00EE7880 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -58,12 +60,29 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
+		A5225F2C22279A64007D851D /* Controllers */ = {
+			isa = PBXGroup;
+			children = (
+				A570D69922241644009E3142 /* ImageCollectionViewController.swift */,
+				A5225F242227931C007D851D /* GalleryViewingCollectionViewController.swift */,
+			);
+			name = Controllers;
+			sourceTree = "<group>";
+		};
+		A5225F2D22279A6C007D851D /* Cells */ = {
+			isa = PBXGroup;
+			children = (
+				A5225F2622279356007D851D /* GalleryViewingCollectionViewCell.swift */,
+				A524054F2224F0CA00961D68 /* ImageCollectionViewCell.swift */,
+			);
+			name = Cells;
+			sourceTree = "<group>";
+		};
 		A52405552225426B00961D68 /* Flickr options */ = {
 			isa = PBXGroup;
 			children = (
-				A52405562225528500961D68 /* CellSizeProvider.swift */,
-				A51B404B2226A16C002E4B45 /* Core.swift */,
 				A570D6972223DB9E009E3142 /* ModelFlickr.swift */,
+				A5225F2E2227BFFC007D851D /* ModelPhotoData.swift */,
 			);
 			name = "Flickr options";
 			sourceTree = "<group>";
@@ -91,9 +110,9 @@
 			children = (
 				A52405552225426B00961D68 /* Flickr options */,
 				A54267012223C98A0062E01A /* Supporting Files */,
+				A5225F2C22279A64007D851D /* Controllers */,
+				A5225F2D22279A6C007D851D /* Cells */,
 				A525D09E221FDB6F00EE7880 /* ViewController.swift */,
-				A570D69922241644009E3142 /* ImageCollectionViewController.swift */,
-				A524054F2224F0CA00961D68 /* ImageCollectionViewCell.swift */,
 				A525D0A0221FDB6F00EE7880 /* Main.storyboard */,
 				A525D0A8221FDB7200EE7880 /* Info.plist */,
 			);
@@ -199,7 +218,6 @@
 				"${PODS_ROOT}/Target Support Files/Pods-Flickr/Pods-Flickr-frameworks.sh",
 				"${BUILT_PRODUCTS_DIR}/Alamofire/Alamofire.framework",
 				"${BUILT_PRODUCTS_DIR}/SDWebImage/SDWebImage.framework",
-				"${BUILT_PRODUCTS_DIR}/collection-view-layouts/collection_view_layouts.framework",
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputFileListPaths = (
@@ -207,7 +225,6 @@
 			outputPaths = (
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Alamofire.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SDWebImage.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/collection_view_layouts.framework",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -246,9 +263,10 @@
 				A570D6982223DB9E009E3142 /* ModelFlickr.swift in Sources */,
 				A525D09F221FDB6F00EE7880 /* ViewController.swift in Sources */,
 				A52405502224F0CA00961D68 /* ImageCollectionViewCell.swift in Sources */,
-				A51B404C2226A16C002E4B45 /* Core.swift in Sources */,
 				A570D69A22241644009E3142 /* ImageCollectionViewController.swift in Sources */,
-				A52405572225528500961D68 /* CellSizeProvider.swift in Sources */,
+				A5225F252227931C007D851D /* GalleryViewingCollectionViewController.swift in Sources */,
+				A5225F2F2227BFFC007D851D /* ModelPhotoData.swift in Sources */,
+				A5225F2722279356007D851D /* GalleryViewingCollectionViewCell.swift in Sources */,
 				A525D09D221FDB6F00EE7880 /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

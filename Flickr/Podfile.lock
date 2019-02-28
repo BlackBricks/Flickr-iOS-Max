@@ -1,29 +1,22 @@
 PODS:
   - Alamofire (4.4.0)
-  - collection-view-layouts/Core (0.1.2)
-  - collection-view-layouts/FlickrLayout (0.1.2):
-    - collection-view-layouts/Core
   - SDWebImage (4.4.5):
     - SDWebImage/Core (= 4.4.5)
   - SDWebImage/Core (4.4.5)
 
 DEPENDENCIES:
   - Alamofire (= 4.4.0)
-  - collection-view-layouts/Core
-  - collection-view-layouts/FlickrLayout
   - SDWebImage (= 4.4.5)
 
 SPEC REPOS:
   https://github.com/cocoapods/specs.git:
     - Alamofire
-    - collection-view-layouts
     - SDWebImage
 
 SPEC CHECKSUMS:
   Alamofire: dc44b1600b800eb63da6a19039a0083d62a6a62d
-  collection-view-layouts: f3da16bf3211ecb885bb3e45160c2267edf5b65e
   SDWebImage: ecc03494e973b93b80213649d32175f8d2d17d4d
 
-PODFILE CHECKSUM: 4e8b56d6bee4721b68684ceb095d62509eaa2ea0
+PODFILE CHECKSUM: 7a83dde7079d56f2a5a490ee08d4c843124691b8
 
 COCOAPODS: 1.6.1
