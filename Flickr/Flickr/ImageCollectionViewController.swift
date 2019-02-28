@@ -38,11 +38,8 @@ class ImageCollectionViewController: UIViewController, UICollectionViewDelegate,
     override func viewDidLoad() {
         super.viewDidLoad()
     }
-    
-    
-    
+
     private func showLayout() {
-   
     }
     
     private func flickrURLFromParameters(searchString: String) -> URL? {       // needs for customize Search text
@@ -89,10 +86,9 @@ class ImageCollectionViewController: UIViewController, UICollectionViewDelegate,
     private func performFlickrSearch(url: URL) {
         Alamofire.request(url).responseJSON { response in
             guard response.result.isSuccess else {
-                print("Ошибка при запросе данных \(String(describing: response.result.error))")
+                print("Error get data \(String(describing: response.result.error))")
                 return
             }
-            
             guard
                 let value = response.result.value as? [String: AnyObject],
                 let dict = value["photos"] as? [String: AnyObject],
@@ -101,9 +97,7 @@ class ImageCollectionViewController: UIViewController, UICollectionViewDelegate,
                     print("Error parse data")
                     return
             }
-            
             let photos = Photo.getPhotos(data: photosData)
-
             self.imageData = photos
             print(response.value ?? "nothing")
             DispatchQueue.main.async() {
@@ -147,8 +141,6 @@ class ImageCollectionViewController: UIViewController, UICollectionViewDelegate,
         if segue.identifier == Constants.SegueIdentifier.GallerySegue {
             if let gvcvc = segue.destination as? GalleryViewingCollectionViewController {
                 gvcvc.photoGalleryData = imageData
-
-
                 if let cell = sender as? ImageCollectionViewCell,
                     let tweetMedia = gvcvc.photoGalleryData {
 
