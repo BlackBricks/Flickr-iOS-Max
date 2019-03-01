@@ -43,13 +43,11 @@ Secret: 0ccd083217302f35
     ]
     
     static let popularParams = [
-        "method": "flickr.photos.getPopular",
+        "method": "flickr.interestingness.getList",
         "api_key": "\(FlickrAPI.key)",
         "extras": "url_m, views",
         "format": "json",
         "nojsoncallback": "1",
-        "safe_search": "1",
-        "text": ""
+        "safe_search": "1"
     ]
-    
 }

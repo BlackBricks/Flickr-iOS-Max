@@ -18,9 +18,17 @@ class ImageCollectionViewController: UIViewController, UICollectionViewDelegate,
         super.viewDidLoad()
     }
     
-    @IBOutlet weak var collectionView: UICollectionView!
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        Alamofire.request(Router.popular(page: 1)).responseJSON { (response) in
+            self.handlingResponseData(data: response)
+        }
+    }
+
+    @IBOutlet weak var searchCollectionView: UICollectionView!
+    @IBOutlet weak var popularCollectionView: UICollectionView!
     @IBOutlet weak var searchTextField: UITextField!
-    
     @IBAction func searchButtonAction(_ sender: UIButton) {
         let searchText = searchTextField.text
         guard let searchingText = searchText else {
@@ -30,14 +38,12 @@ class ImageCollectionViewController: UIViewController, UICollectionViewDelegate,
             displayAlert("Search text cannot be empty")
             return
         }
-        
-        
         performFlickrSearch(url: searchingText)
     }
     
     enum Router: URLRequestConvertible {
         case search(text: String, page: Int)
-        case popular(text: String, page: Int)
+        case popular(page: Int)
         
         static let baseURLString = Constants.FlickrAPI.baseUrl
         static let perPage = 50
@@ -45,11 +51,14 @@ class ImageCollectionViewController: UIViewController, UICollectionViewDelegate,
         func asURLRequest() throws -> URLRequest {
             let result: (path: String, parameters: Parameters) = {
                 switch self {
+                    
                 case let .search(text, _):
                     var searchParams = Constants.searchParams
                     searchParams["text"] = text
                     return (Constants.FlickrAPI.path,  searchParams)
+                    
                 case .popular(_):
+                    
                     return  (Constants.FlickrAPI.path,  Constants.popularParams)
                 }
             }()
@@ -70,7 +79,8 @@ class ImageCollectionViewController: UIViewController, UICollectionViewDelegate,
     }
     
     private func performFlickrSearch(url: String) {
-        Alamofire.request(Router.search(text: "nature", page: 1)).responseJSON { (response) in
+        print("\(Alamofire.request(Router.search(text: url, page: 1)).responseJSON)")
+        Alamofire.request(Router.search(text: url, page: 1)).responseJSON { (response) in
             self.handlingResponseData(data: response)
         }
     }
@@ -92,7 +102,7 @@ class ImageCollectionViewController: UIViewController, UICollectionViewDelegate,
         self.imageData = photos
         print(data.value ?? "nothing")
         DispatchQueue.main.async() {
-            self.collectionView?.reloadData()
+            self.searchCollectionView?.reloadData()
         }
     }
     
@@ -115,16 +125,29 @@ class ImageCollectionViewController: UIViewController, UICollectionViewDelegate,
     
     func collectionView(_ collectionView: UICollectionView,
                         cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell( withReuseIdentifier: "image Cell", for: indexPath)
         
-        if let imageCell = cell as? ImageCollectionViewCell {
-            guard let gettedUrl = getUrlFromArray(photosArray: imageData,
-                                                  index: indexPath.row) else {
-                                                    return cell
+        if collectionView == self.searchCollectionView {
+            let cellSearch = collectionView.dequeueReusableCell(withReuseIdentifier: "image Cell",
+                                                                for: indexPath)
+            if let imageCell = cellSearch as? ImageCollectionViewCell {
+                guard let gettedUrl = getUrlFromArray(photosArray: imageData, index: indexPath.row) else {
+                    return cellSearch
+                }
+                imageCell.fetchImage(url: gettedUrl)
+                return cellSearch
+            }
+        }
+        let cellPopular = collectionView.dequeueReusableCell(withReuseIdentifier: "PopularImage Cell",
+                                                             for: indexPath)
+        if let imageCell = cellPopular as? PopularCollectionViewCell {
+            guard let gettedUrl = getUrlFromArray(photosArray: imageData, index: indexPath.row) else {
+                return cellPopular
             }
             imageCell.fetchImage(url: gettedUrl)
+            return cellPopular
+            
         }
-        return cell
+        return cellPopular
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {    // in process
