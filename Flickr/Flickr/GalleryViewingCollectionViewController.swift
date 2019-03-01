@@ -11,8 +11,6 @@ import UIKit
 class GalleryViewingCollectionViewController: UIViewController {
     
     var photoGalleryData: [Photo]?
-    
-   
 
     override func viewDidLoad() {
         super.viewDidLoad()

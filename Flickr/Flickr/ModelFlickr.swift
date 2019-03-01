@@ -32,6 +32,8 @@ Secret: 0ccd083217302f35
         static let APIPath = "/services/rest"
     }
     
+  
+    
     struct FlickrAPIKeys {
         static let SearchMethod = "method"
         static let APIKey = "api_key"
@@ -43,7 +45,7 @@ Secret: 0ccd083217302f35
         static let Sort = "sort"
     }
     
-    struct FlickrAPIValues {
+    struct FlickrAPIValuesForSearch {
         static let SearchMethod = "flickr.photos.search"
         static let APIKey = "e3ef44dd033985def51d4d02f680a870"
         static let ResponseFormat = "json"
@@ -51,5 +53,14 @@ Secret: 0ccd083217302f35
         static let ExtrasValue = "url_m, views"
         static let SafeSearch = "1"
         static let SortValue = "relevance"
+    }
+    
+    struct FlickrAPIValuesForPopular {
+        static let SearchMethod = "flickr.photos.getPopular"
+        static let APIKey = "e3ef44dd033985def51d4d02f680a870"
+        static let ResponseFormat = "json"
+        static let DisableJSONCallback = "1"
+        static let ExtrasValue = "url_m, views"
+        static let SafeSearch = "1"
     }
 }

@@ -16,6 +16,9 @@
 		A525D0A2221FDB6F00EE7880 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A525D0A0221FDB6F00EE7880 /* Main.storyboard */; };
 		A525D0A4221FDB7200EE7880 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A525D0A3221FDB7200EE7880 /* Assets.xcassets */; };
 		A525D0A7221FDB7200EE7880 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A525D0A5221FDB7200EE7880 /* LaunchScreen.storyboard */; };
+		A52B0B9F2228E5EF00A0827D /* ArrayAndLay.swift in Sources */ = {isa = PBXBuildFile; fileRef = A52B0B9E2228E5EF00A0827D /* ArrayAndLay.swift */; };
+		A52B0BA12228E61600A0827D /* UIKitIntegration..swift in Sources */ = {isa = PBXBuildFile; fileRef = A52B0BA02228E61500A0827D /* UIKitIntegration..swift */; };
+		A52B0BA32228E63000A0827D /* Lay.swift in Sources */ = {isa = PBXBuildFile; fileRef = A52B0BA22228E63000A0827D /* Lay.swift */; };
 		A570D6982223DB9E009E3142 /* ModelFlickr.swift in Sources */ = {isa = PBXBuildFile; fileRef = A570D6972223DB9E009E3142 /* ModelFlickr.swift */; };
 		A570D69A22241644009E3142 /* ImageCollectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A570D69922241644009E3142 /* ImageCollectionViewController.swift */; };
 /* End PBXBuildFile section */
@@ -33,6 +36,9 @@
 		A525D0A3221FDB7200EE7880 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		A525D0A6221FDB7200EE7880 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		A525D0A8221FDB7200EE7880 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		A52B0B9E2228E5EF00A0827D /* ArrayAndLay.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArrayAndLay.swift; sourceTree = "<group>"; };
+		A52B0BA02228E61500A0827D /* UIKitIntegration..swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIKitIntegration..swift; sourceTree = "<group>"; };
+		A52B0BA22228E63000A0827D /* Lay.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Lay.swift; sourceTree = "<group>"; };
 		A570D6972223DB9E009E3142 /* ModelFlickr.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelFlickr.swift; sourceTree = "<group>"; };
 		A570D69922241644009E3142 /* ImageCollectionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageCollectionViewController.swift; sourceTree = "<group>"; };
 		FD0EAD4F0A33EACD75AEC9E5 /* Pods-Flickr.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Flickr.release.xcconfig"; path = "Target Support Files/Pods-Flickr/Pods-Flickr.release.xcconfig"; sourceTree = "<group>"; };
@@ -79,6 +85,9 @@
 		A52405552225426B00961D68 /* Flickr options */ = {
 			isa = PBXGroup;
 			children = (
+				A52B0B9E2228E5EF00A0827D /* ArrayAndLay.swift */,
+				A52B0BA02228E61500A0827D /* UIKitIntegration..swift */,
+				A52B0BA22228E63000A0827D /* Lay.swift */,
 				A570D6972223DB9E009E3142 /* ModelFlickr.swift */,
 				A5225F2E2227BFFC007D851D /* ModelPhotoData.swift */,
 			);
@@ -261,8 +270,11 @@
 				A52405502224F0CA00961D68 /* ImageCollectionViewCell.swift in Sources */,
 				A570D69A22241644009E3142 /* ImageCollectionViewController.swift in Sources */,
 				A5225F252227931C007D851D /* GalleryViewingCollectionViewController.swift in Sources */,
+				A52B0B9F2228E5EF00A0827D /* ArrayAndLay.swift in Sources */,
+				A52B0BA32228E63000A0827D /* Lay.swift in Sources */,
 				A5225F2F2227BFFC007D851D /* ModelPhotoData.swift in Sources */,
 				A5225F2722279356007D851D /* GalleryViewingCollectionViewCell.swift in Sources */,
+				A52B0BA12228E61600A0827D /* UIKitIntegration..swift in Sources */,
 				A525D09D221FDB6F00EE7880 /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

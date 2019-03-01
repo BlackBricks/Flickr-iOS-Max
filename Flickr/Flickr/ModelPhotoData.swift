@@ -28,9 +28,3 @@ class Photo {
         return photo
     }
 }
-
-
-
-
-
-

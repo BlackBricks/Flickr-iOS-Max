@@ -55,21 +55,21 @@ class ImageCollectionViewController: UIViewController, UICollectionViewDelegate,
             return nil
         }
         compotent.append(URLQueryItem(name: Constants.FlickrAPIKeys.APIKey,
-                                      value: Constants.FlickrAPIValues.APIKey));
+                                      value: Constants.FlickrAPIValuesForSearch.APIKey));
         compotent.append(URLQueryItem(name: Constants.FlickrAPIKeys.SearchMethod,
-                                      value: Constants.FlickrAPIValues.SearchMethod));
+                                      value: Constants.FlickrAPIValuesForSearch.SearchMethod));
        compotent.append(URLQueryItem(name: Constants.FlickrAPIKeys.ResponseFormat,
-                                     value: Constants.FlickrAPIValues.ResponseFormat));
+                                     value: Constants.FlickrAPIValuesForSearch.ResponseFormat));
         compotent.append(URLQueryItem(name: Constants.FlickrAPIKeys.Extras,
-                                      value: Constants.FlickrAPIValues.ExtrasValue));
+                                      value: Constants.FlickrAPIValuesForSearch.ExtrasValue));
         compotent.append(URLQueryItem(name: Constants.FlickrAPIKeys.SafeSearch,
-                                      value: Constants.FlickrAPIValues.SafeSearch));
+                                      value: Constants.FlickrAPIValuesForSearch.SafeSearch));
         compotent.append(URLQueryItem(name: Constants.FlickrAPIKeys.DisableJSONCallback,
-                                      value: Constants.FlickrAPIValues.DisableJSONCallback));
+                                      value: Constants.FlickrAPIValuesForSearch.DisableJSONCallback));
         compotent.append(URLQueryItem(name: Constants.FlickrAPIKeys.Text,
                                       value: searchString));
         compotent.append(URLQueryItem(name: Constants.FlickrAPIKeys.Sort,
-                                      value: Constants.FlickrAPIValues.SortValue));
+                                      value: Constants.FlickrAPIValuesForSearch.SortValue));
         
         components.queryItems = compotent
         guard let componentsUrl = components.url else {
@@ -157,7 +157,3 @@ class ImageCollectionViewController: UIViewController, UICollectionViewDelegate,
         super.didReceiveMemoryWarning()
     }
 }
-
-
-
-
