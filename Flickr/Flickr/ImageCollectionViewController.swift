@@ -11,7 +11,7 @@ import UIKit
 import Alamofire
 
 class ImageCollectionViewController: UIViewController, UICollectionViewDelegate, UICollectionViewDataSource, UITextFieldDelegate {
-  
+    
     fileprivate var imageData: [Photo] = [Photo]()
     
     override func viewDidLoad() {
@@ -20,6 +20,7 @@ class ImageCollectionViewController: UIViewController, UICollectionViewDelegate,
     
     @IBOutlet weak var collectionView: UICollectionView!
     @IBOutlet weak var searchTextField: UITextField!
+    
     @IBAction func searchButtonAction(_ sender: UIButton) {
         let searchText = searchTextField.text
         guard let searchingText = searchText else {
@@ -29,53 +30,37 @@ class ImageCollectionViewController: UIViewController, UICollectionViewDelegate,
             displayAlert("Search text cannot be empty")
             return
         }
-        let searchURL = flickrURLFromParameters(searchString: searchingText)
-        // Send the request
-        guard let searchUrl = searchURL else {
-            return
-        }
-        performFlickrSearch(url: searchUrl)
-        self.collectionView?.reloadData()
-    }
-    
-
-    private func showLayout() {
-    }
-    
-    private func flickrURLFromParameters(searchString: String) -> URL? {       // needs for customize Search text
-        // Build base URL
-        var components = URLComponents()
-        components.scheme = Constants.FlickrURLParams.APIScheme
-        components.host = Constants.FlickrURLParams.APIHost
-        components.path = Constants.FlickrURLParams.APIPath
-        // Build query string
-        components.queryItems = [URLQueryItem]()
-        // Query components
-        guard var compotent = components.queryItems else {
-            return nil
-        }
-        compotent.append(URLQueryItem(name: Constants.FlickrAPIKeys.APIKey,
-                                      value: Constants.FlickrAPIValuesForSearch.APIKey));
-        compotent.append(URLQueryItem(name: Constants.FlickrAPIKeys.SearchMethod,
-                                      value: Constants.FlickrAPIValuesForSearch.SearchMethod));
-       compotent.append(URLQueryItem(name: Constants.FlickrAPIKeys.ResponseFormat,
-                                     value: Constants.FlickrAPIValuesForSearch.ResponseFormat));
-        compotent.append(URLQueryItem(name: Constants.FlickrAPIKeys.Extras,
-                                      value: Constants.FlickrAPIValuesForSearch.ExtrasValue));
-        compotent.append(URLQueryItem(name: Constants.FlickrAPIKeys.SafeSearch,
-                                      value: Constants.FlickrAPIValuesForSearch.SafeSearch));
-        compotent.append(URLQueryItem(name: Constants.FlickrAPIKeys.DisableJSONCallback,
-                                      value: Constants.FlickrAPIValuesForSearch.DisableJSONCallback));
-        compotent.append(URLQueryItem(name: Constants.FlickrAPIKeys.Text,
-                                      value: searchString));
-        compotent.append(URLQueryItem(name: Constants.FlickrAPIKeys.Sort,
-                                      value: Constants.FlickrAPIValuesForSearch.SortValue));
         
-        components.queryItems = compotent
-        guard let componentsUrl = components.url else {
-            return nil
+        
+        performFlickrSearch(url: searchingText)
+    }
+    
+    enum Router: URLRequestConvertible {
+        case search(text: String, page: Int)
+        case popular(text: String, page: Int)
+        
+        static let baseURLString = Constants.FlickrAPI.baseUrl
+        static let perPage = 50
+        // MARK: URLRequestConvertible
+        func asURLRequest() throws -> URLRequest {
+            let result: (path: String, parameters: Parameters) = {
+                switch self {
+                case let .search(text, _):
+                    var searchParams = Constants.searchParams
+                    searchParams["text"] = text
+                    return (Constants.FlickrAPI.path,  searchParams)
+                case .popular(_):
+                    return  (Constants.FlickrAPI.path,  Constants.popularParams)
+                }
+            }()
+            let url = try Router.baseURLString.asURL()
+            let urlRequest = URLRequest(url: url.appendingPathComponent(result.path))
+            
+            return try URLEncoding.default.encode(urlRequest, with: result.parameters)
         }
-        return componentsUrl
+    }
+    
+    private func showLayout() {
     }
     
     func displayAlert(_ message: String) {
@@ -84,8 +69,9 @@ class ImageCollectionViewController: UIViewController, UICollectionViewDelegate,
         self.present(alert, animated: true, completion: nil)
     }
     
-    private func performFlickrSearch(url: URL) {
-        Alamofire.request(url).responseJSON { response in
+    private func performFlickrSearch(url: String) {
+        Alamofire.request(Router.search(text: "nature", page: 1)).responseJSON { (response) in
+            self.handlingResponseData(data: response)
         }
     }
     
@@ -147,12 +133,12 @@ class ImageCollectionViewController: UIViewController, UICollectionViewDelegate,
                 gvcvc.photoGalleryData = imageData
                 if let cell = sender as? ImageCollectionViewCell,
                     let tweetMedia = gvcvc.photoGalleryData {
-
+                    
                 }
             }
         }
     }
-
+    
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
     }
