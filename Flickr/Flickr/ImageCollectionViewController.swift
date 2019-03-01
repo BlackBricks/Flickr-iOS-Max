@@ -13,20 +13,23 @@ import Alamofire
 class ImageCollectionViewController: UIViewController, UICollectionViewDelegate, UICollectionViewDataSource, UITextFieldDelegate {
   
     fileprivate var imageData: [Photo] = [Photo]()
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+    }
+    
     @IBOutlet weak var collectionView: UICollectionView!
     @IBOutlet weak var searchTextField: UITextField!
     @IBAction func searchButtonAction(_ sender: UIButton) {
-        
         let searchText = searchTextField.text
         guard let searchingText = searchText else {
             return
         }
-        if searchingText.isEmpty {
+        guard !searchingText.isEmpty else {
             displayAlert("Search text cannot be empty")
             return
         }
         let searchURL = flickrURLFromParameters(searchString: searchingText)
-        print("URL: \(String(describing: searchURL))")
         // Send the request
         guard let searchUrl = searchURL else {
             return
@@ -35,9 +38,6 @@ class ImageCollectionViewController: UIViewController, UICollectionViewDelegate,
         self.collectionView?.reloadData()
     }
     
-    override func viewDidLoad() {
-        super.viewDidLoad()
-    }
 
     private func showLayout() {
     }
@@ -55,21 +55,22 @@ class ImageCollectionViewController: UIViewController, UICollectionViewDelegate,
             return nil
         }
         compotent.append(URLQueryItem(name: Constants.FlickrAPIKeys.APIKey,
-                                                   value: Constants.FlickrAPIValues.APIKey));
+                                      value: Constants.FlickrAPIValues.APIKey));
         compotent.append(URLQueryItem(name: Constants.FlickrAPIKeys.SearchMethod,
-                                                   value: Constants.FlickrAPIValues.SearchMethod));
+                                      value: Constants.FlickrAPIValues.SearchMethod));
        compotent.append(URLQueryItem(name: Constants.FlickrAPIKeys.ResponseFormat,
-                                                   value: Constants.FlickrAPIValues.ResponseFormat));
+                                     value: Constants.FlickrAPIValues.ResponseFormat));
         compotent.append(URLQueryItem(name: Constants.FlickrAPIKeys.Extras,
-                                                   value: Constants.FlickrAPIValues.ExtrasValue));
+                                      value: Constants.FlickrAPIValues.ExtrasValue));
         compotent.append(URLQueryItem(name: Constants.FlickrAPIKeys.SafeSearch,
-                                                   value: Constants.FlickrAPIValues.SafeSearch));
+                                      value: Constants.FlickrAPIValues.SafeSearch));
         compotent.append(URLQueryItem(name: Constants.FlickrAPIKeys.DisableJSONCallback,
-                                                   value: Constants.FlickrAPIValues.DisableJSONCallback));
+                                      value: Constants.FlickrAPIValues.DisableJSONCallback));
         compotent.append(URLQueryItem(name: Constants.FlickrAPIKeys.Text,
-                                                   value: searchString));
+                                      value: searchString));
         compotent.append(URLQueryItem(name: Constants.FlickrAPIKeys.Sort,
                                       value: Constants.FlickrAPIValues.SortValue));
+        
         components.queryItems = compotent
         guard let componentsUrl = components.url else {
             return nil
@@ -85,24 +86,27 @@ class ImageCollectionViewController: UIViewController, UICollectionViewDelegate,
     
     private func performFlickrSearch(url: URL) {
         Alamofire.request(url).responseJSON { response in
-            guard response.result.isSuccess else {
-                print("Error get data \(String(describing: response.result.error))")
+        }
+    }
+    
+    func handlingResponseData (data: DataResponse<Any> ) {
+        guard data.result.isSuccess else {
+            self.displayAlert("Error get data \(String(describing: data.result.error))")
+            return
+        }
+        guard
+            let value = data.result.value as? [String: AnyObject],
+            let dict = value["photos"] as? [String: AnyObject],
+            let photosData = dict["photo"] as? [[String: AnyObject]]
+            else {
+                print("Error parse data")
                 return
-            }
-            guard
-                let value = response.result.value as? [String: AnyObject],
-                let dict = value["photos"] as? [String: AnyObject],
-                let photosData = dict["photo"] as? [[String: AnyObject]]
-                else {
-                    print("Error parse data")
-                    return
-            }
-            let photos = Photo.getPhotos(data: photosData)
-            self.imageData = photos
-            print(response.value ?? "nothing")
-            DispatchQueue.main.async() {
-                self.collectionView?.reloadData()
-            }
+        }
+        let photos = Photo.getPhotos(data: photosData)
+        self.imageData = photos
+        print(data.value ?? "nothing")
+        DispatchQueue.main.async() {
+            self.collectionView?.reloadData()
         }
     }
     

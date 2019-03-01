@@ -9,11 +9,11 @@
 import UIKit
 
 class Photo {
-    var url: String?                // "url_m"
-    var hieghtImage: String?        // "height_m"
-    var widthImage: String?         // "width_m"
-    var title: String?              // title
-    var views: String?                 // views
+    var url: String?               
+    var hieghtImage: String?
+    var widthImage: String?
+    var title: String?
+    var views: String?
     
     class func getPhotos (data: [[String: AnyObject]]) -> [Photo] {
         let photo = data.map({ (itemArray) -> Photo in
@@ -24,11 +24,12 @@ class Photo {
             interestInfo.hieghtImage = itemArray["hieght_m"] as? String
             interestInfo.widthImage = itemArray["width_m"] as? String
             return interestInfo
-            }
-        )
+        })
         return photo
     }
 }
+
+
 
 
 
