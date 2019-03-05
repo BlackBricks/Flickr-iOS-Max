@@ -15,10 +15,9 @@ class ImageCollectionViewController: UIViewController, UICollectionViewDelegate,
     fileprivate var imageData: [Photo] = [Photo]()
     var isSearching = false
     var sizes: [CGSize] = [CGSize]()
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
-        
         searchCollectionView.alpha = 0
         popularCollectionView.alpha = 0
     }
@@ -61,9 +60,7 @@ class ImageCollectionViewController: UIViewController, UICollectionViewDelegate,
                     var searchParams = Constants.searchParams
                     searchParams["text"] = text
                     return (Constants.FlickrAPI.path,  searchParams)
-                    
                 case .popular(_):
-                    
                     return  (Constants.FlickrAPI.path,  Constants.popularParams)
                 }
             }()
@@ -113,10 +110,14 @@ class ImageCollectionViewController: UIViewController, UICollectionViewDelegate,
             if self.isSearching == true {
                 self.searchCollectionView.alpha = 1
                 self.popularCollectionView.alpha = 0
+                self.searchCollectionView.isHidden = false
+                self.popularCollectionView.isHidden = true
                 self.searchCollectionView?.reloadData()
             } else {
                 self.popularCollectionView.alpha = 1
-                self.searchCollectionView.alpha = 1
+                self.searchCollectionView.alpha = 0
+                self.popularCollectionView.isHidden = false
+                self.searchCollectionView.isHidden = true
                 self.popularCollectionView?.reloadData()
             }
         }
@@ -143,7 +144,7 @@ class ImageCollectionViewController: UIViewController, UICollectionViewDelegate,
     func collectionView(_ collectionView: UICollectionView,
                         cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         
-        if collectionView == self.popularCollectionView && isSearching == false {
+        if collectionView == self.popularCollectionView {
             let cellPopular = collectionView.dequeueReusableCell(withReuseIdentifier: "PopularImage Cell",
                                                                  for: indexPath)
             if let imageCell = cellPopular as? PopularCollectionViewCell {
@@ -153,7 +154,7 @@ class ImageCollectionViewController: UIViewController, UICollectionViewDelegate,
                 imageCell.fetchImage(url: gettedUrl)
                 return cellPopular
             }
-        }
+        } else if collectionView == self.searchCollectionView {
         let cellSearch = collectionView.dequeueReusableCell(withReuseIdentifier: "image Cell",
                                                             for: indexPath)
         if let imageCell = cellSearch as? ImageCollectionViewCell {
@@ -162,8 +163,9 @@ class ImageCollectionViewController: UIViewController, UICollectionViewDelegate,
             }
             imageCell.fetchImage(url: gettedUrl)
             
+            }
         }
-        return cellSearch
+        return UICollectionViewCell()
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
