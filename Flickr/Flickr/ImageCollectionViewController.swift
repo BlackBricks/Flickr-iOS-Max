@@ -10,26 +10,31 @@
 import UIKit
 import Alamofire
 
-class ImageCollectionViewController: UIViewController, UICollectionViewDelegate, UICollectionViewDataSource, UITextFieldDelegate {
+class ImageCollectionViewController: UIViewController, UICollectionViewDelegate, UICollectionViewDataSource, UITextFieldDelegate, UICollectionViewDelegateFlowLayout {
     
     fileprivate var imageData: [Photo] = [Photo]()
+    var isSearching = false
+    var sizes: [CGSize] = [CGSize]()
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        searchCollectionView.alpha = 0
+        popularCollectionView.alpha = 0
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        
         Alamofire.request(Router.popular(page: 1)).responseJSON { (response) in
             self.handlingResponseData(data: response)
         }
     }
-
+    
     @IBOutlet weak var searchCollectionView: UICollectionView!
     @IBOutlet weak var popularCollectionView: UICollectionView!
     @IBOutlet weak var searchTextField: UITextField!
     @IBAction func searchButtonAction(_ sender: UIButton) {
+        isSearching = true
         let searchText = searchTextField.text
         guard let searchingText = searchText else {
             return
@@ -100,9 +105,20 @@ class ImageCollectionViewController: UIViewController, UICollectionViewDelegate,
         }
         let photos = Photo.getPhotos(data: photosData)
         self.imageData = photos
+        sizes = Photo.getSizes(data: imageData)
+        let LaySizes: [CGSize] = sizes.lay_justify(for: view.bounds.size.width)
+        sizes = LaySizes
         print(data.value ?? "nothing")
         DispatchQueue.main.async() {
-            self.searchCollectionView?.reloadData()
+            if self.isSearching == true {
+                self.searchCollectionView.alpha = 1
+                self.popularCollectionView.alpha = 0
+                self.searchCollectionView?.reloadData()
+            } else {
+                self.popularCollectionView.alpha = 1
+                self.searchCollectionView.alpha = 1
+                self.popularCollectionView?.reloadData()
+            }
         }
     }
     
@@ -120,34 +136,38 @@ class ImageCollectionViewController: UIViewController, UICollectionViewDelegate,
     
     func collectionView(_ collectionView: UICollectionView,
                         numberOfItemsInSection section: Int) -> Int {
+        print("\(imageData.count)")
         return imageData.count
     }
     
     func collectionView(_ collectionView: UICollectionView,
                         cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         
-        if collectionView == self.searchCollectionView {
-            let cellSearch = collectionView.dequeueReusableCell(withReuseIdentifier: "image Cell",
-                                                                for: indexPath)
-            if let imageCell = cellSearch as? ImageCollectionViewCell {
+        if collectionView == self.popularCollectionView && isSearching == false {
+            let cellPopular = collectionView.dequeueReusableCell(withReuseIdentifier: "PopularImage Cell",
+                                                                 for: indexPath)
+            if let imageCell = cellPopular as? PopularCollectionViewCell {
                 guard let gettedUrl = getUrlFromArray(photosArray: imageData, index: indexPath.row) else {
-                    return cellSearch
+                    return cellPopular
                 }
                 imageCell.fetchImage(url: gettedUrl)
-                return cellSearch
-            }
-        }
-        let cellPopular = collectionView.dequeueReusableCell(withReuseIdentifier: "PopularImage Cell",
-                                                             for: indexPath)
-        if let imageCell = cellPopular as? PopularCollectionViewCell {
-            guard let gettedUrl = getUrlFromArray(photosArray: imageData, index: indexPath.row) else {
                 return cellPopular
             }
+        }
+        let cellSearch = collectionView.dequeueReusableCell(withReuseIdentifier: "image Cell",
+                                                            for: indexPath)
+        if let imageCell = cellSearch as? ImageCollectionViewCell {
+            guard let gettedUrl = getUrlFromArray(photosArray: imageData, index: indexPath.row) else {
+                return cellSearch
+            }
             imageCell.fetchImage(url: gettedUrl)
-            return cellPopular
             
         }
-        return cellPopular
+        return cellSearch
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        return sizes[indexPath.row]
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {    // in process
@@ -161,7 +181,7 @@ class ImageCollectionViewController: UIViewController, UICollectionViewDelegate,
             }
         }
     }
-    
+
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
     }
