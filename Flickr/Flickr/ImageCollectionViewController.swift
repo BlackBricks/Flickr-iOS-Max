@@ -15,11 +15,13 @@ class ImageCollectionViewController: UIViewController, UICollectionViewDelegate,
     fileprivate var imageData: [Photo] = [Photo]()
     var isSearching = false
     var sizes: [CGSize] = [CGSize]()
-
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        searchCollectionView.alpha = 0
+        searchCollectionView.alpha = 1
         popularCollectionView.alpha = 0
+        searchCollectionView.delegate = self
+        searchCollectionView.dataSource = self
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -48,30 +50,24 @@ class ImageCollectionViewController: UIViewController, UICollectionViewDelegate,
     enum Router: URLRequestConvertible {
         case search(text: String, page: Int)
         case popular(page: Int)
-        
         static let baseURLString = Constants.FlickrAPI.baseUrl
         static let perPage = 50
         // MARK: URLRequestConvertible
         func asURLRequest() throws -> URLRequest {
             let result: (path: String, parameters: Parameters) = {
                 switch self {
-                    
                 case let .search(text, _):
                     var searchParams = Constants.searchParams
                     searchParams["text"] = text
-                    return (Constants.FlickrAPI.path,  searchParams)
+                    return (Constants.FlickrAPI.path, searchParams)
                 case .popular(_):
-                    return  (Constants.FlickrAPI.path,  Constants.popularParams)
+                    return  (Constants.FlickrAPI.path, Constants.popularParams)
                 }
             }()
             let url = try Router.baseURLString.asURL()
             let urlRequest = URLRequest(url: url.appendingPathComponent(result.path))
-            
             return try URLEncoding.default.encode(urlRequest, with: result.parameters)
         }
-    }
-    
-    private func showLayout() {
     }
     
     func displayAlert(_ message: String) {
@@ -107,18 +103,19 @@ class ImageCollectionViewController: UIViewController, UICollectionViewDelegate,
         sizes = LaySizes
         print(data.value ?? "nothing")
         DispatchQueue.main.async() {
+            self.searchCollectionView?.reloadData()
+            self.popularCollectionView?.reloadData()
+            
             if self.isSearching == true {
                 self.searchCollectionView.alpha = 1
                 self.popularCollectionView.alpha = 0
                 self.searchCollectionView.isHidden = false
                 self.popularCollectionView.isHidden = true
-                self.searchCollectionView?.reloadData()
             } else {
                 self.popularCollectionView.alpha = 1
                 self.searchCollectionView.alpha = 0
                 self.popularCollectionView.isHidden = false
                 self.searchCollectionView.isHidden = true
-                self.popularCollectionView?.reloadData()
             }
         }
     }
@@ -137,12 +134,24 @@ class ImageCollectionViewController: UIViewController, UICollectionViewDelegate,
     
     func collectionView(_ collectionView: UICollectionView,
                         numberOfItemsInSection section: Int) -> Int {
-        print("\(imageData.count)")
+        print("\(collectionView) \n \(imageData.count) loaded")
         return imageData.count
     }
     
     func collectionView(_ collectionView: UICollectionView,
                         cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        
+        if collectionView == self.searchCollectionView {
+            let cellSearch = collectionView.dequeueReusableCell(withReuseIdentifier: "image Cell",
+                                                                for: indexPath)
+            if let imageCell = cellSearch as? ImageCollectionViewCell {
+                guard let gettedUrl = getUrlFromArray(photosArray: imageData, index: indexPath.row) else {
+                    return cellSearch
+                }
+                imageCell.fetchImage(url: gettedUrl)
+                return cellSearch
+            }
+        }
         
         if collectionView == self.popularCollectionView {
             let cellPopular = collectionView.dequeueReusableCell(withReuseIdentifier: "PopularImage Cell",
@@ -154,16 +163,6 @@ class ImageCollectionViewController: UIViewController, UICollectionViewDelegate,
                 imageCell.fetchImage(url: gettedUrl)
                 return cellPopular
             }
-        } else if collectionView == self.searchCollectionView {
-        let cellSearch = collectionView.dequeueReusableCell(withReuseIdentifier: "image Cell",
-                                                            for: indexPath)
-        if let imageCell = cellSearch as? ImageCollectionViewCell {
-            guard let gettedUrl = getUrlFromArray(photosArray: imageData, index: indexPath.row) else {
-                return cellSearch
-            }
-            imageCell.fetchImage(url: gettedUrl)
-            
-            }
         }
         return UICollectionViewCell()
     }
@@ -172,18 +171,20 @@ class ImageCollectionViewController: UIViewController, UICollectionViewDelegate,
         return sizes[indexPath.row]
     }
     
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {    // in process
-        if segue.identifier == Constants.SegueIdentifier.GallerySegue {
-            if let gvcvc = segue.destination as? GalleryViewingCollectionViewController {
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if let identifier = segue.identifier {
+            if identifier == Constants.SegueIdentifier.GallerySegue,
+                let gvcvc = segue.destination as? GalleryViewingCollectionViewController,
+                let cell = sender as? ImageCollectionViewCell {
+                let indexPath = self.searchCollectionView!.indexPath(for: cell) // in progress
                 gvcvc.photoGalleryData = imageData
-                if let cell = sender as? ImageCollectionViewCell,
-                    let tweetMedia = gvcvc.photoGalleryData {
-                    
-                }
+                
+                
+                
             }
         }
     }
-
+    
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
     }
