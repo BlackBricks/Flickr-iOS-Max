@@ -99,13 +99,12 @@ class ImageCollectionViewController: UIViewController, UICollectionViewDelegate,
         let photos = Photo.getPhotos(data: photosData)
         self.imageData = photos
         sizes = Photo.getSizes(data: imageData)
-        let LaySizes: [CGSize] = sizes.lay_justify(for: view.bounds.size.width)
+        let LaySizes: [CGSize] = sizes.lay_justify(for: view.bounds.size.width, preferredHeight: view.bounds.size.height )
         sizes = LaySizes
         print(data.value ?? "nothing")
         DispatchQueue.main.async() {
             self.searchCollectionView?.reloadData()
             self.popularCollectionView?.reloadData()
-            
             if self.isSearching == true {
                 self.searchCollectionView.alpha = 1
                 self.popularCollectionView.alpha = 0
@@ -120,32 +119,23 @@ class ImageCollectionViewController: UIViewController, UICollectionViewDelegate,
         }
     }
     
-    func getUrlFromArray(photosArray: [Photo], index: Int) -> String? {
-        let photoItem = photosArray[index]
-        guard let urlImage = photoItem.url else {
-            return nil
-        }
-        return urlImage
-    }
-    
     func numberOfSections(in collectionView: UICollectionView) -> Int {
         return 1
     }
     
     func collectionView(_ collectionView: UICollectionView,
                         numberOfItemsInSection section: Int) -> Int {
-        print("\(collectionView) \n \(imageData.count) loaded")
+        print("\(imageData.count) loaded")
         return imageData.count
     }
     
     func collectionView(_ collectionView: UICollectionView,
                         cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        
         if collectionView == self.searchCollectionView {
             let cellSearch = collectionView.dequeueReusableCell(withReuseIdentifier: "image Cell",
                                                                 for: indexPath)
             if let imageCell = cellSearch as? ImageCollectionViewCell {
-                guard let gettedUrl = getUrlFromArray(photosArray: imageData, index: indexPath.row) else {
+                guard let gettedUrl = Photo.getUrlFromArray(photosArray: imageData, index: indexPath.row) else {
                     return cellSearch
                 }
                 imageCell.fetchImage(url: gettedUrl)
@@ -157,7 +147,7 @@ class ImageCollectionViewController: UIViewController, UICollectionViewDelegate,
             let cellPopular = collectionView.dequeueReusableCell(withReuseIdentifier: "PopularImage Cell",
                                                                  for: indexPath)
             if let imageCell = cellPopular as? PopularCollectionViewCell {
-                guard let gettedUrl = getUrlFromArray(photosArray: imageData, index: indexPath.row) else {
+                guard let gettedUrl = Photo.getUrlFromArray(photosArray: imageData, index: indexPath.row) else {
                     return cellPopular
                 }
                 imageCell.fetchImage(url: gettedUrl)
@@ -176,11 +166,9 @@ class ImageCollectionViewController: UIViewController, UICollectionViewDelegate,
             if identifier == Constants.SegueIdentifier.GallerySegue,
                 let gvcvc = segue.destination as? GalleryViewingCollectionViewController,
                 let cell = sender as? ImageCollectionViewCell {
-                let indexPath = self.searchCollectionView!.indexPath(for: cell) // in progress
+                let indexPath = self.searchCollectionView!.indexPath(for: cell)
                 gvcvc.photoGalleryData = imageData
-                
-                
-                
+                gvcvc.indexCell = indexPath
             }
         }
     }
