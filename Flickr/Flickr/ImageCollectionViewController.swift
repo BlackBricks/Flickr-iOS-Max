@@ -84,7 +84,7 @@ class ImageCollectionViewController: UIViewController, UICollectionViewDelegate,
     private func performFlickrPopular() {
         print("\(Alamofire.request(Router.popular(page: 1)).responseJSON)")
         Alamofire.request(Router.popular(page: 1)).responseJSON { (response) in
-            self.handlingSearchResponseData(data: response)
+            self.handlingPopularResponseData(data: response)
         }
     }
     
@@ -140,15 +140,17 @@ class ImageCollectionViewController: UIViewController, UICollectionViewDelegate,
             }
         }
     
-    
     func numberOfSections(in collectionView: UICollectionView) -> Int {
         return 1
     }
     
     func collectionView(_ collectionView: UICollectionView,
                         numberOfItemsInSection section: Int) -> Int {
-        print("\(popularImageData.count) loaded")
-        return popularImageData.count
+        if isSearching == false {
+            return popularImageData.count
+        } else {
+            return searchImageData.count
+        }
     }
     
     func collectionView(_ collectionView: UICollectionView,
@@ -157,22 +159,22 @@ class ImageCollectionViewController: UIViewController, UICollectionViewDelegate,
             let cellSearch = collectionView.dequeueReusableCell(withReuseIdentifier: "image Cell",
                                                                 for: indexPath)
             if let imageCell = cellSearch as? ImageCollectionViewCell {
-                guard let gettedUrl = Photo.getUrlFromArray(photosArray: popularImageData, index: indexPath.row) else {
+                guard let gettedUrl = Photo.getUrlFromArray(photosArray: searchImageData, index: indexPath.row) else {
                     return cellSearch
                 }
-                imageCell.fetchImage(url: gettedUrl)
+                imageCell.fetchImageForSearch(url: gettedUrl)
                 return cellSearch
             }
         }
         
         if collectionView == self.popularCollectionView {
-            let cellPopular = collectionView.dequeueReusableCell(withReuseIdentifier: "image Cell",
+            let cellPopular = collectionView.dequeueReusableCell(withReuseIdentifier: "PopularImage Cell",
                                                                  for: indexPath)
             if let imageCell = cellPopular as? ImageCollectionViewCell {
                 guard let gettedUrl = Photo.getUrlFromArray(photosArray: popularImageData, index: indexPath.row) else {
                     return cellPopular
                 }
-                imageCell.fetchImage(url: gettedUrl)
+                imageCell.fetchImageForPopular(url: gettedUrl)
                 return cellPopular
             }
         }
@@ -180,10 +182,15 @@ class ImageCollectionViewController: UIViewController, UICollectionViewDelegate,
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        return popularImageSizes[indexPath.row]
+        if isSearching == false {
+            return popularImageSizes[indexPath.row]
+        } else {
+            return searchImageSizes[indexPath.row]
+        }
+        
     }
     
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {     // frozen for a while
         if let identifier = segue.identifier {
             if identifier == Constants.SegueIdentifier.GallerySegue,
                 let gvcvc = segue.destination as? ImageDetailViewController,

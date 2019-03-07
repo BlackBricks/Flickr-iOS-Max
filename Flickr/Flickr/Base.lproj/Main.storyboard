@@ -105,7 +105,7 @@
                                             <constraint firstAttribute="trailing" secondItem="fd7-5d-znb" secondAttribute="trailing" id="vXA-aP-6cx"/>
                                         </constraints>
                                         <connections>
-                                            <outlet property="popularImageView" destination="fd7-5d-znb" id="ZvP-7r-ZZP"/>
+                                            <outlet property="popularImageView" destination="fd7-5d-znb" id="5n6-44-qrS"/>
                                         </connections>
                                     </collectionViewCell>
                                 </cells>

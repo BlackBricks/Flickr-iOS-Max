@@ -13,9 +13,15 @@ class ImageCollectionViewCell: UICollectionViewCell {
     
     var imageArray: [[String: AnyObject]]?
     @IBOutlet weak var imagesView: UIImageView!
+    @IBOutlet weak var popularImageView: UIImageView!
     
-    func fetchImage(url: String?) {
+    func fetchImageForSearch(url: String?) {
         guard let url = url else { return }
         imagesView.sd_setImage(with: URL(string: url), placeholderImage: UIImage(named: "placeholder.png"))       
+    }
+    
+    func fetchImageForPopular(url: String?) {
+        guard let url = url else { return }
+        popularImageView.sd_setImage(with: URL(string: url), placeholderImage: UIImage(named: "placeholder.png"))
     }
 }
