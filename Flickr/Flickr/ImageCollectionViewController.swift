@@ -12,26 +12,11 @@ import Alamofire
 
 class ImageCollectionViewController: UIViewController, UICollectionViewDelegate, UICollectionViewDataSource, UITextFieldDelegate, UICollectionViewDelegateFlowLayout, UIScrollViewDelegate {
     
-    fileprivate var imageData: [Photo] = [Photo]()
+    fileprivate var popularImageData: [Photo] = [Photo]()
+    var popularImageSizes: [CGSize] = [CGSize]()
+    fileprivate var searchImageData: [Photo] = [Photo]()
+    var searchImageSizes: [CGSize] = [CGSize]()
     var isSearching = false
-    var sizes: [CGSize] = [CGSize]()
-    
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        searchCollectionView.alpha = 1
-        popularCollectionView.alpha = 0
-        searchCollectionView.delegate = self
-        searchCollectionView.dataSource = self
-        searchTextField.delegate = self
-    }
-    
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        Alamofire.request(Router.popular(page: 1)).responseJSON { (response) in
-            self.handlingResponseData(data: response)
-        }
-    }
-    
     @IBOutlet weak var searchCollectionView: UICollectionView!
     @IBOutlet weak var popularCollectionView: UICollectionView!
     @IBOutlet weak var searchTextField: UITextField!
@@ -71,7 +56,18 @@ class ImageCollectionViewController: UIViewController, UICollectionViewDelegate,
         }
     }
     
-
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        searchCollectionView.alpha = 0
+        popularCollectionView.alpha = 1
+        searchTextField.delegate = self
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        performFlickrPopular()
+    }
+    
     func displayAlert(_ message: String) {
         let alert = UIAlertController(title: "Alert", message: message, preferredStyle: UIAlertController.Style.alert)
         alert.addAction(UIAlertAction(title: "Click", style: .default, handler: nil))
@@ -81,11 +77,18 @@ class ImageCollectionViewController: UIViewController, UICollectionViewDelegate,
     private func performFlickrSearch(url: String) {
         print("\(Alamofire.request(Router.search(text: url, page: 1)).responseJSON)")
         Alamofire.request(Router.search(text: url, page: 1)).responseJSON { (response) in
-            self.handlingResponseData(data: response)
+            self.handlingSearchResponseData(data: response)
         }
     }
     
-    func handlingResponseData (data: DataResponse<Any> ) {
+    private func performFlickrPopular() {
+        print("\(Alamofire.request(Router.popular(page: 1)).responseJSON)")
+        Alamofire.request(Router.popular(page: 1)).responseJSON { (response) in
+            self.handlingSearchResponseData(data: response)
+        }
+    }
+    
+    func handlingPopularResponseData (data: DataResponse<Any> ) {
         guard data.result.isSuccess else {
             self.displayAlert("Error get data \(String(describing: data.result.error))")
             return
@@ -99,27 +102,44 @@ class ImageCollectionViewController: UIViewController, UICollectionViewDelegate,
                 return
         }
         let photos = Photo.getPhotos(from : photosData)
-        self.imageData = photos
-        sizes = Photo.getSizes(from: imageData)
-        let laySizes: [CGSize] = sizes.lay_justify(for: view.bounds.size.width, preferredHeight: view.bounds.size.height )
-        sizes = laySizes
+        self.popularImageData = photos
+        popularImageSizes = Photo.getSizes(from: popularImageData)
+        let laySizes: [CGSize] = popularImageSizes.lay_justify(for: view.bounds.size.width, preferredHeight: view.bounds.size.height )
+        popularImageSizes = laySizes
         print(data.value ?? "nothing")
+        self.searchCollectionView.alpha = 0
+        self.searchCollectionView.isHidden = true
         DispatchQueue.main.async() {
-            self.searchCollectionView?.reloadData()
             self.popularCollectionView?.reloadData()
-            if self.isSearching == true {
-                self.searchCollectionView.alpha = 1
-                self.popularCollectionView.alpha = 0
-                self.searchCollectionView.isHidden = false
-                self.popularCollectionView.isHidden = true
-            } else {
-                self.popularCollectionView.alpha = 1
-                self.searchCollectionView.alpha = 0
-                self.popularCollectionView.isHidden = false
-                self.searchCollectionView.isHidden = true
-            }
         }
     }
+    
+    func handlingSearchResponseData (data: DataResponse<Any> ) {
+        guard data.result.isSuccess else {
+            self.displayAlert("Error get data \(String(describing: data.result.error))")
+            return
+        }
+        guard
+            let value = data.result.value as? [String: AnyObject],
+            let dict = value["photos"] as? [String: AnyObject],
+            let photosData = dict["photo"] as? [[String: AnyObject]]
+            else {
+                print("Error parse data")
+                return
+        }
+        let photos = Photo.getPhotos(from : photosData)
+        self.searchImageData = photos
+        searchImageSizes = Photo.getSizes(from: searchImageData)
+        let laySizes: [CGSize] = searchImageSizes.lay_justify(for: view.bounds.size.width, preferredHeight: view.bounds.size.height )
+        searchImageSizes = laySizes
+        print(data.value ?? "nothing")
+        self.searchCollectionView.alpha = 1
+        self.searchCollectionView.isHidden = false
+        DispatchQueue.main.async() {
+            self.searchCollectionView?.reloadData()
+            }
+        }
+    
     
     func numberOfSections(in collectionView: UICollectionView) -> Int {
         return 1
@@ -127,8 +147,8 @@ class ImageCollectionViewController: UIViewController, UICollectionViewDelegate,
     
     func collectionView(_ collectionView: UICollectionView,
                         numberOfItemsInSection section: Int) -> Int {
-        print("\(imageData.count) loaded")
-        return imageData.count
+        print("\(popularImageData.count) loaded")
+        return popularImageData.count
     }
     
     func collectionView(_ collectionView: UICollectionView,
@@ -137,7 +157,7 @@ class ImageCollectionViewController: UIViewController, UICollectionViewDelegate,
             let cellSearch = collectionView.dequeueReusableCell(withReuseIdentifier: "image Cell",
                                                                 for: indexPath)
             if let imageCell = cellSearch as? ImageCollectionViewCell {
-                guard let gettedUrl = Photo.getUrlFromArray(photosArray: imageData, index: indexPath.row) else {
+                guard let gettedUrl = Photo.getUrlFromArray(photosArray: popularImageData, index: indexPath.row) else {
                     return cellSearch
                 }
                 imageCell.fetchImage(url: gettedUrl)
@@ -149,7 +169,7 @@ class ImageCollectionViewController: UIViewController, UICollectionViewDelegate,
             let cellPopular = collectionView.dequeueReusableCell(withReuseIdentifier: "image Cell",
                                                                  for: indexPath)
             if let imageCell = cellPopular as? ImageCollectionViewCell {
-                guard let gettedUrl = Photo.getUrlFromArray(photosArray: imageData, index: indexPath.row) else {
+                guard let gettedUrl = Photo.getUrlFromArray(photosArray: popularImageData, index: indexPath.row) else {
                     return cellPopular
                 }
                 imageCell.fetchImage(url: gettedUrl)
@@ -160,7 +180,7 @@ class ImageCollectionViewController: UIViewController, UICollectionViewDelegate,
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        return sizes[indexPath.row]
+        return popularImageSizes[indexPath.row]
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
@@ -169,14 +189,12 @@ class ImageCollectionViewController: UIViewController, UICollectionViewDelegate,
                 let gvcvc = segue.destination as? ImageDetailViewController,
                 let cell = sender as? ImageCollectionViewCell {
                 let indexPath = self.searchCollectionView!.indexPath(for: cell)
-                gvcvc.photoGalleryData = imageData
+                gvcvc.photoGalleryData = popularImageData
                 gvcvc.indexCell = indexPath
             }
         }
     }
-//    func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
-//        self.animateTextField(textField: searchTextField, up: true)
-//    }
+ 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
     }
