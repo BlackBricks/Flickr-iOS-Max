@@ -49,8 +49,8 @@ class Photo {
         return nameOwnerImage
     }
     
-    class func getPhotos (data: [[String: AnyObject]]) -> [Photo] {
-        let photo = data.map({ (itemArray) -> Photo in
+    class func getPhotos (from photoArray: [[String: AnyObject]]) -> [Photo] {
+        let photo = photoArray.map({ (itemArray) -> Photo in
             let interestInfo = Photo()
             interestInfo.url = itemArray["url_m"] as? String
             interestInfo.title = itemArray["title"] as? String
@@ -64,8 +64,8 @@ class Photo {
         return photo
     }
     
-    class func getSizes(data: [Photo]) -> [CGSize] {
-        let photo = data.map({ (itemArray) -> CGSize in
+    class func getSizes(from photoArray: [Photo]) -> [CGSize] {
+        let photo = photoArray.map({ (itemArray) -> CGSize in
             let itemSize: CGSize?
             guard let height = itemArray.heightImage else { return CGSize() }
             guard let width = itemArray.widthImage else { return CGSize() }

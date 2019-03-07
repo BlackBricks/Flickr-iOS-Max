@@ -86,7 +86,7 @@
                                     <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
                                 </collectionViewFlowLayout>
                                 <cells>
-                                    <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="PopularImage Cell" id="6Lx-bE-ayv" customClass="PopularCollectionViewCell" customModule="Flickr" customModuleProvider="target">
+                                    <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="PopularImage Cell" id="6Lx-bE-ayv" customClass="ImageCollectionViewCell" customModule="Flickr" customModuleProvider="target">
                                         <rect key="frame" x="0.0" y="0.0" width="154" height="124"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO">
@@ -118,6 +118,7 @@
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
                             <constraint firstItem="PiP-4Q-qhI" firstAttribute="trailing" secondItem="eZF-q3-2Qc" secondAttribute="trailing" id="4wN-4M-zd7"/>
+                            <constraint firstItem="vIU-Mh-rR2" firstAttribute="top" secondItem="PiP-4Q-qhI" secondAttribute="top" priority="750" constant="-47" id="73A-2D-9Pn"/>
                             <constraint firstItem="48C-Ty-oDg" firstAttribute="centerY" secondItem="vIU-Mh-rR2" secondAttribute="centerY" id="7HB-2n-f6N"/>
                             <constraint firstItem="nf0-BU-07p" firstAttribute="leading" secondItem="PiP-4Q-qhI" secondAttribute="leading" id="FTK-JO-N11"/>
                             <constraint firstItem="eZF-q3-2Qc" firstAttribute="leading" secondItem="PiP-4Q-qhI" secondAttribute="leading" id="K3m-Nc-fci"/>
@@ -145,10 +146,10 @@
             </objects>
             <point key="canvasLocation" x="1016.8" y="-636.4317841079461"/>
         </scene>
-        <!--Gallery Viewing Collection View Controller-->
+        <!--Image Detail View Controller-->
         <scene sceneID="Gfa-Hu-YjF">
             <objects>
-                <viewController id="9n5-eU-7LZ" customClass="GalleryViewingCollectionViewController" customModule="Flickr" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController id="9n5-eU-7LZ" customClass="ImageDetailViewController" customModule="Flickr" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="xv4-Ww-U3l">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -163,7 +164,7 @@
                                     <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
                                 </collectionViewFlowLayout>
                                 <cells>
-                                    <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="Gallery Image Cell" id="bzB-zs-SNR" customClass="GalleryViewingCollectionViewCell" customModule="Flickr" customModuleProvider="target">
+                                    <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="Gallery Image Cell" id="bzB-zs-SNR" customClass="ImageDetailViewCell" customModule="Flickr" customModuleProvider="target">
                                         <rect key="frame" x="0.0" y="0.0" width="305" height="218"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO">

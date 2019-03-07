@@ -10,7 +10,7 @@
 import UIKit
 import Alamofire
 
-class ImageCollectionViewController: UIViewController, UICollectionViewDelegate, UICollectionViewDataSource, UITextFieldDelegate, UICollectionViewDelegateFlowLayout {
+class ImageCollectionViewController: UIViewController, UICollectionViewDelegate, UICollectionViewDataSource, UITextFieldDelegate, UICollectionViewDelegateFlowLayout, UIScrollViewDelegate {
     
     fileprivate var imageData: [Photo] = [Photo]()
     var isSearching = false
@@ -22,6 +22,7 @@ class ImageCollectionViewController: UIViewController, UICollectionViewDelegate,
         popularCollectionView.alpha = 0
         searchCollectionView.delegate = self
         searchCollectionView.dataSource = self
+        searchTextField.delegate = self
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -70,6 +71,7 @@ class ImageCollectionViewController: UIViewController, UICollectionViewDelegate,
         }
     }
     
+
     func displayAlert(_ message: String) {
         let alert = UIAlertController(title: "Alert", message: message, preferredStyle: UIAlertController.Style.alert)
         alert.addAction(UIAlertAction(title: "Click", style: .default, handler: nil))
@@ -96,11 +98,11 @@ class ImageCollectionViewController: UIViewController, UICollectionViewDelegate,
                 print("Error parse data")
                 return
         }
-        let photos = Photo.getPhotos(data: photosData)
+        let photos = Photo.getPhotos(from : photosData)
         self.imageData = photos
-        sizes = Photo.getSizes(data: imageData)
-        let LaySizes: [CGSize] = sizes.lay_justify(for: view.bounds.size.width, preferredHeight: view.bounds.size.height )
-        sizes = LaySizes
+        sizes = Photo.getSizes(from: imageData)
+        let laySizes: [CGSize] = sizes.lay_justify(for: view.bounds.size.width, preferredHeight: view.bounds.size.height )
+        sizes = laySizes
         print(data.value ?? "nothing")
         DispatchQueue.main.async() {
             self.searchCollectionView?.reloadData()
@@ -144,9 +146,9 @@ class ImageCollectionViewController: UIViewController, UICollectionViewDelegate,
         }
         
         if collectionView == self.popularCollectionView {
-            let cellPopular = collectionView.dequeueReusableCell(withReuseIdentifier: "PopularImage Cell",
+            let cellPopular = collectionView.dequeueReusableCell(withReuseIdentifier: "image Cell",
                                                                  for: indexPath)
-            if let imageCell = cellPopular as? PopularCollectionViewCell {
+            if let imageCell = cellPopular as? ImageCollectionViewCell {
                 guard let gettedUrl = Photo.getUrlFromArray(photosArray: imageData, index: indexPath.row) else {
                     return cellPopular
                 }
@@ -164,7 +166,7 @@ class ImageCollectionViewController: UIViewController, UICollectionViewDelegate,
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if let identifier = segue.identifier {
             if identifier == Constants.SegueIdentifier.GallerySegue,
-                let gvcvc = segue.destination as? GalleryViewingCollectionViewController,
+                let gvcvc = segue.destination as? ImageDetailViewController,
                 let cell = sender as? ImageCollectionViewCell {
                 let indexPath = self.searchCollectionView!.indexPath(for: cell)
                 gvcvc.photoGalleryData = imageData
@@ -172,7 +174,9 @@ class ImageCollectionViewController: UIViewController, UICollectionViewDelegate,
             }
         }
     }
-    
+//    func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
+//        self.animateTextField(textField: searchTextField, up: true)
+//    }
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
     }

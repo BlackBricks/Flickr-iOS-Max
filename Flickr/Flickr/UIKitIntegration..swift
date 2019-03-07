@@ -1,11 +1,11 @@
-//
-//  File.swift
-//  Flickr
-//
-//  Created by metoSimka on 01/03/2019.
-//  Copyright © 2019 metoSimka. All rights reserved.
-//
 
+//
+//  UIKitIntegration.swift
+//  Lay
+//
+//  Created by Min Kim on 2/11/17.
+//  Copyright © 2017 Min Kim. All rights reserved.
+//
 import UIKit
 
 public protocol Sizable {

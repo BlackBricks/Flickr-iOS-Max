@@ -9,12 +9,11 @@
 import UIKit
 import SDWebImage
 
-class GalleryViewingCollectionViewCell: UICollectionViewCell {
+class ImageDetailViewCell: UICollectionViewCell {
     
     @IBOutlet weak var titleText: UILabel!
     @IBOutlet weak var viewText: UILabel!
     @IBOutlet weak var imageView: UIImageView!
-    var galleryImageArray: [[String: AnyObject]]?
     
     func fetchImage(url: String?) {
         guard let url = url else { return }
