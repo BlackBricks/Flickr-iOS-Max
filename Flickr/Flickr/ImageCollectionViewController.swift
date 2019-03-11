@@ -20,18 +20,7 @@ class ImageCollectionViewController: UIViewController, UICollectionViewDelegate,
     @IBOutlet weak var searchCollectionView: UICollectionView!
     @IBOutlet weak var popularCollectionView: UICollectionView!
     @IBOutlet weak var searchTextField: UITextField!
-    @IBAction func searchButtonAction(_ sender: UIButton) {
-        isSearching = true
-        let searchText = searchTextField.text
-        guard let searchingText = searchText else {
-            return
-        }
-        guard !searchingText.isEmpty else {
-            displayAlert("Search text cannot be empty")
-            return
-        }
-        performFlickrSearch(url: searchingText)
-    }
+    @IBOutlet weak var searchConstraint: NSLayoutConstraint!
     
     enum Router: URLRequestConvertible {
         case search(text: String, page: Int)
@@ -61,11 +50,29 @@ class ImageCollectionViewController: UIViewController, UICollectionViewDelegate,
         searchCollectionView.alpha = 0
         popularCollectionView.alpha = 1
         searchTextField.delegate = self
+        searchConstraint.priority = UILayoutPriority(rawValue: 999);
+        searchConstraint.isActive = true
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         performFlickrPopular()
+    }
+    
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        searchTextField?.resignFirstResponder()
+        let searchText = searchTextField.text
+       guard let searchingText = searchText else {
+            return false
+        }
+        guard !searchingText.isEmpty else {
+            displayAlert("Search text cannot be empty")
+            return false
+        }
+        performFlickrSearch(url: searchingText)
+        searchCollectionView.alpha = 1
+        isSearching = true
+        return true
     }
     
     func displayAlert(_ message: String) {
@@ -104,7 +111,7 @@ class ImageCollectionViewController: UIViewController, UICollectionViewDelegate,
         let photos = Photo.getPhotos(from : photosData)
         self.popularImageData = photos
         popularImageSizes = Photo.getSizes(from: popularImageData)
-        let laySizes: [CGSize] = popularImageSizes.lay_justify(for: view.bounds.size.width, preferredHeight: view.bounds.size.height )
+        let laySizes: [CGSize] = popularImageSizes.lay_justify(for: popularCollectionView.frame.size.width, preferredHeight: popularCollectionView.frame.size.height)
         popularImageSizes = laySizes
         print(data.value ?? "nothing")
         self.searchCollectionView.alpha = 0
@@ -147,8 +154,10 @@ class ImageCollectionViewController: UIViewController, UICollectionViewDelegate,
     func collectionView(_ collectionView: UICollectionView,
                         numberOfItemsInSection section: Int) -> Int {
         if isSearching == false {
+            print(collectionView)
             return popularImageData.count
         } else {
+            print(collectionView)
             return searchImageData.count
         }
     }
@@ -201,7 +210,26 @@ class ImageCollectionViewController: UIViewController, UICollectionViewDelegate,
             }
         }
     }
- 
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
+        return 0
+    }
+    
+    func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
+        let actualPosition = scrollView.panGestureRecognizer.translation(in: scrollView.superview)
+        if actualPosition.y > 0 {
+            UIView.animate(withDuration: 0.5) {
+                self.searchConstraint.priority = UILayoutPriority(rawValue: 999)
+                self.view.layoutIfNeeded()
+            }
+        } else {
+            UIView.animate(withDuration: 1) {
+                self.searchConstraint.priority = UILayoutPriority(rawValue: 500)
+                self.view.layoutIfNeeded()
+            }
+        }
+    }
+    
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
     }

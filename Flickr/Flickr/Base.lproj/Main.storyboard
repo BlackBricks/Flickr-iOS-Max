@@ -18,25 +18,57 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Search Text" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="vIU-Mh-rR2">
-                                <rect key="frame" x="0.0" y="64" width="283" height="46"/>
+                            <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Search Text" minimumFontSize="17" clearButtonMode="whileEditing" translatesAutoresizingMaskIntoConstraints="NO" id="vIU-Mh-rR2">
+                                <rect key="frame" x="0.0" y="64" width="375" height="46"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="46" id="TDs-n3-7P1"/>
                                 </constraints>
                                 <nil key="textColor"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="35"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="12"/>
                                 <textInputTraits key="textInputTraits"/>
                                 <connections>
                                     <action selector="searchTextField:" destination="m4z-0U-tRx" eventType="editingDidEnd" id="nrH-Ko-bHB"/>
+                                    <outlet property="delegate" destination="nwM-E6-0x3" id="Xkg-iV-ETX"/>
                                 </connections>
                             </textField>
-                            <button opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="48C-Ty-oDg">
-                                <rect key="frame" x="308" y="72" width="67" height="30"/>
-                                <state key="normal" title="searching"/>
+                            <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="eZF-q3-2Qc">
+                                <rect key="frame" x="0.0" y="110" width="375" height="557"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="10" minimumInteritemSpacing="10" id="6uW-ar-b3F">
+                                    <size key="itemSize" width="154" height="124"/>
+                                    <size key="headerReferenceSize" width="0.0" height="0.0"/>
+                                    <size key="footerReferenceSize" width="0.0" height="0.0"/>
+                                    <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
+                                </collectionViewFlowLayout>
+                                <cells>
+                                    <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" reuseIdentifier="PopularImage Cell" id="6Lx-bE-ayv" customClass="ImageCollectionViewCell" customModule="Flickr" customModuleProvider="target">
+                                        <rect key="frame" x="0.0" y="0.0" width="154" height="124"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO">
+                                            <rect key="frame" x="0.0" y="0.0" width="154" height="124"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="fd7-5d-znb">
+                                                    <rect key="frame" x="0.0" y="0.0" width="154" height="124"/>
+                                                </imageView>
+                                            </subviews>
+                                        </view>
+                                        <constraints>
+                                            <constraint firstItem="fd7-5d-znb" firstAttribute="leading" secondItem="6Lx-bE-ayv" secondAttribute="leading" id="G8r-wu-hn1"/>
+                                            <constraint firstItem="fd7-5d-znb" firstAttribute="top" secondItem="6Lx-bE-ayv" secondAttribute="top" id="S8h-mG-jZ0"/>
+                                            <constraint firstAttribute="bottom" secondItem="fd7-5d-znb" secondAttribute="bottom" id="sqm-R2-gQO"/>
+                                            <constraint firstAttribute="trailing" secondItem="fd7-5d-znb" secondAttribute="trailing" id="vXA-aP-6cx"/>
+                                        </constraints>
+                                        <connections>
+                                            <outlet property="popularImageView" destination="fd7-5d-znb" id="5n6-44-qrS"/>
+                                        </connections>
+                                    </collectionViewCell>
+                                </cells>
                                 <connections>
-                                    <action selector="searchButtonAction:" destination="nwM-E6-0x3" eventType="touchUpInside" id="Roy-DG-iE6"/>
+                                    <outlet property="dataSource" destination="nwM-E6-0x3" id="HVG-8U-tlX"/>
+                                    <outlet property="delegate" destination="nwM-E6-0x3" id="pTc-YX-z2n"/>
                                 </connections>
-                            </button>
+                            </collectionView>
                             <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="nf0-BU-07p">
                                 <rect key="frame" x="0.0" y="110" width="375" height="557"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
@@ -76,61 +108,21 @@
                                     <outlet property="delegate" destination="nwM-E6-0x3" id="YYP-4q-VXa"/>
                                 </connections>
                             </collectionView>
-                            <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="eZF-q3-2Qc">
-                                <rect key="frame" x="0.0" y="110" width="375" height="557"/>
-                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="10" minimumInteritemSpacing="10" id="6uW-ar-b3F">
-                                    <size key="itemSize" width="154" height="124"/>
-                                    <size key="headerReferenceSize" width="0.0" height="0.0"/>
-                                    <size key="footerReferenceSize" width="0.0" height="0.0"/>
-                                    <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
-                                </collectionViewFlowLayout>
-                                <cells>
-                                    <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="PopularImage Cell" id="6Lx-bE-ayv" customClass="ImageCollectionViewCell" customModule="Flickr" customModuleProvider="target">
-                                        <rect key="frame" x="0.0" y="0.0" width="154" height="124"/>
-                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                        <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO">
-                                            <rect key="frame" x="0.0" y="0.0" width="154" height="124"/>
-                                            <autoresizingMask key="autoresizingMask"/>
-                                            <subviews>
-                                                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="fd7-5d-znb">
-                                                    <rect key="frame" x="0.0" y="0.0" width="154" height="124"/>
-                                                </imageView>
-                                            </subviews>
-                                        </view>
-                                        <constraints>
-                                            <constraint firstItem="fd7-5d-znb" firstAttribute="leading" secondItem="6Lx-bE-ayv" secondAttribute="leading" id="G8r-wu-hn1"/>
-                                            <constraint firstItem="fd7-5d-znb" firstAttribute="top" secondItem="6Lx-bE-ayv" secondAttribute="top" id="S8h-mG-jZ0"/>
-                                            <constraint firstAttribute="bottom" secondItem="fd7-5d-znb" secondAttribute="bottom" id="sqm-R2-gQO"/>
-                                            <constraint firstAttribute="trailing" secondItem="fd7-5d-znb" secondAttribute="trailing" id="vXA-aP-6cx"/>
-                                        </constraints>
-                                        <connections>
-                                            <outlet property="popularImageView" destination="fd7-5d-znb" id="5n6-44-qrS"/>
-                                        </connections>
-                                    </collectionViewCell>
-                                </cells>
-                                <connections>
-                                    <outlet property="dataSource" destination="nwM-E6-0x3" id="HVG-8U-tlX"/>
-                                    <outlet property="delegate" destination="nwM-E6-0x3" id="pTc-YX-z2n"/>
-                                </connections>
-                            </collectionView>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
                             <constraint firstItem="PiP-4Q-qhI" firstAttribute="trailing" secondItem="eZF-q3-2Qc" secondAttribute="trailing" id="4wN-4M-zd7"/>
                             <constraint firstItem="vIU-Mh-rR2" firstAttribute="top" secondItem="PiP-4Q-qhI" secondAttribute="top" priority="750" constant="-47" id="73A-2D-9Pn"/>
-                            <constraint firstItem="48C-Ty-oDg" firstAttribute="centerY" secondItem="vIU-Mh-rR2" secondAttribute="centerY" id="7HB-2n-f6N"/>
                             <constraint firstItem="nf0-BU-07p" firstAttribute="leading" secondItem="PiP-4Q-qhI" secondAttribute="leading" id="FTK-JO-N11"/>
                             <constraint firstItem="eZF-q3-2Qc" firstAttribute="leading" secondItem="PiP-4Q-qhI" secondAttribute="leading" id="K3m-Nc-fci"/>
                             <constraint firstItem="vIU-Mh-rR2" firstAttribute="leading" secondItem="PiP-4Q-qhI" secondAttribute="leading" id="OxA-pv-tjX"/>
-                            <constraint firstItem="PiP-4Q-qhI" firstAttribute="trailing" secondItem="48C-Ty-oDg" secondAttribute="trailing" id="PiV-Gl-RKi"/>
                             <constraint firstItem="nf0-BU-07p" firstAttribute="top" secondItem="vIU-Mh-rR2" secondAttribute="bottom" id="Q3c-oM-uR3"/>
                             <constraint firstItem="PiP-4Q-qhI" firstAttribute="trailing" secondItem="nf0-BU-07p" secondAttribute="trailing" id="RG2-7V-4y9"/>
+                            <constraint firstItem="PiP-4Q-qhI" firstAttribute="trailing" secondItem="vIU-Mh-rR2" secondAttribute="trailing" id="VgC-uM-dMk"/>
                             <constraint firstItem="PiP-4Q-qhI" firstAttribute="bottom" secondItem="nf0-BU-07p" secondAttribute="bottom" id="Yab-Gp-hvY"/>
                             <constraint firstItem="eZF-q3-2Qc" firstAttribute="top" secondItem="vIU-Mh-rR2" secondAttribute="bottom" id="g6Y-Op-YHG"/>
                             <constraint firstItem="PiP-4Q-qhI" firstAttribute="bottom" secondItem="eZF-q3-2Qc" secondAttribute="bottom" id="pgq-oJ-gAn"/>
-                            <constraint firstItem="vIU-Mh-rR2" firstAttribute="top" secondItem="PiP-4Q-qhI" secondAttribute="top" id="qOf-aI-Alk"/>
-                            <constraint firstItem="48C-Ty-oDg" firstAttribute="leading" secondItem="vIU-Mh-rR2" secondAttribute="trailing" constant="25" id="wtE-Cg-y9f"/>
+                            <constraint firstItem="vIU-Mh-rR2" firstAttribute="top" secondItem="PiP-4Q-qhI" secondAttribute="top" priority="999" id="qOf-aI-Alk"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="PiP-4Q-qhI"/>
                     </view>
@@ -138,6 +130,7 @@
                     <connections>
                         <outlet property="popularCollectionView" destination="eZF-q3-2Qc" id="cW5-Ha-c15"/>
                         <outlet property="searchCollectionView" destination="nf0-BU-07p" id="Dhd-O1-fep"/>
+                        <outlet property="searchConstraint" destination="qOf-aI-Alk" id="NXH-8g-KKP"/>
                         <outlet property="searchTextField" destination="vIU-Mh-rR2" id="Vmc-lL-d10"/>
                     </connections>
                 </viewController>
