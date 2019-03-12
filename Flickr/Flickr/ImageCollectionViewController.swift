@@ -12,6 +12,10 @@ import Alamofire
 
 class ImageCollectionViewController: UIViewController, UICollectionViewDelegate, UICollectionViewDataSource, UITextFieldDelegate, UICollectionViewDelegateFlowLayout, UIScrollViewDelegate {
     
+    var actualPosition: CGPoint?
+    var justPrefferedHeight: CGFloat = 150
+    var basicIndent: CGFloat = 2
+    var searchList = [String]()
     fileprivate var popularImageData: [Photo] = [Photo]()
     var popularImageSizes: [CGSize] = [CGSize]()
     fileprivate var searchImageData: [Photo] = [Photo]()
@@ -60,19 +64,28 @@ class ImageCollectionViewController: UIViewController, UICollectionViewDelegate,
     }
     
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-        searchTextField?.resignFirstResponder()
         let searchText = searchTextField.text
-       guard let searchingText = searchText else {
+        guard let searchingText = searchText else {
             return false
         }
         guard !searchingText.isEmpty else {
             displayAlert("Search text cannot be empty")
             return false
         }
+        searchTextField?.resignFirstResponder()
         performFlickrSearch(url: searchingText)
         searchCollectionView.alpha = 1
         isSearching = true
+        rememberWord(searchingText)
         return true
+    }
+    
+    func rememberWord(_ text: String) {
+        if searchList.contains(text) {
+            return
+        } else {
+            searchList.append(text)
+        }
     }
     
     func displayAlert(_ message: String) {
@@ -82,8 +95,8 @@ class ImageCollectionViewController: UIViewController, UICollectionViewDelegate,
     }
     
     private func performFlickrSearch(url: String) {
-        print("\(Alamofire.request(Router.search(text: url, page: 1)).responseJSON)")
-        Alamofire.request(Router.search(text: url, page: 1)).responseJSON { (response) in
+        print("\(Alamofire.request(Router.search(text: url, page: 2)).responseJSON)")
+        Alamofire.request(Router.search(text: url, page: 2)).responseJSON { (response) in
             self.handlingSearchResponseData(data: response)
         }
     }
@@ -111,7 +124,7 @@ class ImageCollectionViewController: UIViewController, UICollectionViewDelegate,
         let photos = Photo.getPhotos(from : photosData)
         self.popularImageData = photos
         popularImageSizes = Photo.getSizes(from: popularImageData)
-        let laySizes: [CGSize] = popularImageSizes.lay_justify(for: popularCollectionView.frame.size.width, preferredHeight: popularCollectionView.frame.size.height)
+        let laySizes: [CGSize] = popularImageSizes.lay_justify(for: popularCollectionView.frame.size.width - basicIndent , preferredHeight: justPrefferedHeight)
         popularImageSizes = laySizes
         print(data.value ?? "nothing")
         self.searchCollectionView.alpha = 0
@@ -137,15 +150,27 @@ class ImageCollectionViewController: UIViewController, UICollectionViewDelegate,
         let photos = Photo.getPhotos(from : photosData)
         self.searchImageData = photos
         searchImageSizes = Photo.getSizes(from: searchImageData)
-        let laySizes: [CGSize] = searchImageSizes.lay_justify(for: view.bounds.size.width, preferredHeight: view.bounds.size.height )
+        let laySizes: [CGSize] = searchImageSizes.lay_justify(for: searchCollectionView.frame.size.width - basicIndent, preferredHeight: justPrefferedHeight )
         searchImageSizes = laySizes
         print(data.value ?? "nothing")
         self.searchCollectionView.alpha = 1
         self.searchCollectionView.isHidden = false
         DispatchQueue.main.async() {
             self.searchCollectionView?.reloadData()
+        }
+    }
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {     // frozen for a while
+        if let identifier = segue.identifier {
+            if identifier == Constants.SegueIdentifier.GallerySegue,
+                let gvcvc = segue.destination as? ImageDetailViewController,
+                let cell = sender as? ImageCollectionViewCell {
+                let indexPath = self.searchCollectionView!.indexPath(for: cell)
+                gvcvc.photoGalleryData = popularImageData
+                gvcvc.indexCell = indexPath
             }
         }
+    }
     
     func numberOfSections(in collectionView: UICollectionView) -> Int {
         return 1
@@ -154,10 +179,8 @@ class ImageCollectionViewController: UIViewController, UICollectionViewDelegate,
     func collectionView(_ collectionView: UICollectionView,
                         numberOfItemsInSection section: Int) -> Int {
         if isSearching == false {
-            print(collectionView)
             return popularImageData.count
         } else {
-            print(collectionView)
             return searchImageData.count
         }
     }
@@ -192,42 +215,60 @@ class ImageCollectionViewController: UIViewController, UICollectionViewDelegate,
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         if isSearching == false {
-            return popularImageSizes[indexPath.row]
+            return popularImageSizes[indexPath.item]
         } else {
-            return searchImageSizes[indexPath.row]
-        }
-        
-    }
-    
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {     // frozen for a while
-        if let identifier = segue.identifier {
-            if identifier == Constants.SegueIdentifier.GallerySegue,
-                let gvcvc = segue.destination as? ImageDetailViewController,
-                let cell = sender as? ImageCollectionViewCell {
-                let indexPath = self.searchCollectionView!.indexPath(for: cell)
-                gvcvc.photoGalleryData = popularImageData
-                gvcvc.indexCell = indexPath
-            }
+            return searchImageSizes[indexPath.item]
         }
     }
-    
+
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
-        return 0
+        return basicIndent
     }
     
-    func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
+        return basicIndent/3
+    }
+    
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
         let actualPosition = scrollView.panGestureRecognizer.translation(in: scrollView.superview)
         if actualPosition.y > 0 {
-            UIView.animate(withDuration: 0.5) {
+            self.view.layoutIfNeeded()                              //If u want animated cells while scrolling comment this
+            UIView.animate(withDuration: 0.5,  animations: {
                 self.searchConstraint.priority = UILayoutPriority(rawValue: 999)
                 self.view.layoutIfNeeded()
-            }
-        } else {
-            UIView.animate(withDuration: 1) {
+            })
+        } else if actualPosition.y < 0 {
+            self.view.layoutIfNeeded()
+            UIView.animate(withDuration: 0.5, animations: {
                 self.searchConstraint.priority = UILayoutPriority(rawValue: 500)
                 self.view.layoutIfNeeded()
+            })
+        } else {
+            self.view.layoutIfNeeded()
+        }
+    }
+    
+    /// MARK: auto complete
+    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
+        return !autoCompleteText(in: textField, using: string, suggestions: searchList)
+    }
+    
+    func autoCompleteText(in textField: UITextField, using string: String, suggestions: [String]) -> Bool {
+        if !string.isEmpty,
+            let selectedTextRange = textField.selectedTextRange, selectedTextRange.end == textField.endOfDocument,
+            let prefixRange = textField.textRange(from: textField.beginningOfDocument, to: selectedTextRange.start),
+            let text = textField.text(in: prefixRange) {
+            let prefix = text + string
+            let matches = suggestions.filter { $0.hasPrefix(prefix) }
+            if (matches.count > 0) {
+                textField.text = matches[0]
+                if let start = textField.position(from: textField.beginningOfDocument, offset: prefix.count) {
+                    textField.selectedTextRange = textField.textRange(from: start, to: textField.endOfDocument)
+                    return true
+                }
             }
         }
+        return false
     }
     
     override func didReceiveMemoryWarning() {

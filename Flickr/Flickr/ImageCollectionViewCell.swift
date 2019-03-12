@@ -14,10 +14,17 @@ class ImageCollectionViewCell: UICollectionViewCell {
     var imageArray: [[String: AnyObject]]?
     @IBOutlet weak var imagesView: UIImageView!
     @IBOutlet weak var popularImageView: UIImageView!
+    @IBOutlet weak var spinner: UIActivityIndicatorView!
     
     func fetchImageForSearch(url: String?) {
+        spinner.startAnimating()
         guard let url = url else { return }
-        imagesView.sd_setImage(with: URL(string: url), placeholderImage: UIImage(named: "placeholder.png"))       
+        imagesView.sd_setImage(with: URL(string: url), placeholderImage: UIImage(named: "placeholder.png"))
+        DispatchQueue.main.async {
+             self.spinner.stopAnimating()
+        }
+        
+        
     }
     
     func fetchImageForPopular(url: String?) {
