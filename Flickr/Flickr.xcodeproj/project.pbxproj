@@ -12,6 +12,7 @@
 		A5225F2722279356007D851D /* ImageDetailViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5225F2622279356007D851D /* ImageDetailViewCell.swift */; };
 		A5225F2F2227BFFC007D851D /* ModelPhotoData.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5225F2E2227BFFC007D851D /* ModelPhotoData.swift */; };
 		A523B9602237A97F008B0381 /* RecentTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A523B95F2237A97F008B0381 /* RecentTableViewCell.swift */; };
+		A523CBF62238E59300D15A32 /* Cormorantitalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A523CBF52238E59300D15A32 /* Cormorantitalic.ttf */; };
 		A52405502224F0CA00961D68 /* ImageCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A524054F2224F0CA00961D68 /* ImageCollectionViewCell.swift */; };
 		A525D09D221FDB6F00EE7880 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = A525D09C221FDB6F00EE7880 /* AppDelegate.swift */; };
 		A525D0A2221FDB6F00EE7880 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A525D0A0221FDB6F00EE7880 /* Main.storyboard */; };
@@ -31,6 +32,7 @@
 		A5225F2622279356007D851D /* ImageDetailViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageDetailViewCell.swift; sourceTree = "<group>"; };
 		A5225F2E2227BFFC007D851D /* ModelPhotoData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelPhotoData.swift; sourceTree = "<group>"; };
 		A523B95F2237A97F008B0381 /* RecentTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecentTableViewCell.swift; sourceTree = "<group>"; };
+		A523CBF52238E59300D15A32 /* Cormorantitalic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = Cormorantitalic.ttf; sourceTree = "<group>"; };
 		A524054F2224F0CA00961D68 /* ImageCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageCollectionViewCell.swift; sourceTree = "<group>"; };
 		A525D099221FDB6F00EE7880 /* Flickr.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Flickr.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A525D09C221FDB6F00EE7880 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -85,12 +87,21 @@
 			name = Cells;
 			sourceTree = "<group>";
 		};
+		A523CBF22238E50500D15A32 /* Custom Font */ = {
+			isa = PBXGroup;
+			children = (
+				A523CBF52238E59300D15A32 /* Cormorantitalic.ttf */,
+			);
+			name = "Custom Font";
+			sourceTree = "<group>";
+		};
 		A52405552225426B00961D68 /* Flickr options */ = {
 			isa = PBXGroup;
 			children = (
 				A52B0B9E2228E5EF00A0827D /* ArrayAndLay.swift */,
 				A52B0BA02228E61500A0827D /* UIKitIntegration..swift */,
 				A52B0BA22228E63000A0827D /* Lay.swift */,
+				A523CBF22238E50500D15A32 /* Custom Font */,
 				A570D6972223DB9E009E3142 /* ModelFlickr.swift */,
 				A5225F2E2227BFFC007D851D /* ModelPhotoData.swift */,
 			);
@@ -209,6 +220,7 @@
 			files = (
 				A525D0A7221FDB7200EE7880 /* LaunchScreen.storyboard in Resources */,
 				A525D0A4221FDB7200EE7880 /* Assets.xcassets in Resources */,
+				A523CBF62238E59300D15A32 /* Cormorantitalic.ttf in Resources */,
 				A525D0A2221FDB6F00EE7880 /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

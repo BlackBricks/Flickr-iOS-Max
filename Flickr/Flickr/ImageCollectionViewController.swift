@@ -54,7 +54,7 @@ class ImageCollectionViewController: UIViewController,  UICollectionViewDelegate
             return try URLEncoding.default.encode(urlRequest, with: result.parameters)
         }
     }
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
         searchCollectionView.alpha = 0
@@ -68,8 +68,34 @@ class ImageCollectionViewController: UIViewController,  UICollectionViewDelegate
         recentTable.dataSource = self
         searchTextField.addTarget(self, action: #selector(clickOnTextEventFunc), for: UIControl.Event.touchDown)
         searchTextField.addTarget(self, action: #selector(editingTextEventFunc), for: UIControl.Event.editingChanged)
-    }
+        cancelButtonCreation()
 
+        searchTextField.attributedPlaceholder = NSAttributedString(string: "Search Flickr",
+                                                               attributes: [NSAttributedString.Key.foregroundColor: UIColor.white])
+    }
+    
+    @IBAction func cancelButtonAction(_ sender: Any) {
+        print("Work")
+    }
+    
+    func cancelButtonCreation() {
+        let button = UIButton(type: .custom)
+        button.setTitle("Cancel", for: .normal)
+        button.imageEdgeInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
+        button.frame = CGRect(x: CGFloat(searchTextField.frame.size.width - 100), y: CGFloat(10), width: CGFloat(100), height: CGFloat(35))
+        button.addTarget(self, action: #selector(self.cancelButtonAction), for: .touchUpInside)
+        button.backgroundColor = .clear
+        button.layer.cornerRadius = 5
+        button.layer.borderWidth = 1
+        button.layer.borderColor = UIColor.white.cgColor
+        button.isUserInteractionEnabled = true
+        button.setTitleShadowColor(UIColor.gray, for: .normal)
+        searchTextField.rightView = button
+        searchTextField.rightViewMode = .unlessEditing
+        searchTextField.rightViewMode = .always
+
+        
+    }
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         recentTable.frame = CGRect(x: recentTable.frame.origin.x,
