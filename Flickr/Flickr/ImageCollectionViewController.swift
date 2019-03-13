@@ -10,8 +10,11 @@
 import UIKit
 import Alamofire
 
-class ImageCollectionViewController: UIViewController, UICollectionViewDelegate, UICollectionViewDataSource, UITextFieldDelegate, UICollectionViewDelegateFlowLayout, UIScrollViewDelegate {
+class ImageCollectionViewController: UIViewController,  UICollectionViewDelegate, UICollectionViewDataSource, UITextFieldDelegate, UICollectionViewDelegateFlowLayout, UIScrollViewDelegate, UITableViewDelegate, UITableViewDataSource {
     
+    var recentIndexCell: Int?
+    var maximumRecentSearches = 10
+    var searchActive : Bool = false
     var actualPosition: CGPoint?
     var justPrefferedHeight: CGFloat = 150
     var basicIndent: CGFloat = 2
@@ -20,11 +23,14 @@ class ImageCollectionViewController: UIViewController, UICollectionViewDelegate,
     var popularImageSizes: [CGSize] = [CGSize]()
     fileprivate var searchImageData: [Photo] = [Photo]()
     var searchImageSizes: [CGSize] = [CGSize]()
+    var recentSearchesList = [String]()
     var isSearching = false
     @IBOutlet weak var searchCollectionView: UICollectionView!
     @IBOutlet weak var popularCollectionView: UICollectionView!
     @IBOutlet weak var searchTextField: UITextField!
     @IBOutlet weak var searchConstraint: NSLayoutConstraint!
+    @IBOutlet weak var recentTable: UITableView!
+    
     
     enum Router: URLRequestConvertible {
         case search(text: String, page: Int)
@@ -53,41 +59,96 @@ class ImageCollectionViewController: UIViewController, UICollectionViewDelegate,
         super.viewDidLoad()
         searchCollectionView.alpha = 0
         popularCollectionView.alpha = 1
-        searchTextField.delegate = self
+        recentTable.alpha = 0
         searchConstraint.priority = UILayoutPriority(rawValue: 999);
         searchConstraint.isActive = true
+        searchTextField.delegate = self
+        definesPresentationContext = true
+        recentTable.delegate = self
+        recentTable.dataSource = self
+        searchTextField.addTarget(self, action: #selector(clickOnTextEventFunc), for: UIControl.Event.touchDown)
+        searchTextField.addTarget(self, action: #selector(editingTextEventFunc), for: UIControl.Event.editingChanged)
     }
-    
+
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        recentTable.frame = CGRect(x: recentTable.frame.origin.x,
+                                   y: recentTable.frame.origin.y,
+                                   width: recentTable.frame.size.width,
+                                   height: recentTable.contentSize.height)
         performFlickrPopular()
     }
     
-    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+    override func viewDidLayoutSubviews(){
+        recentTable.frame = CGRect(x: recentTable.frame.origin.x,
+                                   y: recentTable.frame.origin.y,
+                                   width: recentTable.frame.size.width,
+                                   height: recentTable.contentSize.height)
+        recentTable.reloadData()
+    }
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {     // frozen for a while
+        if let identifier = segue.identifier {
+            if identifier == Constants.SegueIdentifier.GallerySegue,
+                let gvcvc = segue.destination as? ImageDetailViewController,
+                let cell = sender as? ImageCollectionViewCell {
+                let indexPath = self.searchCollectionView!.indexPath(for: cell)
+                gvcvc.photoGalleryData = popularImageData
+                gvcvc.indexCell = indexPath
+            }
+        }
+    }
+    
+    @objc func editingTextEventFunc(textField: UITextField) {
+        recentTable_GoHide()
+    }
+    
+    @objc func clickOnTextEventFunc(textField: UITextField) {
+        recentTable.reloadData()
+        recentTable_ShowMustGoOn()
+    }
+    
+    func recentTable_GoHide() {
+        UIView.animate(withDuration: 0.1, animations: {
+            self.recentTable.alpha = 0
+        })
+    }
+    
+    func recentTable_ShowMustGoOn() {
+        UIView.animate(withDuration: 0.5, animations: {
+            self.recentTable.alpha = 0.90
+        })
+    }
+
+    func performTextSearch() {
+        recentTable_GoHide()
+        searchTextField.resignFirstResponder()
         let searchText = searchTextField.text
         guard let searchingText = searchText else {
-            return false
+            return
         }
         guard !searchingText.isEmpty else {
             displayAlert("Search text cannot be empty")
-            return false
+            return
         }
-        searchTextField?.resignFirstResponder()
+        updateRecentList(text: searchingText)
         performFlickrSearch(url: searchingText)
         searchCollectionView.alpha = 1
         isSearching = true
-        rememberWord(searchingText)
-        return true
+        return
     }
     
-    func rememberWord(_ text: String) {
-        if searchList.contains(text) {
+    func updateRecentList(text: String) {
+        
+        if recentSearchesList.contains(text) {
             return
-        } else {
-            searchList.append(text)
         }
+        if recentSearchesList.count == maximumRecentSearches {
+            _ = recentSearchesList.dropFirst()
+        }
+        recentSearchesList.append(text)
+        recentTable.reloadData()
     }
-    
     func displayAlert(_ message: String) {
         let alert = UIAlertController(title: "Alert", message: message, preferredStyle: UIAlertController.Style.alert)
         alert.addAction(UIAlertAction(title: "Click", style: .default, handler: nil))
@@ -95,8 +156,8 @@ class ImageCollectionViewController: UIViewController, UICollectionViewDelegate,
     }
     
     private func performFlickrSearch(url: String) {
-        print("\(Alamofire.request(Router.search(text: url, page: 2)).responseJSON)")
-        Alamofire.request(Router.search(text: url, page: 2)).responseJSON { (response) in
+        print("\(Alamofire.request(Router.search(text: url, page: 1)).responseJSON)")
+        Alamofire.request(Router.search(text: url, page: 1)).responseJSON { (response) in
             self.handlingSearchResponseData(data: response)
         }
     }
@@ -124,7 +185,8 @@ class ImageCollectionViewController: UIViewController, UICollectionViewDelegate,
         let photos = Photo.getPhotos(from : photosData)
         self.popularImageData = photos
         popularImageSizes = Photo.getSizes(from: popularImageData)
-        let laySizes: [CGSize] = popularImageSizes.lay_justify(for: popularCollectionView.frame.size.width - basicIndent , preferredHeight: justPrefferedHeight)
+        let laySizes: [CGSize] = popularImageSizes.lay_justify(for: popularCollectionView.frame.size.width - basicIndent ,
+                                                               preferredHeight: justPrefferedHeight)
         popularImageSizes = laySizes
         print(data.value ?? "nothing")
         self.searchCollectionView.alpha = 0
@@ -150,7 +212,8 @@ class ImageCollectionViewController: UIViewController, UICollectionViewDelegate,
         let photos = Photo.getPhotos(from : photosData)
         self.searchImageData = photos
         searchImageSizes = Photo.getSizes(from: searchImageData)
-        let laySizes: [CGSize] = searchImageSizes.lay_justify(for: searchCollectionView.frame.size.width - basicIndent, preferredHeight: justPrefferedHeight )
+        let laySizes: [CGSize] = searchImageSizes.lay_justify(for: searchCollectionView.frame.size.width - basicIndent,
+                                                              preferredHeight: justPrefferedHeight )
         searchImageSizes = laySizes
         print(data.value ?? "nothing")
         self.searchCollectionView.alpha = 1
@@ -160,16 +223,9 @@ class ImageCollectionViewController: UIViewController, UICollectionViewDelegate,
         }
     }
     
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {     // frozen for a while
-        if let identifier = segue.identifier {
-            if identifier == Constants.SegueIdentifier.GallerySegue,
-                let gvcvc = segue.destination as? ImageDetailViewController,
-                let cell = sender as? ImageCollectionViewCell {
-                let indexPath = self.searchCollectionView!.indexPath(for: cell)
-                gvcvc.photoGalleryData = popularImageData
-                gvcvc.indexCell = indexPath
-            }
-        }
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        performTextSearch()
+        return true
     }
     
     func numberOfSections(in collectionView: UICollectionView) -> Int {
@@ -215,18 +271,23 @@ class ImageCollectionViewController: UIViewController, UICollectionViewDelegate,
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         if isSearching == false {
-            return popularImageSizes[indexPath.item]
+            return popularImageSizes[indexPath.row]
         } else {
-            return searchImageSizes[indexPath.item]
+            return searchImageSizes[indexPath.row]
         }
     }
-
+    
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
         return basicIndent
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
-        return basicIndent/3
+        return basicIndent/4
+    }
+    
+    
+    func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
+        recentTable_GoHide()
     }
     
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
@@ -248,27 +309,36 @@ class ImageCollectionViewController: UIViewController, UICollectionViewDelegate,
         }
     }
     
-    /// MARK: auto complete
-    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
-        return !autoCompleteText(in: textField, using: string, suggestions: searchList)
+    func numberOfSections(in tableView: UITableView) -> Int {
+        if recentSearchesList.isEmpty {
+            return 0
+        } else {
+            return 1
+        }
     }
     
-    func autoCompleteText(in textField: UITextField, using string: String, suggestions: [String]) -> Bool {
-        if !string.isEmpty,
-            let selectedTextRange = textField.selectedTextRange, selectedTextRange.end == textField.endOfDocument,
-            let prefixRange = textField.textRange(from: textField.beginningOfDocument, to: selectedTextRange.start),
-            let text = textField.text(in: prefixRange) {
-            let prefix = text + string
-            let matches = suggestions.filter { $0.hasPrefix(prefix) }
-            if (matches.count > 0) {
-                textField.text = matches[0]
-                if let start = textField.position(from: textField.beginningOfDocument, offset: prefix.count) {
-                    textField.selectedTextRange = textField.textRange(from: start, to: textField.endOfDocument)
-                    return true
-                }
-            }
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return recentSearchesList.count
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: "RecentCellForSearchBar", for: indexPath)
+        if let recentCell = cell as? RecentTableViewCell {
+            recentCell.recentText.text = recentSearchesList[indexPath.row]
+            return recentCell
         }
-        return false
+        return cell
+    }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        recentIndexCell = indexPath.row
+        searchTextByRecentList(indexPath.row)
+    }
+    
+    func searchTextByRecentList(_ index: Int) {
+        let txt = recentSearchesList[index]
+        searchTextField.text = txt
+        performTextSearch()
     }
     
     override func didReceiveMemoryWarning() {
