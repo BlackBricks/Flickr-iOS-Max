@@ -11,15 +11,12 @@ import UIKit
 class RecentTableViewCell: UITableViewCell {
     
     var dataRecentSearches = [String]()
-
     weak var delegate: recentTableCellDelegate?
-
     @IBOutlet weak var recentText: UILabel!
-    
     @IBAction func clearButton(_ sender: UIButton) {
         delegate?.didTapClearButton(self)
     }
-
+    
     func loadDataTable(_ array: [String],_ index: Int) {
         recentText.text = array[index]
     }

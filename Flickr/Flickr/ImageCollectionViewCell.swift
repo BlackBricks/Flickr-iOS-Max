@@ -19,5 +19,5 @@ class ImageCollectionViewCell: UICollectionViewCell {
             return
         }
         imageView.sd_setImage(with: URL(string: url), placeholderImage: UIImage(named: "placeholder.png"))
-        }
+    }
 }

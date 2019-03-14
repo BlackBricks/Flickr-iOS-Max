@@ -18,6 +18,5 @@ class ImageDetailViewCell: UICollectionViewCell {
     func fetchImage(url: String?) {
         guard let url = url else { return }
         imageView.sd_setImage(with: URL(string: url), placeholderImage: UIImage(named: "placeholder.png"))
-    
     }
 }

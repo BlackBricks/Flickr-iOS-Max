@@ -12,17 +12,6 @@ import Alamofire
 
 class ImageCollectionViewController: UIViewController,  UICollectionViewDelegate, UICollectionViewDataSource, UITextFieldDelegate, UICollectionViewDelegateFlowLayout, UIScrollViewDelegate, UITableViewDelegate, UITableViewDataSource, recentTableCellDelegate {
     
-    func didTapClearButton(_ sender: RecentTableViewCell) {
-        guard let tappedIndexPath = recentTable.indexPath(for: sender) else {
-            return
-        }
-        recentSearchesList.remove(at: tappedIndexPath.row)
-        recentTable.reloadData()
-        rebuildTableSize()
-        
-    }
-    
-    
     var recentIndexCell: Int?
     var maximumRecentSearches = 10
     var searchActive : Bool = false
@@ -40,12 +29,10 @@ class ImageCollectionViewController: UIViewController,  UICollectionViewDelegate
     @IBOutlet weak var popularCollectionView: UICollectionView!
     @IBOutlet weak var searchConstraint: NSLayoutConstraint!
     @IBOutlet weak var searchTextField: UITextField!
-    @IBOutlet weak var recentTable: UITableView!
-    
+    @IBOutlet weak var recentTableView: UITableView!
     @IBAction func cancelButton(_ sender: DesignableButton) {
         print("will work soon")
     }
-    
     
     enum Router: URLRequestConvertible {
         case search(text: String, page: Int)
@@ -74,17 +61,17 @@ class ImageCollectionViewController: UIViewController,  UICollectionViewDelegate
         super.viewDidLoad()
         searchCollectionView.alpha = 0
         popularCollectionView.alpha = 1
-        recentTable.alpha = 0
+        recentTableView.alpha = 0
         searchConstraint.priority = UILayoutPriority(rawValue: 999)
         searchConstraint.isActive = true
         searchTextField.delegate = self
         definesPresentationContext = true
-        recentTable.delegate = self
-        recentTable.dataSource = self
+        recentTableView.delegate = self
+        recentTableView.dataSource = self
         searchTextField.addTarget(self, action: #selector(clickOnTextEventFunc), for: UIControl.Event.touchDown)
         searchTextField.addTarget(self, action: #selector(editingTextEventFunc), for: UIControl.Event.editingChanged)
-        recentTable.rowHeight = UITableView.automaticDimension
-        recentTable.register(UINib.init(nibName: "RecentTableViewCell", bundle: nil), forCellReuseIdentifier: "RecentCell")
+        recentTableView.rowHeight = UITableView.automaticDimension
+        recentTableView.register(UINib.init(nibName: "RecentTableViewCell", bundle: nil), forCellReuseIdentifier: "RecentCell")
         searchTextField.attributedPlaceholder = NSAttributedString(string: "Search Flickr",
                                                                    attributes: [NSAttributedString.Key.foregroundColor: UIColor.white])
     }
@@ -96,14 +83,7 @@ class ImageCollectionViewController: UIViewController,  UICollectionViewDelegate
     }
     override func viewDidLayoutSubviews(){
         rebuildTableSize()
-        recentTable.reloadData()
-    }
-    
-    func rebuildTableSize() {
-        recentTable.frame = CGRect(x: recentTable.frame.origin.x,
-                                   y: recentTable.frame.origin.y,
-                                   width: recentTable.frame.size.width,
-                                   height: recentTable.contentSize.height)
+        recentTableView.reloadData()
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {     // frozen for a while
@@ -123,20 +103,27 @@ class ImageCollectionViewController: UIViewController,  UICollectionViewDelegate
     }
     
     @objc func clickOnTextEventFunc(textField: UITextField) {
-        recentTable.reloadData()
+        recentTableView.reloadData()
         recentTable_ShowMustGoOn()
     }
     
     func recentTable_GoHide() {
         UIView.animate(withDuration: 0.1, animations: {
-            self.recentTable.alpha = 0
+            self.recentTableView.alpha = 0
         })
     }
     
     func recentTable_ShowMustGoOn() {
         UIView.animate(withDuration: 0.5, animations: {
-            self.recentTable.alpha = 1
+            self.recentTableView.alpha = 1
         })
+    }
+    
+    func rebuildTableSize() {
+        recentTableView.frame = CGRect(x: recentTableView.frame.origin.x,
+                                       y: recentTableView.frame.origin.y,
+                                       width: recentTableView.frame.size.width,
+                                       height: recentTableView.contentSize.height)
     }
     
     func performTextSearch() {
@@ -166,7 +153,7 @@ class ImageCollectionViewController: UIViewController,  UICollectionViewDelegate
             _ = recentSearchesList.dropFirst()
         }
         recentSearchesList.append(text)
-        recentTable.reloadData()
+        recentTableView.reloadData()
     }
     func displayAlert(_ message: String) {
         let alert = UIAlertController(title: "Alert", message: message, preferredStyle: UIAlertController.Style.alert)
@@ -361,6 +348,15 @@ class ImageCollectionViewController: UIViewController,  UICollectionViewDelegate
         let txt = recentSearchesList[index]
         searchTextField.text = txt
         performTextSearch()
+    }
+    
+    func didTapClearButton(_ sender: RecentTableViewCell) {
+        guard let tappedIndexPath = recentTableView.indexPath(for: sender) else {
+            return
+        }
+        recentSearchesList.remove(at: tappedIndexPath.row)
+        recentTableView.reloadData()
+        rebuildTableSize()
     }
     
     override func didReceiveMemoryWarning() {
