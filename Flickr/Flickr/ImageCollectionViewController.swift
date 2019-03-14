@@ -265,10 +265,10 @@ class ImageCollectionViewController: UIViewController,  UICollectionViewDelegate
             let cellPopular = collectionView.dequeueReusableCell(withReuseIdentifier: "PopularImage Cell",
                                                                  for: indexPath)
             if let imageCell = cellPopular as? ImageCollectionViewCell {
-                guard let gettedUrl = Photo.getUrlFromArray(photosArray: popularImageData, index: indexPath.row) else {
+                guard let url = popularImageData[indexPath.row].url else {
                     return cellPopular
                 }
-                imageCell.fetchImageForPopular(url: gettedUrl)
+                imageCell.fetchImageForPopular(url: url)
                 return cellPopular
             }
         }

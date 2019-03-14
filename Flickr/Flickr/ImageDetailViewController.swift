@@ -45,14 +45,14 @@ class ImageDetailViewController: UIViewController, UICollectionViewDelegate, UIC
         guard let imageCell = cellPopular as? ImageDetailViewCell else {
             return UICollectionViewCell()
         }
-        guard let gettedUrl = Photo.getUrlFromArray(photosArray: photoGalleryData, index: indexPath.row) else {
+        guard let url = photoGalleryData[indexPath.row].url else {
             return cellPopular
         }
-        let titleImage = Photo.getTitleFromArray(photosArray: photoGalleryData, index: indexPath.row)
-        imageCell.titleText.text = "Title: \(titleImage ?? "no info")"
-        let viewsImage = Photo.getViewsFromArray(photosArray: photoGalleryData, index: indexPath.row)
-        imageCell.viewText.text = "Views: \(viewsImage ?? "no info")"
-        imageCell.fetchImage(url: gettedUrl)
+        let titleText = photoGalleryData[indexPath.row].title
+        imageCell.titleText.text = "Title: \(titleText)"
+        let viewsImage = photoGalleryData[indexPath.row].views
+        imageCell.viewText.text = "Title: \(titleText)"
+        imageCell.fetchImage(url: url)
         imageCell.imageView.contentMode = .scaleAspectFit
         return cellPopular
     }

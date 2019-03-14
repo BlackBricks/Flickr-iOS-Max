@@ -16,12 +16,16 @@ class ImageCollectionViewCell: UICollectionViewCell {
     @IBOutlet weak var popularImageView: UIImageView!
     
     func fetchImageForSearch(url: String?) {
-        guard let url = url else { return }
+        guard let url = url else {
+            return
+        }
         imagesView.sd_setImage(with: URL(string: url), placeholderImage: UIImage(named: "placeholder.png"))
         }
     
     func fetchImageForPopular(url: String?) {
-        guard let url = url else { return }
+        guard let url = url else {
+            return
+        }
         popularImageView.sd_setImage(with: URL(string: url), placeholderImage: UIImage(named: "placeholder.png"))
     }
 }
