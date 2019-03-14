@@ -12,16 +12,14 @@ import Alamofire
 
 class ImageCollectionViewController: UIViewController,  UICollectionViewDelegate, UICollectionViewDataSource, UITextFieldDelegate, UICollectionViewDelegateFlowLayout, UIScrollViewDelegate, UITableViewDelegate, UITableViewDataSource, recentTableCellDelegate {
     
+    var pageFlickr = 1
     var recentIndexCell: Int?
-    var maximumRecentSearches = 10
     var searchActive : Bool = false
     var actualPosition: CGPoint?
-    var justPrefferedHeight: CGFloat = 150
-    var basicIndent: CGFloat = 2
     var searchList = [String]()
-    fileprivate var popularImageData: [Photo] = [Photo]()
+    var popularImageData: [Photo] = [Photo]()
     var popularImageSizes: [CGSize] = [CGSize]()
-    fileprivate var searchImageData: [Photo] = [Photo]()
+    var searchImageData: [Photo] = [Photo]()
     var searchImageSizes: [CGSize] = [CGSize]()
     var recentSearchesList = [String]()
     var isSearching = false
@@ -34,21 +32,32 @@ class ImageCollectionViewController: UIViewController,  UICollectionViewDelegate
         print("will work soon")
     }
     
+    enum ConstantNumbers {
+        static let lastCells = 15
+        static let perPage = 100
+        static let maximumRecentSearches = 6
+        static let justPrefferedHeight: CGFloat = 150
+        static let basicIndent: CGFloat = 2
+    }
+    
     enum Router: URLRequestConvertible {
-        case search(text: String, page: Int)
-        case popular(page: Int)
+        case search(text: String, page: String)
+        case popular(page: String)
         static let baseURLString = Constants.FlickrAPI.baseUrl
-        static let perPage = 50
+        static let perPage = 100
         // MARK: URLRequestConvertible
         func asURLRequest() throws -> URLRequest {
             let result: (path: String, parameters: Parameters) = {
                 switch self {
-                case let .search(text, _):
+                case let .search(text, page) :
                     var searchParams = Constants.searchParams
                     searchParams["text"] = text
+                    searchParams["page"] = page
                     return (Constants.FlickrAPI.path, searchParams)
-                case .popular(_):
-                    return  (Constants.FlickrAPI.path, Constants.popularParams)
+                case let .popular(page):
+                    var popularParams = Constants.popularParams
+                    popularParams["page"] = page
+                    return  (Constants.FlickrAPI.path, popularParams)
                 }
             }()
             let url = try Router.baseURLString.asURL()
@@ -145,16 +154,16 @@ class ImageCollectionViewController: UIViewController,  UICollectionViewDelegate
     }
     
     func updateRecentList(text: String) {
-        
         if recentSearchesList.contains(text) {
             return
         }
-        if recentSearchesList.count == maximumRecentSearches {
+        if recentSearchesList.count == ConstantNumbers.maximumRecentSearches {
             _ = recentSearchesList.dropFirst()
         }
         recentSearchesList.append(text)
         recentTableView.reloadData()
     }
+    
     func displayAlert(_ message: String) {
         let alert = UIAlertController(title: "Alert", message: message, preferredStyle: UIAlertController.Style.alert)
         alert.addAction(UIAlertAction(title: "Click", style: .default, handler: nil))
@@ -162,15 +171,17 @@ class ImageCollectionViewController: UIViewController,  UICollectionViewDelegate
     }
     
     private func performFlickrSearch(url: String) {
-        print("\(Alamofire.request(Router.search(text: url, page: 1)).responseJSON)")
-        Alamofire.request(Router.search(text: url, page: 1)).responseJSON { (response) in
+        let pageCalculated = String(pageFlickr)
+        print("\(Alamofire.request(Router.search(text: url, page: pageCalculated)).responseJSON)")
+        Alamofire.request(Router.search(text: url, page: pageCalculated)).responseJSON { (response) in
             self.handlingSearchResponseData(data: response)
         }
     }
     
     private func performFlickrPopular() {
-        print("\(Alamofire.request(Router.popular(page: 1)).responseJSON)")
-        Alamofire.request(Router.popular(page: 1)).responseJSON { (response) in
+        let pageCalculated = String(pageFlickr)
+        print("\(Alamofire.request(Router.popular(page: pageCalculated)).responseJSON)")
+        Alamofire.request(Router.popular(page: pageCalculated)).responseJSON { (response) in
             self.handlingPopularResponseData(data: response)
         }
     }
@@ -189,10 +200,14 @@ class ImageCollectionViewController: UIViewController,  UICollectionViewDelegate
                 return
         }
         let photos = Photo.getPhotos(from : photosData)
-        self.popularImageData = photos
+        if pageFlickr > 1 {
+            popularImageData += photos
+        } else {
+            self.popularImageData = photos
+        }
         popularImageSizes = Photo.getSizes(from: popularImageData)
-        let laySizes: [CGSize] = popularImageSizes.lay_justify(for: popularCollectionView.frame.size.width - basicIndent ,
-                                                               preferredHeight: justPrefferedHeight)
+        let laySizes: [CGSize] = popularImageSizes.lay_justify(for: popularCollectionView.frame.size.width - ConstantNumbers.basicIndent ,
+                                                               preferredHeight: ConstantNumbers.justPrefferedHeight)
         popularImageSizes = laySizes
         print(data.value ?? "nothing")
         self.searchCollectionView.alpha = 0
@@ -216,10 +231,14 @@ class ImageCollectionViewController: UIViewController,  UICollectionViewDelegate
                 return
         }
         let photos = Photo.getPhotos(from : photosData)
-        self.searchImageData = photos
+        if pageFlickr > 1 {
+            searchImageData += photos
+        } else {
+            self.searchImageData = photos
+        }
         searchImageSizes = Photo.getSizes(from: searchImageData)
-        let laySizes: [CGSize] = searchImageSizes.lay_justify(for: searchCollectionView.frame.size.width - basicIndent,
-                                                              preferredHeight: justPrefferedHeight )
+        let laySizes: [CGSize] = searchImageSizes.lay_justify(for: searchCollectionView.frame.size.width - ConstantNumbers.basicIndent,
+                                                              preferredHeight: ConstantNumbers.justPrefferedHeight )
         searchImageSizes = laySizes
         print(data.value ?? "nothing")
         self.searchCollectionView.alpha = 1
@@ -230,10 +249,10 @@ class ImageCollectionViewController: UIViewController,  UICollectionViewDelegate
     }
     
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        pageFlickr = 1
         performTextSearch()
         return true
     }
-    
     
     func numberOfSections(in collectionView: UICollectionView) -> Int {
         return 1
@@ -285,13 +304,27 @@ class ImageCollectionViewController: UIViewController,  UICollectionViewDelegate
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
-        return basicIndent
+        return ConstantNumbers.basicIndent
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
-        return basicIndent/4
+        return ConstantNumbers.basicIndent/4
     }
     
+    func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
+        if collectionView == self.popularCollectionView {
+            if indexPath.row == (pageFlickr * ConstantNumbers.perPage) - ConstantNumbers.lastCells {
+                pageFlickr += 1
+                performFlickrPopular()
+            }
+        }
+        if collectionView == self.searchCollectionView {
+            if indexPath.row == (pageFlickr * ConstantNumbers.perPage) - ConstantNumbers.lastCells {
+                pageFlickr += 1
+                performTextSearch()
+            }
+        }
+    }
     
     func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
         recentTable_GoHide()
@@ -361,5 +394,13 @@ class ImageCollectionViewController: UIViewController,  UICollectionViewDelegate
     
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
+    }
+}
+
+extension Dictionary {
+    mutating func merge(dict: [Key: Value]){
+        for (k, v) in dict {
+            updateValue(v, forKey: k)
+        }
     }
 }

@@ -24,7 +24,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="eZF-q3-2Qc">
-                                <rect key="frame" x="0.0" y="108" width="375" height="559"/>
+                                <rect key="frame" x="0.0" y="124" width="375" height="543"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="0.0" minimumInteritemSpacing="0.0" id="6uW-ar-b3F">
                                     <size key="itemSize" width="154" height="124"/>
@@ -62,7 +62,7 @@
                                 </connections>
                             </collectionView>
                             <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="nf0-BU-07p">
-                                <rect key="frame" x="0.0" y="108" width="375" height="559"/>
+                                <rect key="frame" x="0.0" y="124" width="375" height="543"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="0.0" minimumInteritemSpacing="0.0" id="bWY-9n-8f0">
                                     <size key="itemSize" width="154" height="124"/>
@@ -101,23 +101,23 @@
                                 </connections>
                             </collectionView>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="phU-pP-vca">
-                                <rect key="frame" x="0.0" y="64" width="375" height="44"/>
+                                <rect key="frame" x="0.0" y="64" width="375" height="60"/>
                                 <subviews>
                                     <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="magnify" translatesAutoresizingMaskIntoConstraints="NO" id="Cjb-MD-n8h">
-                                        <rect key="frame" x="8" y="10" width="24" height="24"/>
+                                        <rect key="frame" x="8" y="18" width="24" height="24"/>
                                         <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                     </imageView>
                                     <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="Search Flickr" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="Slu-hn-Enb">
-                                        <rect key="frame" x="40" y="9.5" width="254" height="25"/>
+                                        <rect key="frame" x="40" y="17.5" width="243" height="25"/>
                                         <color key="backgroundColor" white="0.33333333329999998" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <fontDescription key="fontDescription" name="Cormorant-Italic" family="Cormorant" pointSize="20"/>
                                         <textInputTraits key="textInputTraits"/>
                                     </textField>
                                     <button opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="LCy-dP-L24" customClass="DesignableButton" customModule="Flickr" customModuleProvider="target">
-                                        <rect key="frame" x="302" y="9.5" width="65" height="25"/>
-                                        <fontDescription key="fontDescription" name="Cormorant-Italic" family="Cormorant" pointSize="20"/>
-                                        <inset key="contentEdgeInsets" minX="8" minY="0.0" maxX="8" maxY="0.0"/>
+                                        <rect key="frame" x="291" y="8" width="76" height="44"/>
+                                        <fontDescription key="fontDescription" name="Cormorant-Italic" family="Cormorant" pointSize="18"/>
+                                        <inset key="contentEdgeInsets" minX="16" minY="8" maxX="16" maxY="8"/>
                                         <state key="normal" title="Cancel">
                                             <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         </state>
@@ -142,18 +142,20 @@
                                 </subviews>
                                 <color key="backgroundColor" white="0.33333333333333331" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <constraints>
+                                    <constraint firstAttribute="bottom" secondItem="LCy-dP-L24" secondAttribute="bottom" constant="8" id="1Z6-F5-tjG"/>
                                     <constraint firstItem="Slu-hn-Enb" firstAttribute="leading" secondItem="Cjb-MD-n8h" secondAttribute="trailing" constant="8" id="2sz-fo-K5T"/>
                                     <constraint firstItem="Cjb-MD-n8h" firstAttribute="leading" secondItem="phU-pP-vca" secondAttribute="leading" constant="8" id="MQP-L6-ajG"/>
                                     <constraint firstAttribute="trailing" secondItem="LCy-dP-L24" secondAttribute="trailing" constant="8" id="WbO-3o-Jk5"/>
                                     <constraint firstItem="Slu-hn-Enb" firstAttribute="centerY" secondItem="phU-pP-vca" secondAttribute="centerY" id="cDN-Gh-H3K"/>
+                                    <constraint firstItem="LCy-dP-L24" firstAttribute="top" secondItem="phU-pP-vca" secondAttribute="top" constant="8" id="eSy-nq-biE"/>
                                     <constraint firstItem="LCy-dP-L24" firstAttribute="centerY" secondItem="phU-pP-vca" secondAttribute="centerY" id="nWp-RL-XK1"/>
                                     <constraint firstItem="Cjb-MD-n8h" firstAttribute="centerY" secondItem="phU-pP-vca" secondAttribute="centerY" id="oBC-dZ-8YA"/>
                                     <constraint firstItem="LCy-dP-L24" firstAttribute="leading" secondItem="Slu-hn-Enb" secondAttribute="trailing" constant="8" id="pZz-cZ-W76"/>
-                                    <constraint firstAttribute="height" constant="44" id="qoi-3K-t7c"/>
+                                    <constraint firstAttribute="height" constant="60" id="qoi-3K-t7c"/>
                                 </constraints>
                             </view>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="none" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="aeO-4J-rt9">
-                                <rect key="frame" x="60" y="98" width="235" height="569"/>
+                                <rect key="frame" x="60" y="114" width="235" height="553"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <sections/>
                                 <connections>

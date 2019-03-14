@@ -39,7 +39,8 @@ Secret: 0ccd083217302f35
         "nojsoncallback": "1",
         "safe_search": "1",
         "sort": "relevance",
-        "text": ""
+        "text": "",
+        "page": "1"
     ]
     
     static let popularParams = [
@@ -48,6 +49,7 @@ Secret: 0ccd083217302f35
         "extras": "url_s, views, owner_name, icon_server",
         "format": "json",
         "nojsoncallback": "1",
-        "safe_search": "1"
+        "safe_search": "1",
+        "page": "1"
     ]
 }
