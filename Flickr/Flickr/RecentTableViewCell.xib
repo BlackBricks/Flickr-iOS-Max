@@ -32,7 +32,7 @@
                         <color key="tintColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <state key="normal" title="Button" image="close"/>
                         <connections>
-                            <action selector="clearButton:" destination="KGk-i7-Jjw" eventType="touchUpInside" id="E8h-OD-cyD"/>
+                            <action selector="clearButton:" destination="KGk-i7-Jjw" eventType="touchUpInside" id="2To-w5-5uc"/>
                         </connections>
                     </button>
                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="249" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="RCP-zM-kKU">

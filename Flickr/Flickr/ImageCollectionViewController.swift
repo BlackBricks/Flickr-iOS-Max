@@ -10,7 +10,18 @@
 import UIKit
 import Alamofire
 
-class ImageCollectionViewController: UIViewController,  UICollectionViewDelegate, UICollectionViewDataSource, UITextFieldDelegate, UICollectionViewDelegateFlowLayout, UIScrollViewDelegate, UITableViewDelegate, UITableViewDataSource {
+class ImageCollectionViewController: UIViewController,  UICollectionViewDelegate, UICollectionViewDataSource, UITextFieldDelegate, UICollectionViewDelegateFlowLayout, UIScrollViewDelegate, UITableViewDelegate, UITableViewDataSource, recentTableCellDelegate {
+    
+    func didTapClearButton(_ sender: RecentTableViewCell) {
+        guard let tappedIndexPath = recentTable.indexPath(for: sender) else {
+            return
+        }
+        recentSearchesList.remove(at: tappedIndexPath.row)
+        recentTable.reloadData()
+        rebuildTableSize()
+        
+    }
+    
     
     var recentIndexCell: Int?
     var maximumRecentSearches = 10
@@ -75,24 +86,24 @@ class ImageCollectionViewController: UIViewController,  UICollectionViewDelegate
         recentTable.rowHeight = UITableView.automaticDimension
         recentTable.register(UINib.init(nibName: "RecentTableViewCell", bundle: nil), forCellReuseIdentifier: "RecentCell")
         searchTextField.attributedPlaceholder = NSAttributedString(string: "Search Flickr",
-                                                               attributes: [NSAttributedString.Key.foregroundColor: UIColor.white])
+                                                                   attributes: [NSAttributedString.Key.foregroundColor: UIColor.white])
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        recentTable.frame = CGRect(x: recentTable.frame.origin.x,
-                                   y: recentTable.frame.origin.y,
-                                   width: recentTable.frame.size.width,
-                                   height: recentTable.contentSize.height)
+        rebuildTableSize()
         performFlickrPopular()
     }
-    
     override func viewDidLayoutSubviews(){
+        rebuildTableSize()
+        recentTable.reloadData()
+    }
+    
+    func rebuildTableSize() {
         recentTable.frame = CGRect(x: recentTable.frame.origin.x,
                                    y: recentTable.frame.origin.y,
                                    width: recentTable.frame.size.width,
                                    height: recentTable.contentSize.height)
-        recentTable.reloadData()
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {     // frozen for a while
@@ -236,7 +247,7 @@ class ImageCollectionViewController: UIViewController,  UICollectionViewDelegate
         return true
     }
     
-
+    
     func numberOfSections(in collectionView: UICollectionView) -> Int {
         return 1
     }
@@ -332,9 +343,10 @@ class ImageCollectionViewController: UIViewController,  UICollectionViewDelegate
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "RecentCell", for: indexPath)
+        
         if let recentCell = cell as? RecentTableViewCell {
-            recentCell.recentText.text = recentSearchesList[indexPath.row]
-//            recentCell.height = cell.bounds.height
+            recentCell.delegate = self
+            recentCell.loadDataTable(recentSearchesList, indexPath.row)
             return recentCell
         }
         return cell
@@ -344,7 +356,7 @@ class ImageCollectionViewController: UIViewController,  UICollectionViewDelegate
         recentIndexCell = indexPath.row
         searchTextByRecentList(indexPath.row)
     }
-        
+    
     func searchTextByRecentList(_ index: Int) {
         let txt = recentSearchesList[index]
         searchTextField.text = txt
