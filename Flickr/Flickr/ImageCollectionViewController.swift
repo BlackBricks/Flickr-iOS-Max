@@ -27,9 +27,10 @@ class ImageCollectionViewController: UIViewController,  UICollectionViewDelegate
     var isSearching = false
     @IBOutlet weak var searchCollectionView: UICollectionView!
     @IBOutlet weak var popularCollectionView: UICollectionView!
-    @IBOutlet weak var searchTextField: UITextField!
     @IBOutlet weak var searchConstraint: NSLayoutConstraint!
+    @IBOutlet weak var searchTextField: UITextField!
     @IBOutlet weak var recentTable: UITableView!
+    @IBOutlet weak var cancelButton: DesignableButton!
     
     
     enum Router: URLRequestConvertible {
@@ -54,13 +55,13 @@ class ImageCollectionViewController: UIViewController,  UICollectionViewDelegate
             return try URLEncoding.default.encode(urlRequest, with: result.parameters)
         }
     }
-
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         searchCollectionView.alpha = 0
         popularCollectionView.alpha = 1
         recentTable.alpha = 0
-        searchConstraint.priority = UILayoutPriority(rawValue: 999);
+        searchConstraint.priority = UILayoutPriority(rawValue: 999)
         searchConstraint.isActive = true
         searchTextField.delegate = self
         definesPresentationContext = true
@@ -68,34 +69,12 @@ class ImageCollectionViewController: UIViewController,  UICollectionViewDelegate
         recentTable.dataSource = self
         searchTextField.addTarget(self, action: #selector(clickOnTextEventFunc), for: UIControl.Event.touchDown)
         searchTextField.addTarget(self, action: #selector(editingTextEventFunc), for: UIControl.Event.editingChanged)
-        cancelButtonCreation()
-
+        recentTable.rowHeight = UITableView.automaticDimension
+        recentTable.register(UINib.init(nibName: "RecentTableViewCell", bundle: nil), forCellReuseIdentifier: "RecentCell")
         searchTextField.attributedPlaceholder = NSAttributedString(string: "Search Flickr",
                                                                attributes: [NSAttributedString.Key.foregroundColor: UIColor.white])
     }
     
-    @IBAction func cancelButtonAction(_ sender: Any) {
-        print("Work")
-    }
-    
-    func cancelButtonCreation() {
-        let button = UIButton(type: .custom)
-        button.setTitle("Cancel", for: .normal)
-        button.imageEdgeInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
-        button.frame = CGRect(x: CGFloat(searchTextField.frame.size.width - 100), y: CGFloat(10), width: CGFloat(100), height: CGFloat(35))
-        button.addTarget(self, action: #selector(self.cancelButtonAction), for: .touchUpInside)
-        button.backgroundColor = .clear
-        button.layer.cornerRadius = 5
-        button.layer.borderWidth = 1
-        button.layer.borderColor = UIColor.white.cgColor
-        button.isUserInteractionEnabled = true
-        button.setTitleShadowColor(UIColor.gray, for: .normal)
-        searchTextField.rightView = button
-        searchTextField.rightViewMode = .unlessEditing
-        searchTextField.rightViewMode = .always
-
-        
-    }
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         recentTable.frame = CGRect(x: recentTable.frame.origin.x,
@@ -142,10 +121,10 @@ class ImageCollectionViewController: UIViewController,  UICollectionViewDelegate
     
     func recentTable_ShowMustGoOn() {
         UIView.animate(withDuration: 0.5, animations: {
-            self.recentTable.alpha = 0.90
+            self.recentTable.alpha = 1
         })
     }
-
+    
     func performTextSearch() {
         recentTable_GoHide()
         searchTextField.resignFirstResponder()
@@ -254,6 +233,7 @@ class ImageCollectionViewController: UIViewController,  UICollectionViewDelegate
         return true
     }
     
+
     func numberOfSections(in collectionView: UICollectionView) -> Int {
         return 1
     }
@@ -273,7 +253,7 @@ class ImageCollectionViewController: UIViewController,  UICollectionViewDelegate
             let cellSearch = collectionView.dequeueReusableCell(withReuseIdentifier: "image Cell",
                                                                 for: indexPath)
             if let imageCell = cellSearch as? ImageCollectionViewCell {
-                guard let gettedUrl = Photo.getUrlFromArray(photosArray: searchImageData, index: indexPath.row) else {
+                guard let gettedUrl = searchImageData[indexPath.row].url else {
                     return cellSearch
                 }
                 imageCell.fetchImageForSearch(url: gettedUrl)
@@ -348,9 +328,10 @@ class ImageCollectionViewController: UIViewController,  UICollectionViewDelegate
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "RecentCellForSearchBar", for: indexPath)
+        let cell = tableView.dequeueReusableCell(withIdentifier: "RecentCell", for: indexPath)
         if let recentCell = cell as? RecentTableViewCell {
             recentCell.recentText.text = recentSearchesList[indexPath.row]
+//            recentCell.height = cell.bounds.height
             return recentCell
         }
         return cell
@@ -360,7 +341,7 @@ class ImageCollectionViewController: UIViewController,  UICollectionViewDelegate
         recentIndexCell = indexPath.row
         searchTextByRecentList(indexPath.row)
     }
-    
+        
     func searchTextByRecentList(_ index: Int) {
         let txt = recentSearchesList[index]
         searchTextField.text = txt
