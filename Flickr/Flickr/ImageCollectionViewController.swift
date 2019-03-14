@@ -30,7 +30,10 @@ class ImageCollectionViewController: UIViewController,  UICollectionViewDelegate
     @IBOutlet weak var searchConstraint: NSLayoutConstraint!
     @IBOutlet weak var searchTextField: UITextField!
     @IBOutlet weak var recentTable: UITableView!
-    @IBOutlet weak var cancelButton: DesignableButton!
+    
+    @IBAction func cancelButton(_ sender: DesignableButton) {
+        print("will work soon")
+    }
     
     
     enum Router: URLRequestConvertible {
@@ -256,7 +259,7 @@ class ImageCollectionViewController: UIViewController,  UICollectionViewDelegate
                 guard let gettedUrl = searchImageData[indexPath.row].url else {
                     return cellSearch
                 }
-                imageCell.fetchImageForSearch(url: gettedUrl)
+                imageCell.fetchImage(url: gettedUrl)
                 return cellSearch
             }
         }
@@ -268,7 +271,7 @@ class ImageCollectionViewController: UIViewController,  UICollectionViewDelegate
                 guard let url = popularImageData[indexPath.row].url else {
                     return cellPopular
                 }
-                imageCell.fetchImageForPopular(url: url)
+                imageCell.fetchImage(url: url)
                 return cellPopular
             }
         }

@@ -52,7 +52,7 @@
                                             <constraint firstAttribute="trailing" secondItem="fd7-5d-znb" secondAttribute="trailing" id="vXA-aP-6cx"/>
                                         </constraints>
                                         <connections>
-                                            <outlet property="popularImageView" destination="fd7-5d-znb" id="5n6-44-qrS"/>
+                                            <outlet property="imageView" destination="fd7-5d-znb" id="fIl-Gj-h91"/>
                                         </connections>
                                     </collectionViewCell>
                                 </cells>
@@ -71,7 +71,7 @@
                                     <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
                                 </collectionViewFlowLayout>
                                 <cells>
-                                    <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="image Cell" id="guD-zX-muK" customClass="ImageCollectionViewCell" customModule="Flickr" customModuleProvider="target">
+                                    <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" reuseIdentifier="image Cell" id="guD-zX-muK" customClass="ImageCollectionViewCell" customModule="Flickr" customModuleProvider="target">
                                         <rect key="frame" x="0.0" y="0.0" width="154" height="124"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO">
@@ -90,7 +90,7 @@
                                             <constraint firstAttribute="bottom" secondItem="UcV-2X-NVP" secondAttribute="bottom" id="sNL-9X-VtO"/>
                                         </constraints>
                                         <connections>
-                                            <outlet property="imagesView" destination="UcV-2X-NVP" id="qb3-1j-ZhU"/>
+                                            <outlet property="imageView" destination="UcV-2X-NVP" id="8Q3-sS-i9s"/>
                                             <segue destination="9n5-eU-7LZ" kind="show" identifier="Gallery viewing" id="gOe-yW-xO3"/>
                                         </connections>
                                     </collectionViewCell>
@@ -135,6 +135,9 @@
                                                 <real key="value" value="0.0"/>
                                             </userDefinedRuntimeAttribute>
                                         </userDefinedRuntimeAttributes>
+                                        <connections>
+                                            <action selector="cancelButton:" destination="nwM-E6-0x3" eventType="touchUpInside" id="jvj-mY-1LS"/>
+                                        </connections>
                                     </button>
                                 </subviews>
                                 <color key="backgroundColor" white="0.33333333333333331" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
@@ -183,7 +186,6 @@
                     </view>
                     <navigationItem key="navigationItem" id="6sP-Eu-keU"/>
                     <connections>
-                        <outlet property="cancelButton" destination="LCy-dP-L24" id="orO-4n-vRk"/>
                         <outlet property="popularCollectionView" destination="eZF-q3-2Qc" id="cW5-Ha-c15"/>
                         <outlet property="recentTable" destination="aeO-4J-rt9" id="Zwi-d1-jYm"/>
                         <outlet property="searchCollectionView" destination="nf0-BU-07p" id="Dhd-O1-fep"/>

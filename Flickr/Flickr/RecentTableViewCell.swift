@@ -11,8 +11,13 @@ import UIKit
 class RecentTableViewCell: UITableViewCell {
     var height: CGFloat?
 
-    @IBOutlet weak var cancelButton: UIButton!
     @IBOutlet weak var recentText: UILabel!
+
+    
+    @IBAction func clearButton(_ sender: UIButton) {
+        
+    }
+    
     
 }
 

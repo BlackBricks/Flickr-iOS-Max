@@ -31,14 +31,17 @@
                         </constraints>
                         <color key="tintColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <state key="normal" title="Button" image="close"/>
+                        <connections>
+                            <action selector="clearButton:" destination="KGk-i7-Jjw" eventType="touchUpInside" id="E8h-OD-cyD"/>
+                        </connections>
                     </button>
                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="249" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="RCP-zM-kKU">
                         <rect key="frame" x="40" y="8" width="240" height="27.5"/>
                         <fontDescription key="fontDescription" name="Cormorant-Italic" family="Cormorant" pointSize="17"/>
-                        <nil key="textColor"/>
+                        <color key="textColor" red="0.0" green="0.47843137250000001" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <nil key="highlightedColor"/>
                     </label>
-                    <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="magnify" translatesAutoresizingMaskIntoConstraints="NO" id="Dbo-39-lBv">
+                    <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="magnify" highlighted="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Dbo-39-lBv">
                         <rect key="frame" x="8" y="10" width="24" height="24"/>
                         <color key="tintColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                     </imageView>
@@ -57,7 +60,6 @@
             </tableViewCellContentView>
             <viewLayoutGuide key="safeArea" id="njF-e1-oar"/>
             <connections>
-                <outlet property="cancelButton" destination="jnD-1y-8EE" id="K37-sN-juQ"/>
                 <outlet property="recentText" destination="RCP-zM-kKU" id="Wcp-ei-dOy"/>
             </connections>
             <point key="canvasLocation" x="41.600000000000001" y="46.776611694152926"/>
