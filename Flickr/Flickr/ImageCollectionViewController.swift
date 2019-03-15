@@ -31,7 +31,6 @@ class ImageCollectionViewController: UIViewController,  UICollectionViewDelegate
     @IBOutlet weak var searchTextField: UITextField!
     @IBOutlet weak var recentTableView: UITableView!
     @IBAction func cancelButton(_ sender: DesignableButton) {
-        print("will work soon")
     }
     
     enum ConstantNumbers {
@@ -180,7 +179,6 @@ class ImageCollectionViewController: UIViewController,  UICollectionViewDelegate
     
     private func performFlickrSearch(url: String) {
         let pageCalculated = String(pageFlickr)
-        print("\(Alamofire.request(Router.search(text: url, page: pageCalculated)).responseJSON)")
         Alamofire.request(Router.search(text: url, page: pageCalculated)).responseJSON { (response) in
             self.handlingSearchResponseData(data: response)
         }
@@ -188,7 +186,6 @@ class ImageCollectionViewController: UIViewController,  UICollectionViewDelegate
     
     private func performFlickrPopular() {
         let pageCalculated = String(pageFlickr)
-        print("\(Alamofire.request(Router.popular(page: pageCalculated)).responseJSON)")
         Alamofire.request(Router.popular(page: pageCalculated)).responseJSON { (response) in
             self.handlingPopularResponseData(data: response)
         }
@@ -217,7 +214,6 @@ class ImageCollectionViewController: UIViewController,  UICollectionViewDelegate
         let laySizes: [CGSize] = popularImageSizes.lay_justify(for: popularCollectionView.frame.size.width - ConstantNumbers.basicIndent ,
                                                                preferredHeight: ConstantNumbers.justPrefferedHeight)
         popularImageSizes = laySizes
-        print(data.value ?? "nothing")
         self.searchCollectionView.alpha = 0
         self.searchCollectionView.isHidden = true
         DispatchQueue.main.async() {
@@ -248,7 +244,6 @@ class ImageCollectionViewController: UIViewController,  UICollectionViewDelegate
         let laySizes: [CGSize] = searchImageSizes.lay_justify(for: searchCollectionView.frame.size.width - ConstantNumbers.basicIndent,
                                                               preferredHeight: ConstantNumbers.justPrefferedHeight )
         searchImageSizes = laySizes
-        print(data.value ?? "nothing")
         self.searchCollectionView.alpha = 1
         self.searchCollectionView.isHidden = false
         DispatchQueue.main.async() {
@@ -345,11 +340,6 @@ class ImageCollectionViewController: UIViewController,  UICollectionViewDelegate
     }
     
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        
-        let collectionViewLayout = popularCollectionView.collectionViewLayout as? UICollectionViewFlowLayout
-        if collectionViewLayout?.sectionInset == UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0) {
-            print("work")
-        }
         let actualPosition = scrollView.panGestureRecognizer.translation(in: scrollView.superview)
         if actualPosition.y > 0 {
             UIView.animate(withDuration: 0.5,  animations: {
@@ -360,7 +350,6 @@ class ImageCollectionViewController: UIViewController,  UICollectionViewDelegate
             })
         } else if actualPosition.y < 0 && scrollView.contentOffset.y >= ConstantNumbers.offsetForHideSearchText  {
             UIView.animate(withDuration: 0.5, animations: {
-//                print("\(scrollView.contentOffset.y)")
                 self.searchConstraint.priority = UILayoutPriority(rawValue: 500)
                 self.view.layoutIfNeeded()
                 //                self.searchContainerView.layoutIfNeeded()

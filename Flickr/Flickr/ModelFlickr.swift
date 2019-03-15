@@ -53,3 +53,5 @@ Secret: 0ccd083217302f35
         "page": "1"
     ]
 }
+/// Mark - necessery comment for later :
+//print("\(Alamofire.request(Router.popular(page: pageCalculated)).responseJSON)")
