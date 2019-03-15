@@ -21,7 +21,7 @@ class ImageCollectionViewController: UIViewController,  UICollectionViewDelegate
     var popularImageSizes: [CGSize] = [CGSize]()
     
     /// Mark: - common
-     var isSearching = false
+    var isSearching = false
     var pageFlickr = 1
     var recentIndexCell: Int?
     var actualPosition: CGPoint?
@@ -76,31 +76,19 @@ class ImageCollectionViewController: UIViewController,  UICollectionViewDelegate
     
     /// Mark: - override func block
     override func viewDidLoad() {
-        
         super.viewDidLoad()
-        subViewForSpinner.alpha = 0.95
-        searchCollectionView.alpha = 0
-        popularCollectionView.alpha = 1
-        searchHistoryView.alpha = 0
-        searchConstraint.priority = UILayoutPriority(rawValue: 999)
-        searchConstraint.isActive = true
-        searchTextField.delegate = self
         definesPresentationContext = true
-        searchHistoryView.delegate = self
-        searchHistoryView.dataSource = self
-        searchTextField.addTarget(self, action: #selector(clickOnTextEventFunc), for: UIControl.Event.touchDown)
-        searchTextField.addTarget(self, action: #selector(editingTextEventFunc), for: UIControl.Event.editingChanged)
-        searchHistoryView.rowHeight = UITableView.automaticDimension
-        searchHistoryView.register(UINib.init(nibName: "RecentTableViewCell", bundle: nil), forCellReuseIdentifier: "RecentCell")
-        searchTextField.attributedPlaceholder = NSAttributedString(string: "Search Flickr",
-                                                                   attributes: [NSAttributedString.Key.foregroundColor: UIColor.white])
+        setDelegates_DataSources()
+        setAlphas()
+        setConstraintMode()
+        setBehaviorTextField()
+        setXibCellForRecentTableViewCell()
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         rebuildTableSize()
         performFlickrPopular()
-        
         
     }
     
@@ -133,6 +121,37 @@ class ImageCollectionViewController: UIViewController,  UICollectionViewDelegate
         searchHistoryView.reloadData()
         searchHistoryShowMustGoOn()
     }
+    
+    func setDelegates_DataSources() {
+        searchTextField.delegate = self
+        searchHistoryView.delegate = self
+        searchHistoryView.dataSource = self
+    }
+    
+    func setAlphas() {
+        subViewForSpinner.alpha = 0.95
+        searchCollectionView.alpha = 0
+        popularCollectionView.alpha = 1
+        searchHistoryView.alpha = 0
+    }
+    
+    func setConstraintMode() {
+        searchConstraint.priority = UILayoutPriority(rawValue: 999)
+        searchConstraint.isActive = true
+    }
+    
+    func setBehaviorTextField() {
+        searchTextField.addTarget(self, action: #selector(clickOnTextEventFunc), for: UIControl.Event.touchDown)
+        searchTextField.addTarget(self, action: #selector(editingTextEventFunc), for: UIControl.Event.editingChanged)
+        searchTextField.attributedPlaceholder = NSAttributedString(string: "Search Flickr",
+                                                                   attributes: [NSAttributedString.Key.foregroundColor: UIColor.white])
+    }
+    
+    func setXibCellForRecentTableViewCell() {
+        searchHistoryView.rowHeight = UITableView.automaticDimension
+        searchHistoryView.register(UINib.init(nibName: "RecentTableViewCell", bundle: nil), forCellReuseIdentifier: "RecentCell")
+    }
+    
     
     func searchHistoryHide() {
         UIView.animate(withDuration: 0.1, animations: {
