@@ -102,17 +102,21 @@ class ImageCollectionViewController: UIViewController,  UICollectionViewDelegate
         searchHistoryView.reloadData()
     }
     
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {     // frozen for a while
-        if let identifier = segue.identifier {
-            if identifier == Constants.SegueIdentifier.GallerySegue,
-                let gvcvc = segue.destination as? ImageDetailViewController,
-                let cell = sender as? ImageCollectionViewCell {
-                let indexPath = self.searchCollectionView!.indexPath(for: cell)
-                gvcvc.photoGalleryData = popularImageData
-                gvcvc.indexCell = indexPath
-            }
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        guard let identifier = segue.identifier else {
+            return
         }
+        guard identifier == Constants.SegueIdentifier.GallerySegue,
+            let gvcvc = segue.destination as? ImageDetailViewController,
+            let cell = sender as? ImageCollectionViewCell else {
+                return
+        }
+        let indexPath = self.searchCollectionView!.indexPath(for: cell)
+        gvcvc.photoGalleryData = popularImageData
+        gvcvc.indexCell = indexPath
+        
     }
+    
     
     @objc func editingTextEventFunc(textField: UITextField) {
         searchHistoryHide()
@@ -137,9 +141,9 @@ class ImageCollectionViewController: UIViewController,  UICollectionViewDelegate
     
     func rebuildTableSize() {
         searchHistoryView.frame = CGRect(x: searchHistoryView.frame.origin.x,
-                                       y: searchHistoryView.frame.origin.y,
-                                       width: searchHistoryView.frame.size.width,
-                                       height: searchHistoryView.contentSize.height)
+                                         y: searchHistoryView.frame.origin.y,
+                                         width: searchHistoryView.frame.size.width,
+                                         height: searchHistoryView.contentSize.height)
     }
     
     func performTextSearch() {
