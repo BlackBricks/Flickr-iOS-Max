@@ -21,6 +21,7 @@ class ImageCollectionViewController: UIViewController,  UICollectionViewDelegate
     var popularImageSizes: [CGSize] = [CGSize]()
     
     /// Mark: - common
+    var lastContentOffset: CGFloat = 0
     var isSearching = false
     var pageFlickr = 1
     var recentIndexCell: Int?
@@ -40,10 +41,10 @@ class ImageCollectionViewController: UIViewController,  UICollectionViewDelegate
     
     /// Mark: - enums
     enum ConstantNumbers {
+        static let xibHeight = 50
         static let lastCells = 15
         static let perPage = 100
-        static let maximumRecentSearches = 6
-        static let justPrefferedHeight: CGFloat = 150
+        static let justPrefferedHeight: CGFloat = 160
         static let basicIndent: CGFloat = 2
         static let offsetForHideSearchText: CGFloat = 55
     }
@@ -129,7 +130,7 @@ class ImageCollectionViewController: UIViewController,  UICollectionViewDelegate
     }
     
     func setAlphas() {
-        subViewForSpinner.alpha = 0.95
+        subViewForSpinner.alpha = 0
         searchCollectionView.alpha = 0
         popularCollectionView.alpha = 1
         searchHistoryView.alpha = 0
@@ -169,7 +170,7 @@ class ImageCollectionViewController: UIViewController,  UICollectionViewDelegate
         searchHistoryView.frame = CGRect(x: searchHistoryView.frame.origin.x,
                                          y: searchHistoryView.frame.origin.y,
                                          width: searchHistoryView.frame.size.width,
-                                         height: searchHistoryView.contentSize.height)
+                                         height: CGFloat(searchHistoryView.contentSize.height))
     }
     
     func performTextSearch() {
@@ -193,9 +194,6 @@ class ImageCollectionViewController: UIViewController,  UICollectionViewDelegate
     func updateSearchHistory(text: String) {
         if searchHistoryList.contains(text) {
             return
-        }
-        if searchHistoryList.count == ConstantNumbers.maximumRecentSearches {
-            _ = searchHistoryList.dropFirst()
         }
         searchHistoryList.append(text)
         searchHistoryView.reloadData()
@@ -353,7 +351,10 @@ class ImageCollectionViewController: UIViewController,  UICollectionViewDelegate
                 subViewForSpinner.alpha = 1
                 pageFlickr += 1
                 performFlickrPopular()
-                subViewForSpinner.alpha = 0
+                DispatchQueue.main.async() {
+                    self.subViewForSpinner.alpha = 0
+                }
+               
             }
         }
         if collectionView == self.searchCollectionView {
@@ -361,35 +362,41 @@ class ImageCollectionViewController: UIViewController,  UICollectionViewDelegate
                 subViewForSpinner.alpha = 1
                 pageFlickr += 1
                 performTextSearch()
-                subViewForSpinner.alpha = 0
+                DispatchQueue.main.async() {
+                    self.subViewForSpinner.alpha = 0
+                }
             }
         }
     }
     
     /// Mark: - UIScrollView delegate implementaion block
     func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
+        lastContentOffset = 0
         searchHistoryHide()
     }
     
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        let actualPosition = scrollView.panGestureRecognizer.translation(in: scrollView.superview)
-        if actualPosition.y > 0 {
-            UIView.animate(withDuration: 0.5,  animations: {
+      let actualPosition = scrollView.panGestureRecognizer.translation(in: scrollView.superview)
+        if (actualPosition.y > 0 || ((actualPosition.y > lastContentOffset && actualPosition.y != 0.0)))
+            && !(actualPosition.y < lastContentOffset && actualPosition.y != 0.0) {
+            self.view.layoutIfNeeded()
+            UIView.animate(withDuration: 0.25,  animations: {
                 self.searchConstraint.priority = UILayoutPriority(rawValue: 999)
                 self.view.layoutIfNeeded()
                 //                self.searchContainerView.layoutIfNeeded()     //This is solution dont work so i dont know that to do
                 ()
             })
-        } else if actualPosition.y < 0 && scrollView.contentOffset.y >= ConstantNumbers.offsetForHideSearchText  {
-            UIView.animate(withDuration: 0.5, animations: {
+        } else if (actualPosition.y < 0 && scrollView.contentOffset.y >= ConstantNumbers.offsetForHideSearchText)
+            || (actualPosition.y < lastContentOffset && actualPosition.y != 0.0 && scrollView.contentOffset.y >= ConstantNumbers.offsetForHideSearchText )   {
+            self.view.layoutIfNeeded()
+            UIView.animate(withDuration: 0.25, animations: {
                 self.searchConstraint.priority = UILayoutPriority(rawValue: 500)
                 self.view.layoutIfNeeded()
                 //                self.searchContainerView.layoutIfNeeded()
                 ()
             })
-        } else {
-            return
         }
+        lastContentOffset = actualPosition.y
     }
     
     /// Mark: - UITableView delegate implementaion block

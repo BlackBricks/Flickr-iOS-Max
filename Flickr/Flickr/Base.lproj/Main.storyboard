@@ -30,11 +30,11 @@
                                     <size key="itemSize" width="154" height="124"/>
                                     <size key="headerReferenceSize" width="0.0" height="0.0"/>
                                     <size key="footerReferenceSize" width="0.0" height="0.0"/>
-                                    <inset key="sectionInset" minX="0.0" minY="72" maxX="0.0" maxY="0.0"/>
+                                    <inset key="sectionInset" minX="0.0" minY="62" maxX="0.0" maxY="0.0"/>
                                 </collectionViewFlowLayout>
                                 <cells>
                                     <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" reuseIdentifier="PopularImage Cell" id="6Lx-bE-ayv" customClass="ImageCollectionViewCell" customModule="Flickr" customModuleProvider="target">
-                                        <rect key="frame" x="0.0" y="72" width="154" height="124"/>
+                                        <rect key="frame" x="0.0" y="62" width="154" height="124"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO">
                                             <rect key="frame" x="0.0" y="0.0" width="154" height="124"/>
@@ -68,11 +68,11 @@
                                     <size key="itemSize" width="154" height="124"/>
                                     <size key="headerReferenceSize" width="0.0" height="0.0"/>
                                     <size key="footerReferenceSize" width="0.0" height="0.0"/>
-                                    <inset key="sectionInset" minX="0.0" minY="72" maxX="0.0" maxY="0.0"/>
+                                    <inset key="sectionInset" minX="0.0" minY="62" maxX="0.0" maxY="0.0"/>
                                 </collectionViewFlowLayout>
                                 <cells>
                                     <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" reuseIdentifier="image Cell" id="guD-zX-muK" customClass="ImageCollectionViewCell" customModule="Flickr" customModuleProvider="target">
-                                        <rect key="frame" x="0.0" y="72" width="154" height="124"/>
+                                        <rect key="frame" x="0.0" y="62" width="154" height="124"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO">
                                             <rect key="frame" x="0.0" y="0.0" width="154" height="124"/>
@@ -101,21 +101,21 @@
                                 </connections>
                             </collectionView>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="phU-pP-vca" userLabel="SearchContainer">
-                                <rect key="frame" x="0.0" y="20" width="375" height="70"/>
+                                <rect key="frame" x="0.0" y="20" width="375" height="60"/>
                                 <subviews>
                                     <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="magnify" translatesAutoresizingMaskIntoConstraints="NO" id="Cjb-MD-n8h">
-                                        <rect key="frame" x="8" y="23" width="24" height="24"/>
+                                        <rect key="frame" x="12" y="6" width="48" height="48"/>
                                         <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                     </imageView>
                                     <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="Search Flickr" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="Slu-hn-Enb">
-                                        <rect key="frame" x="40" y="22.5" width="243" height="25"/>
+                                        <rect key="frame" x="72" y="16.5" width="203" height="27"/>
                                         <color key="backgroundColor" white="0.33333333329999998" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                        <fontDescription key="fontDescription" name="Cormorant-Italic" family="Cormorant" pointSize="20"/>
+                                        <fontDescription key="fontDescription" name="Cormorant-Italic" family="Cormorant" pointSize="22"/>
                                         <textInputTraits key="textInputTraits"/>
                                     </textField>
                                     <button opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="LCy-dP-L24" customClass="DesignableButton" customModule="Flickr" customModuleProvider="target">
-                                        <rect key="frame" x="291" y="8" width="76" height="54"/>
+                                        <rect key="frame" x="287" y="12" width="76" height="36"/>
                                         <fontDescription key="fontDescription" name="Cormorant-Italic" family="Cormorant" pointSize="18"/>
                                         <inset key="contentEdgeInsets" minX="16" minY="8" maxX="16" maxY="8"/>
                                         <state key="normal" title="Cancel">
@@ -142,20 +142,20 @@
                                 </subviews>
                                 <color key="backgroundColor" white="0.33333333333333331" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <constraints>
-                                    <constraint firstAttribute="bottom" secondItem="LCy-dP-L24" secondAttribute="bottom" constant="8" id="1Z6-F5-tjG"/>
-                                    <constraint firstItem="Slu-hn-Enb" firstAttribute="leading" secondItem="Cjb-MD-n8h" secondAttribute="trailing" constant="8" id="2sz-fo-K5T"/>
-                                    <constraint firstItem="Cjb-MD-n8h" firstAttribute="leading" secondItem="phU-pP-vca" secondAttribute="leading" constant="8" id="MQP-L6-ajG"/>
-                                    <constraint firstAttribute="trailing" secondItem="LCy-dP-L24" secondAttribute="trailing" constant="8" id="WbO-3o-Jk5"/>
+                                    <constraint firstAttribute="bottom" secondItem="LCy-dP-L24" secondAttribute="bottom" constant="12" id="1Z6-F5-tjG"/>
+                                    <constraint firstItem="Slu-hn-Enb" firstAttribute="leading" secondItem="Cjb-MD-n8h" secondAttribute="trailing" constant="12" id="2sz-fo-K5T"/>
+                                    <constraint firstItem="Cjb-MD-n8h" firstAttribute="leading" secondItem="phU-pP-vca" secondAttribute="leading" constant="12" id="MQP-L6-ajG"/>
+                                    <constraint firstAttribute="trailing" secondItem="LCy-dP-L24" secondAttribute="trailing" constant="12" id="WbO-3o-Jk5"/>
                                     <constraint firstItem="Slu-hn-Enb" firstAttribute="centerY" secondItem="phU-pP-vca" secondAttribute="centerY" id="cDN-Gh-H3K"/>
-                                    <constraint firstItem="LCy-dP-L24" firstAttribute="top" secondItem="phU-pP-vca" secondAttribute="top" constant="8" id="eSy-nq-biE"/>
+                                    <constraint firstItem="LCy-dP-L24" firstAttribute="top" secondItem="phU-pP-vca" secondAttribute="top" constant="12" id="eSy-nq-biE"/>
                                     <constraint firstItem="LCy-dP-L24" firstAttribute="centerY" secondItem="phU-pP-vca" secondAttribute="centerY" id="nWp-RL-XK1"/>
                                     <constraint firstItem="Cjb-MD-n8h" firstAttribute="centerY" secondItem="phU-pP-vca" secondAttribute="centerY" id="oBC-dZ-8YA"/>
-                                    <constraint firstItem="LCy-dP-L24" firstAttribute="leading" secondItem="Slu-hn-Enb" secondAttribute="trailing" constant="8" id="pZz-cZ-W76"/>
-                                    <constraint firstAttribute="height" constant="70" id="qoi-3K-t7c"/>
+                                    <constraint firstItem="LCy-dP-L24" firstAttribute="leading" secondItem="Slu-hn-Enb" secondAttribute="trailing" constant="12" id="pZz-cZ-W76"/>
+                                    <constraint firstAttribute="height" constant="60" id="qoi-3K-t7c"/>
                                 </constraints>
                             </view>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="none" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="aeO-4J-rt9">
-                                <rect key="frame" x="30" y="80" width="265" height="587"/>
+                                <rect key="frame" x="30" y="70" width="265" height="597"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <sections/>
                                 <connections>
@@ -170,7 +170,7 @@
                                         <rect key="frame" x="5" y="5" width="20" height="20"/>
                                     </activityIndicatorView>
                                 </subviews>
-                                <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <constraints>
                                     <constraint firstItem="UN0-EY-H1r" firstAttribute="centerX" secondItem="ekC-4U-sMs" secondAttribute="centerX" id="Gbw-H3-WOg"/>
                                     <constraint firstAttribute="width" constant="30" id="SFJ-c5-A71"/>
@@ -331,6 +331,6 @@
         </scene>
     </scenes>
     <resources>
-        <image name="magnify" width="24" height="24"/>
+        <image name="magnify" width="48" height="48"/>
     </resources>
 </document>
