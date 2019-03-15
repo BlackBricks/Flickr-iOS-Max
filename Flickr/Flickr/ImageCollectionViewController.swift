@@ -12,17 +12,22 @@ import Alamofire
 
 class ImageCollectionViewController: UIViewController,  UICollectionViewDelegate, UICollectionViewDataSource, UITextFieldDelegate, UICollectionViewDelegateFlowLayout, UIScrollViewDelegate, UITableViewDelegate, UITableViewDataSource, recentTableCellDelegate {
     
-    var pageFlickr = 1
-    var recentIndexCell: Int?
-    var searchActive : Bool = false
-    var actualPosition: CGPoint?
-    var searchList = [String]()
-    var popularImageData: [Photo] = [Photo]()
-    var popularImageSizes: [CGSize] = [CGSize]()
+    /// Mark: - variables for searchCollectionView
     var searchImageData: [Photo] = [Photo]()
     var searchImageSizes: [CGSize] = [CGSize]()
+    
+    /// Mark: - variables for popularCollectionView
+    var popularImageData: [Photo] = [Photo]()
+    var popularImageSizes: [CGSize] = [CGSize]()
+    
+    /// Mark: - common
+     var isSearching = false
+    var pageFlickr = 1
+    var recentIndexCell: Int?
+    var actualPosition: CGPoint?
     var searchHistoryList = [String]()
-    var isSearching = false
+    
+    /// Mark: - Outlets
     @IBOutlet weak var searchCollectionView: UICollectionView!
     @IBOutlet weak var popularCollectionView: UICollectionView!
     @IBOutlet weak var searchContainerView: UIView!
@@ -33,6 +38,7 @@ class ImageCollectionViewController: UIViewController,  UICollectionViewDelegate
     @IBAction func cancelButton(_ sender: DesignableButton) {
     }
     
+    /// Mark: - enums
     enum ConstantNumbers {
         static let lastCells = 15
         static let perPage = 100
@@ -68,6 +74,7 @@ class ImageCollectionViewController: UIViewController,  UICollectionViewDelegate
         }
     }
     
+    /// Mark: - override func block
     override func viewDidLoad() {
         
         super.viewDidLoad()
@@ -117,7 +124,7 @@ class ImageCollectionViewController: UIViewController,  UICollectionViewDelegate
         
     }
     
-    
+    /// Mark: - model func block
     @objc func editingTextEventFunc(textField: UITextField) {
         searchHistoryHide()
     }
@@ -255,12 +262,14 @@ class ImageCollectionViewController: UIViewController,  UICollectionViewDelegate
         }
     }
     
+    /// Mark: - UITextField delegate implementaion block
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         pageFlickr = 1
         performTextSearch()
         return true
     }
     
+    /// Mark: - UICollectionView delegate implementaion block
     func numberOfSections(in collectionView: UICollectionView) -> Int {
         return 1
     }
@@ -326,7 +335,6 @@ class ImageCollectionViewController: UIViewController,  UICollectionViewDelegate
                 pageFlickr += 1
                 performFlickrPopular()
                 subViewForSpinner.alpha = 0
-                
             }
         }
         if collectionView == self.searchCollectionView {
@@ -339,6 +347,7 @@ class ImageCollectionViewController: UIViewController,  UICollectionViewDelegate
         }
     }
     
+    /// Mark: - UIScrollView delegate implementaion block
     func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
         searchHistoryHide()
     }
@@ -364,7 +373,7 @@ class ImageCollectionViewController: UIViewController,  UICollectionViewDelegate
         }
     }
     
-    
+    /// Mark: - UITableView delegate implementaion block
     func numberOfSections(in tableView: UITableView) -> Int {
         if searchHistoryList.isEmpty {
             return 0
