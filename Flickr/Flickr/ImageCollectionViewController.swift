@@ -25,7 +25,9 @@ class ImageCollectionViewController: UIViewController,  UICollectionViewDelegate
     var isSearching = false
     @IBOutlet weak var searchCollectionView: UICollectionView!
     @IBOutlet weak var popularCollectionView: UICollectionView!
+    @IBOutlet weak var searchContainerView: UIView!
     @IBOutlet weak var searchConstraint: NSLayoutConstraint!
+    @IBOutlet weak var subViewForSpinner: UIView!
     @IBOutlet weak var searchTextField: UITextField!
     @IBOutlet weak var recentTableView: UITableView!
     @IBAction func cancelButton(_ sender: DesignableButton) {
@@ -38,6 +40,7 @@ class ImageCollectionViewController: UIViewController,  UICollectionViewDelegate
         static let maximumRecentSearches = 6
         static let justPrefferedHeight: CGFloat = 150
         static let basicIndent: CGFloat = 2
+        static let offsetForHideSearchText: CGFloat = 55
     }
     
     enum Router: URLRequestConvertible {
@@ -67,7 +70,9 @@ class ImageCollectionViewController: UIViewController,  UICollectionViewDelegate
     }
     
     override func viewDidLoad() {
+        
         super.viewDidLoad()
+        subViewForSpinner.alpha = 0.95
         searchCollectionView.alpha = 0
         popularCollectionView.alpha = 1
         recentTableView.alpha = 0
@@ -89,7 +94,10 @@ class ImageCollectionViewController: UIViewController,  UICollectionViewDelegate
         super.viewWillAppear(animated)
         rebuildTableSize()
         performFlickrPopular()
+        
+        
     }
+    
     override func viewDidLayoutSubviews(){
         rebuildTableSize()
         recentTableView.reloadData()
@@ -295,6 +303,7 @@ class ImageCollectionViewController: UIViewController,  UICollectionViewDelegate
         return UICollectionViewCell()
     }
     
+    
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         if isSearching == false {
             return popularImageSizes[indexPath.row]
@@ -314,14 +323,19 @@ class ImageCollectionViewController: UIViewController,  UICollectionViewDelegate
     func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
         if collectionView == self.popularCollectionView {
             if indexPath.row == (pageFlickr * ConstantNumbers.perPage) - ConstantNumbers.lastCells {
+                subViewForSpinner.alpha = 1
                 pageFlickr += 1
                 performFlickrPopular()
+                subViewForSpinner.alpha = 0
+                
             }
         }
         if collectionView == self.searchCollectionView {
             if indexPath.row == (pageFlickr * ConstantNumbers.perPage) - ConstantNumbers.lastCells {
+                subViewForSpinner.alpha = 1
                 pageFlickr += 1
                 performTextSearch()
+                subViewForSpinner.alpha = 0
             }
         }
     }
@@ -331,23 +345,32 @@ class ImageCollectionViewController: UIViewController,  UICollectionViewDelegate
     }
     
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        
+        let collectionViewLayout = popularCollectionView.collectionViewLayout as? UICollectionViewFlowLayout
+        if collectionViewLayout?.sectionInset == UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0) {
+            print("work")
+        }
         let actualPosition = scrollView.panGestureRecognizer.translation(in: scrollView.superview)
         if actualPosition.y > 0 {
-            self.view.layoutIfNeeded()                              //If u want animated cells while scrolling comment this
             UIView.animate(withDuration: 0.5,  animations: {
                 self.searchConstraint.priority = UILayoutPriority(rawValue: 999)
                 self.view.layoutIfNeeded()
+                //                self.searchContainerView.layoutIfNeeded()     //This is solution dont work so i dont know that to do
+                ()
             })
-        } else if actualPosition.y < 0 {
-            self.view.layoutIfNeeded()
+        } else if actualPosition.y < 0 && scrollView.contentOffset.y >= ConstantNumbers.offsetForHideSearchText  {
             UIView.animate(withDuration: 0.5, animations: {
+//                print("\(scrollView.contentOffset.y)")
                 self.searchConstraint.priority = UILayoutPriority(rawValue: 500)
                 self.view.layoutIfNeeded()
+                //                self.searchContainerView.layoutIfNeeded()
+                ()
             })
         } else {
-            self.view.layoutIfNeeded()
+            return
         }
     }
+    
     
     func numberOfSections(in tableView: UITableView) -> Int {
         if recentSearchesList.isEmpty {
@@ -366,7 +389,8 @@ class ImageCollectionViewController: UIViewController,  UICollectionViewDelegate
         
         if let recentCell = cell as? RecentTableViewCell {
             recentCell.delegate = self
-            recentCell.loadDataTable(recentSearchesList, indexPath.row)
+            recentCell.index = indexPath.row
+            recentCell.setText(recentSearchesList)
             return recentCell
         }
         return cell
@@ -401,6 +425,14 @@ extension Dictionary {
     mutating func merge(dict: [Key: Value]){
         for (k, v) in dict {
             updateValue(v, forKey: k)
+        }
+    }
+}
+extension UIViewController {
+    func setStatusBarStyle(_ style: UIStatusBarStyle) {
+        if let statusBar = UIApplication.shared.value(forKey: "statusBar") as? UIView {
+            statusBar.backgroundColor = style == .lightContent ? UIColor.black : .white
+            statusBar.setValue(style == .lightContent ? UIColor.white : .black, forKey: "foregroundColor")
         }
     }
 }
