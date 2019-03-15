@@ -220,10 +220,10 @@
                     <navigationItem key="navigationItem" id="6sP-Eu-keU"/>
                     <connections>
                         <outlet property="popularCollectionView" destination="eZF-q3-2Qc" id="cW5-Ha-c15"/>
-                        <outlet property="recentTableView" destination="aeO-4J-rt9" id="Zwi-d1-jYm"/>
                         <outlet property="searchCollectionView" destination="nf0-BU-07p" id="Dhd-O1-fep"/>
                         <outlet property="searchConstraint" destination="DTb-jW-EMa" id="jLS-Sz-XWt"/>
                         <outlet property="searchContainerView" destination="phU-pP-vca" id="a83-y9-bc4"/>
+                        <outlet property="searchHistoryView" destination="aeO-4J-rt9" id="Zwi-d1-jYm"/>
                         <outlet property="searchTextField" destination="Slu-hn-Enb" id="Bvz-OD-927"/>
                         <outlet property="subViewForSpinner" destination="ekC-4U-sMs" id="K7A-rk-cG0"/>
                     </connections>

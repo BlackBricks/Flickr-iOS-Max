@@ -21,7 +21,7 @@ class ImageCollectionViewController: UIViewController,  UICollectionViewDelegate
     var popularImageSizes: [CGSize] = [CGSize]()
     var searchImageData: [Photo] = [Photo]()
     var searchImageSizes: [CGSize] = [CGSize]()
-    var recentSearchesList = [String]()
+    var searchHistoryList = [String]()
     var isSearching = false
     @IBOutlet weak var searchCollectionView: UICollectionView!
     @IBOutlet weak var popularCollectionView: UICollectionView!
@@ -29,7 +29,7 @@ class ImageCollectionViewController: UIViewController,  UICollectionViewDelegate
     @IBOutlet weak var searchConstraint: NSLayoutConstraint!
     @IBOutlet weak var subViewForSpinner: UIView!
     @IBOutlet weak var searchTextField: UITextField!
-    @IBOutlet weak var recentTableView: UITableView!
+    @IBOutlet weak var searchHistoryView: UITableView!
     @IBAction func cancelButton(_ sender: DesignableButton) {
     }
     
@@ -74,17 +74,17 @@ class ImageCollectionViewController: UIViewController,  UICollectionViewDelegate
         subViewForSpinner.alpha = 0.95
         searchCollectionView.alpha = 0
         popularCollectionView.alpha = 1
-        recentTableView.alpha = 0
+        searchHistoryView.alpha = 0
         searchConstraint.priority = UILayoutPriority(rawValue: 999)
         searchConstraint.isActive = true
         searchTextField.delegate = self
         definesPresentationContext = true
-        recentTableView.delegate = self
-        recentTableView.dataSource = self
+        searchHistoryView.delegate = self
+        searchHistoryView.dataSource = self
         searchTextField.addTarget(self, action: #selector(clickOnTextEventFunc), for: UIControl.Event.touchDown)
         searchTextField.addTarget(self, action: #selector(editingTextEventFunc), for: UIControl.Event.editingChanged)
-        recentTableView.rowHeight = UITableView.automaticDimension
-        recentTableView.register(UINib.init(nibName: "RecentTableViewCell", bundle: nil), forCellReuseIdentifier: "RecentCell")
+        searchHistoryView.rowHeight = UITableView.automaticDimension
+        searchHistoryView.register(UINib.init(nibName: "RecentTableViewCell", bundle: nil), forCellReuseIdentifier: "RecentCell")
         searchTextField.attributedPlaceholder = NSAttributedString(string: "Search Flickr",
                                                                    attributes: [NSAttributedString.Key.foregroundColor: UIColor.white])
     }
@@ -99,7 +99,7 @@ class ImageCollectionViewController: UIViewController,  UICollectionViewDelegate
     
     override func viewDidLayoutSubviews(){
         rebuildTableSize()
-        recentTableView.reloadData()
+        searchHistoryView.reloadData()
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {     // frozen for a while
@@ -115,35 +115,35 @@ class ImageCollectionViewController: UIViewController,  UICollectionViewDelegate
     }
     
     @objc func editingTextEventFunc(textField: UITextField) {
-        recentTable_GoHide()
+        searchHistoryHide()
     }
     
     @objc func clickOnTextEventFunc(textField: UITextField) {
-        recentTableView.reloadData()
-        recentTable_ShowMustGoOn()
+        searchHistoryView.reloadData()
+        searchHistoryShowMustGoOn()
     }
     
-    func recentTable_GoHide() {
+    func searchHistoryHide() {
         UIView.animate(withDuration: 0.1, animations: {
-            self.recentTableView.alpha = 0
+            self.searchHistoryView.alpha = 0
         })
     }
     
-    func recentTable_ShowMustGoOn() {
+    func searchHistoryShowMustGoOn() {
         UIView.animate(withDuration: 0.5, animations: {
-            self.recentTableView.alpha = 1
+            self.searchHistoryView.alpha = 1
         })
     }
     
     func rebuildTableSize() {
-        recentTableView.frame = CGRect(x: recentTableView.frame.origin.x,
-                                       y: recentTableView.frame.origin.y,
-                                       width: recentTableView.frame.size.width,
-                                       height: recentTableView.contentSize.height)
+        searchHistoryView.frame = CGRect(x: searchHistoryView.frame.origin.x,
+                                       y: searchHistoryView.frame.origin.y,
+                                       width: searchHistoryView.frame.size.width,
+                                       height: searchHistoryView.contentSize.height)
     }
     
     func performTextSearch() {
-        recentTable_GoHide()
+        searchHistoryHide()
         searchTextField.resignFirstResponder()
         let searchText = searchTextField.text
         guard let searchingText = searchText else {
@@ -153,22 +153,22 @@ class ImageCollectionViewController: UIViewController,  UICollectionViewDelegate
             displayAlert("Search text cannot be empty")
             return
         }
-        updateRecentList(text: searchingText)
+        updateSearchHistory(text: searchingText)
         performFlickrSearch(url: searchingText)
         searchCollectionView.alpha = 1
         isSearching = true
         return
     }
     
-    func updateRecentList(text: String) {
-        if recentSearchesList.contains(text) {
+    func updateSearchHistory(text: String) {
+        if searchHistoryList.contains(text) {
             return
         }
-        if recentSearchesList.count == ConstantNumbers.maximumRecentSearches {
-            _ = recentSearchesList.dropFirst()
+        if searchHistoryList.count == ConstantNumbers.maximumRecentSearches {
+            _ = searchHistoryList.dropFirst()
         }
-        recentSearchesList.append(text)
-        recentTableView.reloadData()
+        searchHistoryList.append(text)
+        searchHistoryView.reloadData()
     }
     
     func displayAlert(_ message: String) {
@@ -336,7 +336,7 @@ class ImageCollectionViewController: UIViewController,  UICollectionViewDelegate
     }
     
     func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
-        recentTable_GoHide()
+        searchHistoryHide()
     }
     
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
@@ -362,7 +362,7 @@ class ImageCollectionViewController: UIViewController,  UICollectionViewDelegate
     
     
     func numberOfSections(in tableView: UITableView) -> Int {
-        if recentSearchesList.isEmpty {
+        if searchHistoryList.isEmpty {
             return 0
         } else {
             return 1
@@ -370,7 +370,7 @@ class ImageCollectionViewController: UIViewController,  UICollectionViewDelegate
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return recentSearchesList.count
+        return searchHistoryList.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -379,7 +379,7 @@ class ImageCollectionViewController: UIViewController,  UICollectionViewDelegate
         if let recentCell = cell as? RecentTableViewCell {
             recentCell.delegate = self
             recentCell.index = indexPath.row
-            recentCell.setText(recentSearchesList)
+            recentCell.setText(searchHistoryList)
             return recentCell
         }
         return cell
@@ -391,17 +391,17 @@ class ImageCollectionViewController: UIViewController,  UICollectionViewDelegate
     }
     
     func searchTextByRecentList(_ index: Int) {
-        let txt = recentSearchesList[index]
+        let txt = searchHistoryList[index]
         searchTextField.text = txt
         performTextSearch()
     }
     
     func didTapClearButton(_ sender: RecentTableViewCell) {
-        guard let tappedIndexPath = recentTableView.indexPath(for: sender) else {
+        guard let tappedIndexPath = searchHistoryView.indexPath(for: sender) else {
             return
         }
-        recentSearchesList.remove(at: tappedIndexPath.row)
-        recentTableView.reloadData()
+        searchHistoryList.remove(at: tappedIndexPath.row)
+        searchHistoryView.reloadData()
         rebuildTableSize()
     }
     
