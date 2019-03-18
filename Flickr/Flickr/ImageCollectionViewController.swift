@@ -397,58 +397,25 @@ class ImageCollectionViewController: UIViewController,  UICollectionViewDelegate
     }
     
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        let actualPosition = scrollView.panGestureRecognizer.translation(in: scrollView.superview).y
-        var scrollingUp: Bool {
-            if actualPosition > 0 {
-                return true
-            }
-            return false
-        }
-        
-        var scrollingDown: Bool {
-            if actualPosition < 0 {
-                return true
-            }
-            return false
-        }
-        
-        var currentPositionUpperLastPosition: Bool {
-            if actualPosition > lastContentOffset && actualPosition != 0.0 {
-                return true
-            }
-            return false
-        }
-        
-        var currentPositionLowerLastPosition: Bool {
-            if actualPosition < lastContentOffset && actualPosition != 0.0 {
-                return true
-            }
-            return false
-        }
-    
-        var scrollingUnderSearchTextFieldBar: Bool {
-            if scrollView.contentOffset.y >= ConstantNumbers.offsetForHideSearchText {
-                return true
-            }
-            return false
-        }
-        
-        if scrollingUp || currentPositionUpperLastPosition && !(currentPositionLowerLastPosition) {
+        let velocityOfVerticalScroll = scrollView.panGestureRecognizer.velocity(in: scrollView.superview).y
+        let isEnoughSpaceForSearchTextField = scrollView.contentOffset.y >= ConstantNumbers.offsetForHideSearchText
+        let isScrollingDown = velocityOfVerticalScroll < 0
+        let isScrollingUp = velocityOfVerticalScroll > 0
+        if isScrollingUp {
             self.view.layoutIfNeeded()
             UIView.animate(withDuration: 0.25,  animations: {
                 self.searchConstraint.priority = UILayoutPriority(rawValue: 999)
                 self.view.layoutIfNeeded()
-                ()
             })
-        } else if (scrollingDown && scrollingUnderSearchTextFieldBar) || (currentPositionLowerLastPosition && scrollingUnderSearchTextFieldBar) {
+        } else if isScrollingDown && isEnoughSpaceForSearchTextField {
             self.view.layoutIfNeeded()
             UIView.animate(withDuration: 0.25, animations: {
                 self.searchConstraint.priority = UILayoutPriority(rawValue: 500)
                 self.view.layoutIfNeeded()
-                ()
             })
+        } else {
+            return
         }
-        lastContentOffset = actualPosition
     }
     
     /// Mark: - UITableView delegate implementaion block
