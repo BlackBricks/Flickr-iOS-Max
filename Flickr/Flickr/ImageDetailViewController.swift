@@ -10,13 +10,14 @@ import UIKit
 
 class ImageDetailViewController: UIViewController, UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     
-    var photoGalleryData = [Photo]()
-    var main = ImageCollectionViewController()
+    var detailPhotoData = [Photo]()
     var indexCell: IndexPath?
     
     override func viewDidLoad() {
         super.viewDidLoad()
         collectionView.alpha = 0
+        collectionView.delegate = self
+        collectionView.dataSource = self
     }
     @IBOutlet weak var collectionView: UICollectionView!
     
@@ -35,22 +36,22 @@ class ImageDetailViewController: UIViewController, UICollectionViewDelegate, UIC
     
     func collectionView(_ collectionView: UICollectionView,
                         numberOfItemsInSection section: Int) -> Int {
-        return photoGalleryData.count
+        return detailPhotoData.count
     }
     
     func collectionView(_ collectionView: UICollectionView,
                         cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cellPopular = collectionView.dequeueReusableCell(withReuseIdentifier: "Gallery Image Cell",
+        let cellPopular = collectionView.dequeueReusableCell(withReuseIdentifier: "Detail Image Cell",
                                                              for: indexPath)
         guard let imageCell = cellPopular as? ImageDetailViewCell else {
             return UICollectionViewCell()
         }
-        guard let url = photoGalleryData[indexPath.row].url else {
+        guard let url = detailPhotoData[indexPath.row].url else {
             return cellPopular
         }
-        let titleText = photoGalleryData[indexPath.row].title
+        let titleText = detailPhotoData[indexPath.row].title
         imageCell.titleText.text = "Title: \(titleText)"
-        let viewsImage = photoGalleryData[indexPath.row].views
+        let viewsImage = detailPhotoData[indexPath.row].views
         imageCell.viewText.text = "Title: \(titleText)"
         imageCell.fetchImage(url: url)
         imageCell.imageView.contentMode = .scaleAspectFit

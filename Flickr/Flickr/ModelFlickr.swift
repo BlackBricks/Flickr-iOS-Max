@@ -12,7 +12,8 @@ import UIKit
 struct Constants {
     
     struct SegueIdentifier {
-        static let GallerySegue = "Gallery viewing"
+        static let detailSegueFromSearchView = "Show Detail From SearchView"
+        static let detailSegueFromPopulariew = "Show Detail From PopularView"
     }
     
     struct Paddings {
@@ -37,7 +38,7 @@ Secret: 0ccd083217302f35
         "extras": "url_s, views, owner_name, icon_server",
         "format": "json",
         "nojsoncallback": "1",
-        "safe_search": "1",
+        "safe_search": "0",
         "sort": "relevance",
         "text": "",
         "page": "1",
@@ -50,7 +51,7 @@ Secret: 0ccd083217302f35
         "extras": "url_s, views, owner_name, icon_server",
         "format": "json",
         "nojsoncallback": "1",
-//        "safe_search": "1",
+        "safe_search": "0",
         "page": "1",
         "per_page": "100"
     ]

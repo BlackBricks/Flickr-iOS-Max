@@ -19,7 +19,6 @@ class RecentTableViewCell: UITableViewCell {
     }
     
     func setText(_ array: [String]) {
-        recentText.font = UIFont(name: "Cormorant-Italic", size: 22)
         recentText.text = array[index]
     }
 }

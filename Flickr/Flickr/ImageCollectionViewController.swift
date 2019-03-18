@@ -36,7 +36,7 @@ class ImageCollectionViewController: UIViewController,  UICollectionViewDelegate
     @IBOutlet weak var subViewForSpinner: UIView!
     @IBOutlet weak var searchTextField: UITextField!
     @IBOutlet weak var searchHistoryView: UITableView!
-   
+    
     /// Mark: - enums
     enum ConstantNumbers {
         static let perPage = 50
@@ -51,7 +51,7 @@ class ImageCollectionViewController: UIViewController,  UICollectionViewDelegate
         case search(text: String, page: String)
         case popular(page: String)
         static let baseURLString = Constants.FlickrAPI.baseUrl
-
+        
         // MARK: URLRequestConvertible
         func asURLRequest() throws -> URLRequest {
             let perPages = "50"
@@ -102,20 +102,27 @@ class ImageCollectionViewController: UIViewController,  UICollectionViewDelegate
         guard let identifier = segue.identifier else {
             return
         }
-        guard identifier == Constants.SegueIdentifier.GallerySegue,
+        if identifier == Constants.SegueIdentifier.detailSegueFromSearchView,
             let gvcvc = segue.destination as? ImageDetailViewController,
-            let cell = sender as? ImageCollectionViewCell else {
-                return
+            let cell = sender as? ImageCollectionViewCell,
+            let indexPath = self.searchCollectionView!.indexPath(for: cell) {
+            gvcvc.detailPhotoData = searchImageData
+            gvcvc.indexCell = indexPath
         }
-        let indexPath = self.searchCollectionView!.indexPath(for: cell)
-        gvcvc.photoGalleryData = popularImageData
-        gvcvc.indexCell = indexPath
+        if identifier == Constants.SegueIdentifier.detailSegueFromPopulariew,
+            let gvcvc = segue.destination as? ImageDetailViewController,
+            let cell = sender as? ImageCollectionViewCell,
+            let indexPath = self.popularCollectionView!.indexPath(for: cell) {
+            gvcvc.detailPhotoData = popularImageData
+            gvcvc.indexCell = indexPath
+        }
     }
     
     @IBAction func cancelButton(_ sender: DesignableButton) {
-         UIView.animate(withDuration: 0.25,  animations: {
+        searchTextField.text = ""
+        UIView.animate(withDuration: 0.25,  animations: {
             self.setAlphasDefault()
-           self.view.layoutIfNeeded()
+            self.view.layoutIfNeeded()
         })
         
     }
@@ -255,7 +262,7 @@ class ImageCollectionViewController: UIViewController,  UICollectionViewDelegate
                                                           preferredHeight: ConstantNumbers.justPrefferedHeight )
             self.popularImageSizes = laySizes
         }
-
+        
         self.searchCollectionView.alpha = 0
         self.searchCollectionView.isHidden = true
         DispatchQueue.main.async() {
@@ -368,7 +375,7 @@ class ImageCollectionViewController: UIViewController,  UICollectionViewDelegate
                 DispatchQueue.main.async() {
                     self.subViewForSpinner.alpha = 0
                 }
-               
+                
             }
         }
         if collectionView == self.searchCollectionView {
@@ -390,27 +397,58 @@ class ImageCollectionViewController: UIViewController,  UICollectionViewDelegate
     }
     
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
-      let actualPosition = scrollView.panGestureRecognizer.translation(in: scrollView.superview)
-        if (actualPosition.y > 0 || ((actualPosition.y > lastContentOffset && actualPosition.y != 0.0)))
-            && !(actualPosition.y < lastContentOffset && actualPosition.y != 0.0) {
+        let actualPosition = scrollView.panGestureRecognizer.translation(in: scrollView.superview).y
+        var scrollingUp: Bool {
+            if actualPosition > 0 {
+                return true
+            }
+            return false
+        }
+        
+        var scrollingDown: Bool {
+            if actualPosition < 0 {
+                return true
+            }
+            return false
+        }
+        
+        var currentPositionUpperLastPosition: Bool {
+            if actualPosition > lastContentOffset && actualPosition != 0.0 {
+                return true
+            }
+            return false
+        }
+        
+        var currentPositionLowerLastPosition: Bool {
+            if actualPosition < lastContentOffset && actualPosition != 0.0 {
+                return true
+            }
+            return false
+        }
+    
+        var scrollingUnderSearchTextFieldBar: Bool {
+            if scrollView.contentOffset.y >= ConstantNumbers.offsetForHideSearchText {
+                return true
+            }
+            return false
+        }
+        
+        if scrollingUp || currentPositionUpperLastPosition && !(currentPositionLowerLastPosition) {
             self.view.layoutIfNeeded()
             UIView.animate(withDuration: 0.25,  animations: {
                 self.searchConstraint.priority = UILayoutPriority(rawValue: 999)
                 self.view.layoutIfNeeded()
-                //                self.searchContainerView.layoutIfNeeded()     //This is solution dont work so i dont know that to do
                 ()
             })
-        } else if (actualPosition.y < 0 && scrollView.contentOffset.y >= ConstantNumbers.offsetForHideSearchText)
-            || (actualPosition.y < lastContentOffset && actualPosition.y != 0.0 && scrollView.contentOffset.y >= ConstantNumbers.offsetForHideSearchText )   {
+        } else if (scrollingDown && scrollingUnderSearchTextFieldBar) || (currentPositionLowerLastPosition && scrollingUnderSearchTextFieldBar) {
             self.view.layoutIfNeeded()
             UIView.animate(withDuration: 0.25, animations: {
                 self.searchConstraint.priority = UILayoutPriority(rawValue: 500)
                 self.view.layoutIfNeeded()
-                //                self.searchContainerView.layoutIfNeeded()
                 ()
             })
         }
-        lastContentOffset = actualPosition.y
+        lastContentOffset = actualPosition
     }
     
     /// Mark: - UITableView delegate implementaion block
