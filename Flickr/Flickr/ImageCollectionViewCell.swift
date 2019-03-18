@@ -7,18 +7,17 @@
 //
 
 import UIKit
-import Alamofire
 import SDWebImage
 
 class ImageCollectionViewCell: UICollectionViewCell {
     
     var imageArray: [[String: AnyObject]]?
-    @IBOutlet weak var imagesView: UIImageView!
+    @IBOutlet weak var imageView: UIImageView!
     
     func fetchImage(url: String?) {
-        
-        guard let url = url else { return }
-        imagesView.sd_setImage(with: URL(string: url), placeholderImage: UIImage(named: "placeholder.png"))
-        
+        guard let url = url else {
+            return
+        }
+        imageView.sd_setImage(with: URL(string: url), placeholderImage: UIImage(named: "placeholder.png"))
     }
 }

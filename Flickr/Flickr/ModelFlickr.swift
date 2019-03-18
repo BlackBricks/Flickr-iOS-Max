@@ -12,7 +12,8 @@ import UIKit
 struct Constants {
     
     struct SegueIdentifier {
-        static let GallerySegue = "Gallery viewing"
+        static let detailSegueFromSearchView = "Show Detail From SearchView"
+        static let detailSegueFromPopulariew = "Show Detail From PopularView"
     }
     
     struct Paddings {
@@ -26,41 +27,34 @@ struct Constants {
 Key: e3ef44dd033985def51d4d02f680a870
 Secret: 0ccd083217302f35
 """
-    struct FlickrURLParams {
-        static let APIScheme = "https"
-        static let APIHost = "api.flickr.com"
-        static let APIPath = "/services/rest"
+    struct FlickrAPI {
+        static let baseUrl = "https://api.flickr.com"
+        static let path = "/services/rest"
+        static let key = "e3ef44dd033985def51d4d02f680a870"
     }
+    static let searchParams = [
+        "method": "flickr.photos.search",
+        "api_key": "\(FlickrAPI.key)",
+        "extras": "url_s, views, owner_name, icon_server",
+        "format": "json",
+        "nojsoncallback": "1",
+        "safe_search": "0",
+        "sort": "relevance",
+        "text": "",
+        "page": "1",
+        "per_page": "100"
+    ]
     
-  
-    
-    struct FlickrAPIKeys {
-        static let SearchMethod = "method"
-        static let APIKey = "api_key"
-        static let Extras = "extras"
-        static let ResponseFormat = "format"
-        static let DisableJSONCallback = "nojsoncallback"
-        static let SafeSearch = "safe_search"
-        static let Text = "text"
-        static let Sort = "sort"
-    }
-    
-    struct FlickrAPIValuesForSearch {
-        static let SearchMethod = "flickr.photos.search"
-        static let APIKey = "e3ef44dd033985def51d4d02f680a870"
-        static let ResponseFormat = "json"
-        static let DisableJSONCallback = "1"
-        static let ExtrasValue = "url_m, views"
-        static let SafeSearch = "1"
-        static let SortValue = "relevance"
-    }
-    
-    struct FlickrAPIValuesForPopular {
-        static let SearchMethod = "flickr.photos.getPopular"
-        static let APIKey = "e3ef44dd033985def51d4d02f680a870"
-        static let ResponseFormat = "json"
-        static let DisableJSONCallback = "1"
-        static let ExtrasValue = "url_m, views"
-        static let SafeSearch = "1"
-    }
+    static let popularParams = [
+        "method": "flickr.interestingness.getList",
+        "api_key": "\(FlickrAPI.key)",
+        "extras": "url_s, views, owner_name, icon_server",
+        "format": "json",
+        "nojsoncallback": "1",
+        "safe_search": "0",
+        "page": "1",
+        "per_page": "100"
+    ]
 }
+/// Mark - necessery comment for later :
+//print("\(Alamofire.request(Router.popular(page: pageCalculated)).responseJSON)")

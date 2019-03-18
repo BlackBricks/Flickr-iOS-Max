@@ -9,21 +9,39 @@
 import UIKit
 
 class Photo {
-    var url: String?               
-    var hieghtImage: String?
+    var url: String?
+    var heightImage: String?
     var widthImage: String?
     var title: String?
     var views: String?
+    var nameOwner: String?
+    var icon: String?
     
-    class func getPhotos (data: [[String: AnyObject]]) -> [Photo] {
-        let photo = data.map({ (itemArray) -> Photo in
+    class func getPhotos (from photoArray: [[String: AnyObject]]) -> [Photo] {
+        let photo = photoArray.map({ (itemArray) -> Photo in
             let interestInfo = Photo()
-            interestInfo.url = itemArray["url_m"] as? String
+            interestInfo.url = itemArray["url_s"] as? String
             interestInfo.title = itemArray["title"] as? String
             interestInfo.views = itemArray["views"] as? String
-            interestInfo.hieghtImage = itemArray["hieght_m"] as? String
-            interestInfo.widthImage = itemArray["width_m"] as? String
+            interestInfo.heightImage = itemArray["height_s"] as? String
+            interestInfo.widthImage = itemArray["width_s"] as? String
+            interestInfo.nameOwner = itemArray["owner_name"] as? String
+            interestInfo.icon = itemArray["icon_server"] as? String
             return interestInfo
+        })
+        return photo
+    }
+    
+    class func getSizes(from photoArray: [Photo]) -> [CGSize] {
+        let photo = photoArray.map({ (itemArray) -> CGSize in
+            let itemSize: CGSize?
+            guard let height = itemArray.heightImage else { return CGSize() }
+            guard let width = itemArray.widthImage else { return CGSize() }
+            guard let intHeight = Double(height) else { return CGSize() }
+            guard let intWidth = Double(width) else { return CGSize() }
+            itemSize = CGSize(width: CGFloat(intWidth), height: CGFloat(intHeight))
+            guard let sizeItem = itemSize else { return CGSize() }
+            return sizeItem
         })
         return photo
     }
