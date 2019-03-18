@@ -40,7 +40,8 @@ Secret: 0ccd083217302f35
         "safe_search": "1",
         "sort": "relevance",
         "text": "",
-        "page": "1"
+        "page": "1",
+        "per_page": "100"
     ]
     
     static let popularParams = [
@@ -49,8 +50,9 @@ Secret: 0ccd083217302f35
         "extras": "url_s, views, owner_name, icon_server",
         "format": "json",
         "nojsoncallback": "1",
-        "safe_search": "1",
-        "page": "1"
+//        "safe_search": "1",
+        "page": "1",
+        "per_page": "100"
     ]
 }
 /// Mark - necessery comment for later :

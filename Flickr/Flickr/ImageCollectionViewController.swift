@@ -36,15 +36,13 @@ class ImageCollectionViewController: UIViewController,  UICollectionViewDelegate
     @IBOutlet weak var subViewForSpinner: UIView!
     @IBOutlet weak var searchTextField: UITextField!
     @IBOutlet weak var searchHistoryView: UITableView!
-    @IBAction func cancelButton(_ sender: DesignableButton) {
-    }
-    
+   
     /// Mark: - enums
     enum ConstantNumbers {
+        static let perPage = 50
         static let xibHeight = 50
         static let lastCells = 15
-        static let perPage = 100
-        static let justPrefferedHeight: CGFloat = 160
+        static let justPrefferedHeight: CGFloat = 180
         static let basicIndent: CGFloat = 2
         static let offsetForHideSearchText: CGFloat = 55
     }
@@ -53,9 +51,10 @@ class ImageCollectionViewController: UIViewController,  UICollectionViewDelegate
         case search(text: String, page: String)
         case popular(page: String)
         static let baseURLString = Constants.FlickrAPI.baseUrl
-        static let perPage = 100
+
         // MARK: URLRequestConvertible
         func asURLRequest() throws -> URLRequest {
+            let perPages = "50"
             let result: (path: String, parameters: Parameters) = {
                 switch self {
                 case let .search(text, page) :
@@ -66,6 +65,7 @@ class ImageCollectionViewController: UIViewController,  UICollectionViewDelegate
                 case let .popular(page):
                     var popularParams = Constants.popularParams
                     popularParams["page"] = page
+                    popularParams["per_page"] = perPages
                     return  (Constants.FlickrAPI.path, popularParams)
                 }
             }()
@@ -80,7 +80,7 @@ class ImageCollectionViewController: UIViewController,  UICollectionViewDelegate
         super.viewDidLoad()
         definesPresentationContext = true
         setDelegates_DataSources()
-        setAlphas()
+        setAlphasDefault()
         setConstraintMode()
         setBehaviorTextField()
         setXibCellForRecentTableViewCell()
@@ -110,6 +110,13 @@ class ImageCollectionViewController: UIViewController,  UICollectionViewDelegate
         let indexPath = self.searchCollectionView!.indexPath(for: cell)
         gvcvc.photoGalleryData = popularImageData
         gvcvc.indexCell = indexPath
+    }
+    
+    @IBAction func cancelButton(_ sender: DesignableButton) {
+         UIView.animate(withDuration: 0.25,  animations: {
+            self.setAlphasDefault()
+           self.view.layoutIfNeeded()
+        })
         
     }
     
@@ -129,7 +136,7 @@ class ImageCollectionViewController: UIViewController,  UICollectionViewDelegate
         searchHistoryView.dataSource = self
     }
     
-    func setAlphas() {
+    func setAlphasDefault() {
         subViewForSpinner.alpha = 0
         searchCollectionView.alpha = 0
         popularCollectionView.alpha = 1
@@ -151,6 +158,8 @@ class ImageCollectionViewController: UIViewController,  UICollectionViewDelegate
     func setXibCellForRecentTableViewCell() {
         searchHistoryView.rowHeight = UITableView.automaticDimension
         searchHistoryView.register(UINib.init(nibName: "RecentTableViewCell", bundle: nil), forCellReuseIdentifier: "RecentCell")
+        searchHistoryView.clipsToBounds = false
+        searchHistoryView.layer.masksToBounds = false
     }
     
     
@@ -235,13 +244,18 @@ class ImageCollectionViewController: UIViewController,  UICollectionViewDelegate
         let photos = Photo.getPhotos(from : photosData)
         if pageFlickr > 1 {
             popularImageData += photos
+            let newSizes = Photo.getSizes(from: popularImageData)
+            let laySizes: [CGSize] = newSizes.lay_justify(for: popularCollectionView.frame.size.width - ConstantNumbers.basicIndent,
+                                                          preferredHeight: ConstantNumbers.justPrefferedHeight )
+            self.popularImageSizes = laySizes
         } else {
             self.popularImageData = photos
+            let newSizes = Photo.getSizes(from: popularImageData)
+            let laySizes: [CGSize] = newSizes.lay_justify(for: popularCollectionView.frame.size.width - ConstantNumbers.basicIndent,
+                                                          preferredHeight: ConstantNumbers.justPrefferedHeight )
+            self.popularImageSizes = laySizes
         }
-        popularImageSizes = Photo.getSizes(from: popularImageData)
-        let laySizes: [CGSize] = popularImageSizes.lay_justify(for: popularCollectionView.frame.size.width - ConstantNumbers.basicIndent ,
-                                                               preferredHeight: ConstantNumbers.justPrefferedHeight)
-        popularImageSizes = laySizes
+
         self.searchCollectionView.alpha = 0
         self.searchCollectionView.isHidden = true
         DispatchQueue.main.async() {
