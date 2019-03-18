@@ -12,6 +12,7 @@ class ImageDetailViewController: UIViewController, UICollectionViewDelegate, UIC
     
     var detailPhotoData = [Photo]()
     var indexCell: IndexPath?
+    let BackIdentifier = "Show main view"
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -20,7 +21,7 @@ class ImageDetailViewController: UIViewController, UICollectionViewDelegate, UIC
         collectionView.dataSource = self
     }
     @IBOutlet weak var collectionView: UICollectionView!
-    
+
     override func viewDidAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         guard let indexPath = indexCell else {
@@ -28,6 +29,31 @@ class ImageDetailViewController: UIViewController, UICollectionViewDelegate, UIC
         }
         collectionView?.scrollToItem(at: indexPath, at: .left, animated: false)
         collectionView.alpha = 1
+    }
+    
+//    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+//        guard let identifier = segue.identifier else {
+//            return
+//        }
+//        if identifier == BackIdentifier,
+//            let icvc = segue.destination as? ImageDetailViewController,
+//            let cell = sender as? ImageDetailViewCell,
+//            let indexPath = self.searchCollectionView!.indexPath(for: cell) {
+//            gvcvc.detailPhotoData = searchImageData
+//            gvcvc.indexCell = indexPath
+//        }
+//        if identifier == Constants.SegueIdentifier.detailSegueFromPopulariew,
+//            let gvcvc = segue.destination as? ImageDetailViewController,
+//            let cell = sender as? ImageCollectionViewCell,
+//            let indexPath = self.popularCollectionView!.indexPath(for: cell) {
+//            gvcvc.detailPhotoData = popularImageData
+//            gvcvc.indexCell = indexPath
+//        }
+//    }
+    
+    
+    @IBAction func backButton(_ sender: UIButton) {
+        
     }
     
     func numberOfSections(in collectionView: UICollectionView) -> Int {

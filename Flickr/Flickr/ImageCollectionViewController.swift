@@ -29,11 +29,13 @@ class ImageCollectionViewController: UIViewController,  UICollectionViewDelegate
     var searchHistoryList = [String]()
     
     /// Mark: - Outlets
+    @IBOutlet weak var magnifyImage: UIImageView!
     @IBOutlet weak var searchCollectionView: UICollectionView!
     @IBOutlet weak var popularCollectionView: UICollectionView!
     @IBOutlet weak var searchContainerView: UIView!
     @IBOutlet weak var searchConstraint: NSLayoutConstraint!
     @IBOutlet weak var subViewForSpinner: UIView!
+    @IBOutlet weak var cancelButtonOutler: DesignableButton!
     @IBOutlet weak var searchTextField: UITextField!
     @IBOutlet weak var searchHistoryView: UITableView!
     
@@ -90,7 +92,6 @@ class ImageCollectionViewController: UIViewController,  UICollectionViewDelegate
         super.viewWillAppear(animated)
         rebuildTableSize()
         performFlickrPopular()
-        
     }
     
     override func viewDidLayoutSubviews(){
@@ -120,11 +121,11 @@ class ImageCollectionViewController: UIViewController,  UICollectionViewDelegate
     
     @IBAction func cancelButton(_ sender: DesignableButton) {
         searchTextField.text = ""
+        searchTextField.endEditing(true)
         UIView.animate(withDuration: 0.25,  animations: {
             self.setAlphasDefault()
             self.view.layoutIfNeeded()
         })
-        
     }
     
     /// Mark: - model func block
@@ -133,6 +134,11 @@ class ImageCollectionViewController: UIViewController,  UICollectionViewDelegate
     }
     
     @objc func clickOnTextEventFunc(textField: UITextField) {
+        UIView.animate(withDuration: 0.25,  animations: {
+            self.magnifyImage.alpha = 1
+            self.cancelButtonOutler.alpha = 1
+            self.view.layoutIfNeeded()
+        })
         searchHistoryView.reloadData()
         searchHistoryShowMustGoOn()
     }
@@ -143,11 +149,17 @@ class ImageCollectionViewController: UIViewController,  UICollectionViewDelegate
         searchHistoryView.dataSource = self
     }
     
+    func setMagnifyAndCancelButtonAlphasDefault() {
+        cancelButtonOutler.alpha = 0
+        magnifyImage.alpha = 0.5
+    }
+    
     func setAlphasDefault() {
         subViewForSpinner.alpha = 0
         searchCollectionView.alpha = 0
         popularCollectionView.alpha = 1
         searchHistoryView.alpha = 0
+        setMagnifyAndCancelButtonAlphasDefault()
     }
     
     func setConstraintMode() {
@@ -392,8 +404,14 @@ class ImageCollectionViewController: UIViewController,  UICollectionViewDelegate
     
     /// Mark: - UIScrollView delegate implementaion block
     func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
+        searchTextField.endEditing(true)
+        
         lastContentOffset = 0
         searchHistoryHide()
+        UIView.animate(withDuration: 0.25,  animations: {
+            self.setMagnifyAndCancelButtonAlphasDefault()
+            self.view.layoutIfNeeded()
+        })
     }
     
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
@@ -475,6 +493,7 @@ extension Dictionary {
         }
     }
 }
+
 extension UIViewController {
     func setStatusBarStyle(_ style: UIStatusBarStyle) {
         if let statusBar = UIApplication.shared.value(forKey: "statusBar") as? UIView {

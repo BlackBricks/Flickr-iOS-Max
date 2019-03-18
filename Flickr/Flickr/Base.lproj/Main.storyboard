@@ -109,14 +109,14 @@
                                         <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                     </imageView>
                                     <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="Search Flickr" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="Slu-hn-Enb">
-                                        <rect key="frame" x="72" y="17" width="191" height="26"/>
+                                        <rect key="frame" x="72" y="16.5" width="203" height="27"/>
                                         <color key="backgroundColor" white="0.33333333329999998" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <fontDescription key="fontDescription" name="Cormorant-Italic" family="Cormorant" pointSize="22"/>
                                         <textInputTraits key="textInputTraits"/>
                                     </textField>
                                     <button opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="LCy-dP-L24" customClass="DesignableButton" customModule="Flickr" customModuleProvider="target">
-                                        <rect key="frame" x="275" y="12" width="88" height="36"/>
+                                        <rect key="frame" x="287" y="12" width="76" height="36"/>
                                         <fontDescription key="fontDescription" name="Cormorant-Italic" family="Cormorant" pointSize="18"/>
                                         <inset key="contentEdgeInsets" minX="16" minY="8" maxX="16" maxY="8"/>
                                         <state key="normal" title="Cancel">
@@ -242,10 +242,12 @@
                     </view>
                     <navigationItem key="navigationItem" id="6sP-Eu-keU"/>
                     <connections>
+                        <outlet property="cancelButtonOutler" destination="LCy-dP-L24" id="Ee2-FD-JeI"/>
+                        <outlet property="magnifyImage" destination="Cjb-MD-n8h" id="Gch-p1-475"/>
                         <outlet property="popularCollectionView" destination="eZF-q3-2Qc" id="cW5-Ha-c15"/>
                         <outlet property="searchCollectionView" destination="nf0-BU-07p" id="Dhd-O1-fep"/>
                         <outlet property="searchConstraint" destination="DTb-jW-EMa" id="jLS-Sz-XWt"/>
-                        <outlet property="searchContainerView" destination="phU-pP-vca" id="a83-y9-bc4"/>
+                        <outlet property="searchContainerView" destination="phU-pP-vca" id="3Ln-ly-ZCZ"/>
                         <outlet property="searchHistoryView" destination="aeO-4J-rt9" id="Zwi-d1-jYm"/>
                         <outlet property="searchTextField" destination="Slu-hn-Enb" id="Bvz-OD-927"/>
                         <outlet property="subViewForSpinner" destination="ekC-4U-sMs" id="K7A-rk-cG0"/>
@@ -281,7 +283,7 @@
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="EgN-CH-YTQ">
-                                                    <rect key="frame" x="0.0" y="0.0" width="305" height="171"/>
+                                                    <rect key="frame" x="0.0" y="50" width="305" height="121"/>
                                                 </imageView>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="views" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumFontSize="9" highlighted="YES" translatesAutoresizingMaskIntoConstraints="NO" id="C0R-Nv-oKW">
                                                     <rect key="frame" x="0.0" y="197" width="305" height="21"/>
@@ -295,17 +297,42 @@
                                                     <nil key="textColor"/>
                                                     <color key="highlightedColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                 </label>
+                                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="5OE-Ce-4jf">
+                                                    <rect key="frame" x="263" y="12" width="30" height="33"/>
+                                                    <fontDescription key="fontDescription" name="Cormorant-Italic" family="Cormorant" pointSize="17"/>
+                                                    <state key="normal" title="Back">
+                                                        <color key="titleColor" red="1" green="0.51389859169999996" blue="0.096916685050000007" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                                    </state>
+                                                    <userDefinedRuntimeAttributes>
+                                                        <userDefinedRuntimeAttribute type="number" keyPath="cornerRadius">
+                                                            <real key="value" value="1"/>
+                                                        </userDefinedRuntimeAttribute>
+                                                        <userDefinedRuntimeAttribute type="color" keyPath="borderColor">
+                                                            <color key="value" cocoaTouchSystemColor="viewFlipsideBackgroundColor"/>
+                                                        </userDefinedRuntimeAttribute>
+                                                        <userDefinedRuntimeAttribute type="number" keyPath="borderWidth">
+                                                            <real key="value" value="1"/>
+                                                        </userDefinedRuntimeAttribute>
+                                                    </userDefinedRuntimeAttributes>
+                                                    <connections>
+                                                        <action selector="backButton:" destination="9n5-eU-7LZ" eventType="touchUpInside" id="qXi-YM-3VL"/>
+                                                        <segue destination="nwM-E6-0x3" kind="show" identifier="Show main view" id="y0T-q8-qV2"/>
+                                                    </connections>
+                                                </button>
                                             </subviews>
                                         </view>
                                         <constraints>
                                             <constraint firstAttribute="trailing" secondItem="EgN-CH-YTQ" secondAttribute="trailing" id="9Lp-3c-xR9"/>
                                             <constraint firstItem="EgN-CH-YTQ" firstAttribute="leading" secondItem="bzB-zs-SNR" secondAttribute="leading" id="C0u-ln-gOD"/>
-                                            <constraint firstItem="EgN-CH-YTQ" firstAttribute="top" secondItem="bzB-zs-SNR" secondAttribute="top" id="Kya-AE-TdH"/>
                                             <constraint firstItem="SFb-2h-rIp" firstAttribute="top" secondItem="EgN-CH-YTQ" secondAttribute="bottom" id="Ot3-Zg-aPG"/>
+                                            <constraint firstItem="EgN-CH-YTQ" firstAttribute="top" secondItem="bzB-zs-SNR" secondAttribute="top" constant="50" id="PcN-T2-IaJ"/>
+                                            <constraint firstAttribute="trailing" secondItem="5OE-Ce-4jf" secondAttribute="trailing" constant="12" id="Qjm-rt-la6"/>
+                                            <constraint firstItem="5OE-Ce-4jf" firstAttribute="top" secondItem="bzB-zs-SNR" secondAttribute="top" constant="12" id="TyZ-HS-oYz"/>
                                             <constraint firstAttribute="bottom" secondItem="C0R-Nv-oKW" secondAttribute="bottom" id="WGu-oZ-78C"/>
                                             <constraint firstAttribute="trailing" secondItem="C0R-Nv-oKW" secondAttribute="trailing" id="byb-9Z-e1R"/>
                                             <constraint firstAttribute="trailing" secondItem="SFb-2h-rIp" secondAttribute="trailing" id="gLO-nJ-pWu"/>
                                             <constraint firstItem="SFb-2h-rIp" firstAttribute="leading" secondItem="bzB-zs-SNR" secondAttribute="leading" id="kQp-bV-Ndt"/>
+                                            <constraint firstItem="5OE-Ce-4jf" firstAttribute="leading" secondItem="bzB-zs-SNR" secondAttribute="leadingMargin" constant="255" id="mZW-Z5-9Fv"/>
                                             <constraint firstItem="C0R-Nv-oKW" firstAttribute="top" secondItem="SFb-2h-rIp" secondAttribute="bottom" constant="5" id="uWZ-wA-Mud"/>
                                             <constraint firstItem="C0R-Nv-oKW" firstAttribute="leading" secondItem="bzB-zs-SNR" secondAttribute="leading" id="vmX-Lh-ZBH"/>
                                         </constraints>
@@ -333,7 +360,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="1Kp-hg-pV1" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2036" y="-636"/>
+            <point key="canvasLocation" x="2036" y="-636.4317841079461"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="hcA-9A-2w1">
@@ -357,6 +384,7 @@
         <image name="magnify" width="48" height="48"/>
     </resources>
     <inferredMetricsTieBreakers>
-        <segue reference="Ilg-0R-Y7E"/>
+        <segue reference="gOe-yW-xO3"/>
+        <segue reference="y0T-q8-qV2"/>
     </inferredMetricsTieBreakers>
 </document>
