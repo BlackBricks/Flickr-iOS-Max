@@ -5,4 +5,5 @@ target 'Flickr' do
 
 pod 'Alamofire', '4.4.0'
 pod 'SDWebImage', '4.4.5'
+pod 'CRRefresh'
 end

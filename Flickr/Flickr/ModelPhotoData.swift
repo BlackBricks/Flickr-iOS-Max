@@ -20,11 +20,11 @@ class Photo {
     class func getPhotos (from photoArray: [[String: AnyObject]]) -> [Photo] {
         let photo = photoArray.map({ (itemArray) -> Photo in
             let interestInfo = Photo()
-            interestInfo.url = itemArray["url_s"] as? String
+            interestInfo.url = itemArray["url_t"] as? String
             interestInfo.title = itemArray["title"] as? String
             interestInfo.views = itemArray["views"] as? String
-            interestInfo.heightImage = itemArray["height_s"] as? String
-            interestInfo.widthImage = itemArray["width_s"] as? String
+            interestInfo.heightImage = itemArray["height_t"] as? String
+            interestInfo.widthImage = itemArray["width_t"] as? String
             interestInfo.nameOwner = itemArray["owner_name"] as? String
             interestInfo.icon = itemArray["icon_server"] as? String
             return interestInfo
