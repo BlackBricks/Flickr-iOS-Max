@@ -88,7 +88,7 @@ class ImageCollectionViewController: UIViewController,  UICollectionViewDelegate
         setDelegates_DataSources()
         setAlphasDefault()
         setConstraintMode()
-        setBehaviorTextField()
+        setBehaviorTextBar()
         setXibCellForRecentTableViewCell()
         searchTextField.clearButtonMode = .always
         //        addPullRefresh()
@@ -164,13 +164,7 @@ class ImageCollectionViewController: UIViewController,  UICollectionViewDelegate
     
     
     @objc func clickOnTextEventFunc(textField: UITextField) {
-        UIView.animate(withDuration: 0.25,  animations: {
-            self.magnifyImage.alpha = 1
-            self.cancelButtonOutler.alpha = 1
-            self.view.layoutIfNeeded()
-        })
-        searchHistoryView.reloadData()
-        searchHistoryShowMustGoOn()
+        startEditingEvent()
     }
     
     func setDelegates_DataSources() {
@@ -201,7 +195,25 @@ class ImageCollectionViewController: UIViewController,  UICollectionViewDelegate
         searchConstraint.isActive = true
     }
     
-    func setBehaviorTextField() {
+    @objc func tapImageAction(recognizer: UITapGestureRecognizer) {
+        searchTextField.becomeFirstResponder()
+        startEditingEvent()
+    }
+    
+    func startEditingEvent() {
+        UIView.animate(withDuration: 0.25,  animations: {
+            self.magnifyImage.alpha = 1
+            self.cancelButtonOutler.alpha = 1
+            self.view.layoutIfNeeded()
+        })
+        searchHistoryView.reloadData()
+        searchHistoryShowMustGoOn()
+    }
+    
+    func setBehaviorTextBar() {
+        let mytapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(tapImageAction))
+        magnifyImage.isUserInteractionEnabled = true
+        magnifyImage.addGestureRecognizer(mytapGestureRecognizer)
         searchTextField.addTarget(self, action: #selector(clickOnTextEventFunc), for: UIControl.Event.touchDown)
         searchTextField.addTarget(self, action: #selector(editingTextEventFunc), for: UIControl.Event.editingChanged)
         searchTextField.attributedPlaceholder = NSAttributedString(string: "Search Flickr",
