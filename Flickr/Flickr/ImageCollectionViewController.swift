@@ -91,7 +91,7 @@ class ImageCollectionViewController: UIViewController,  UICollectionViewDelegate
         setBehaviorTextField()
         setXibCellForRecentTableViewCell()
         searchTextField.clearButtonMode = .always
-        addPullRefresh()
+        //        addPullRefresh()
         guard let defaults = UserDefaults.standard.array(forKey: "historySearch") else {
             return
         }
@@ -102,8 +102,11 @@ class ImageCollectionViewController: UIViewController,  UICollectionViewDelegate
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        rebuildTableSize()
-        performFlickrPopular()
+        if searchImageData.isEmpty && popularImageData.isEmpty {
+            rebuildTableSize()
+            performFlickrPopular()
+            return
+        }
     }
     
     override func viewDidLayoutSubviews(){
@@ -158,7 +161,7 @@ class ImageCollectionViewController: UIViewController,  UICollectionViewDelegate
             self.performFlickrSearch(url: lastValue)
         }
     }
-
+    
     
     @objc func clickOnTextEventFunc(textField: UITextField) {
         UIView.animate(withDuration: 0.25,  animations: {
@@ -189,6 +192,10 @@ class ImageCollectionViewController: UIViewController,  UICollectionViewDelegate
         setMagnifyAndCancelButtonAlphasDefault()
     }
     
+    func scrollBack(view: UICollectionView, indexPath: IndexPath) {
+        view.scrollToItem(at: indexPath, at: .centeredVertically, animated: false)
+    }
+    
     func setConstraintMode() {
         searchConstraint.priority = UILayoutPriority(rawValue: 999)
         searchConstraint.isActive = true
@@ -207,6 +214,7 @@ class ImageCollectionViewController: UIViewController,  UICollectionViewDelegate
         searchHistoryView.clipsToBounds = false
         searchHistoryView.layer.masksToBounds = false
     }
+    
     func addPullRefresh() {
         let refreshControl = UIRefreshControl()
         refreshControl.addTarget(self, action: #selector(refreshCurrentCollectionViewByPullToUpdate), for: .valueChanged)
@@ -292,11 +300,11 @@ class ImageCollectionViewController: UIViewController,  UICollectionViewDelegate
             return
         }
         isNotUpdating = false
-                   subViewForSpinner.alpha = 1
-            let pageCalculated = String(pageFlickr)
-            Alamofire.request(Router.search(text: url, page: pageCalculated)).responseJSON { (response) in
-                self.handlingSearchResponseData(data: response)
-            }
+        subViewForSpinner.alpha = 1
+        let pageCalculated = String(pageFlickr)
+        Alamofire.request(Router.search(text: url, page: pageCalculated)).responseJSON { (response) in
+            self.handlingSearchResponseData(data: response)
+        }
     }
     
     private func performFlickrPopular() {
@@ -304,11 +312,11 @@ class ImageCollectionViewController: UIViewController,  UICollectionViewDelegate
             return
         }
         isNotUpdating = false
-                   subViewForSpinner.alpha = 1
-            let pageCalculated = String(pageFlickr)
-            Alamofire.request(Router.popular(page: pageCalculated)).responseJSON { (response) in
-                self.handlingPopularResponseData(data: response)
-            }
+        subViewForSpinner.alpha = 1
+        let pageCalculated = String(pageFlickr)
+        Alamofire.request(Router.popular(page: pageCalculated)).responseJSON { (response) in
+            self.handlingPopularResponseData(data: response)
+        }
     }
     
     func handlingPopularResponseData (data: DataResponse<Any> ) {
@@ -326,6 +334,7 @@ class ImageCollectionViewController: UIViewController,  UICollectionViewDelegate
                 print("Error parse data")
                 return
         }
+        
         DispatchQueue.global(qos: .background).async {
             let photos = Photo.getPhotos(from : photosData)
             if self.pageFlickr > 1 {
@@ -353,6 +362,7 @@ class ImageCollectionViewController: UIViewController,  UICollectionViewDelegate
         }
     }
     
+    
     func handlingSearchResponseData (data: DataResponse<Any> ) {
         let searchCollectionViewWidth = searchCollectionView.frame.size.width
         guard data.result.isSuccess else {
@@ -378,7 +388,6 @@ class ImageCollectionViewController: UIViewController,  UICollectionViewDelegate
             let laySizes: [CGSize] = self.searchImageSizes.lay_justify(for: searchCollectionViewWidth - ConstantNumbers.basicIndent,
                                                                        preferredHeight: ConstantNumbers.justPrefferedHeight )
             self.searchImageSizes = laySizes
-            
             DispatchQueue.main.async() {
                 self.searchCollectionView?.reloadData()
                 self.showSearchCollectionView()
@@ -437,7 +446,6 @@ class ImageCollectionViewController: UIViewController,  UICollectionViewDelegate
         return UICollectionViewCell()
     }
     
-    
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         if isSearching == false {
             return popularImageSizes[indexPath.row]
@@ -463,12 +471,8 @@ class ImageCollectionViewController: UIViewController,  UICollectionViewDelegate
         }
         if collectionView == self.searchCollectionView {
             if indexPath.row == (pageFlickr * ConstantNumbers.perPage) - ConstantNumbers.lastCells {
-                subViewForSpinner.alpha = 1
                 pageFlickr += 1
                 performTextSearch()
-                DispatchQueue.main.async() {
-                    self.subViewForSpinner.alpha = 0
-                }
             }
         }
     }
@@ -479,7 +483,7 @@ class ImageCollectionViewController: UIViewController,  UICollectionViewDelegate
             searchTextField.endEditing(true)
             lastContentOffset = 0
             searchHistoryHide()
-
+            
         }
     }
     

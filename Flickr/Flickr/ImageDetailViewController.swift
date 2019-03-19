@@ -8,20 +8,22 @@
 
 import UIKit
 
-class ImageDetailViewController: UIViewController, UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
-    
+class ImageDetailViewController: UIViewController, UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, ImageDetailViewCellDelegate {
+
     var detailPhotoData = [Photo]()
     var indexCell: IndexPath?
     let BackIdentifier = "Show main view"
+    
+    @IBOutlet weak var collectionView: UICollectionView!
+    @IBOutlet weak var bigSpinner: UIActivityIndicatorView!
     
     override func viewDidLoad() {
         super.viewDidLoad()
         collectionView.delegate = self
         collectionView.dataSource = self
+        collectionView.alpha = 0
     }
-    @IBOutlet weak var collectionView: UICollectionView!
-    @IBOutlet weak var bigSpinner: UIActivityIndicatorView!
-    
+ 
     override func viewDidAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         bigSpinner.startAnimating()
@@ -30,33 +32,9 @@ class ImageDetailViewController: UIViewController, UICollectionViewDelegate, UIC
         }
         collectionView?.scrollToItem(at: indexPath, at: .left, animated: false)
         bigSpinner.stopAnimating()
+        collectionView.alpha = 1
     }
-    
-//    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-//        guard let identifier = segue.identifier else {
-//            return
-//        }
-//        if identifier == BackIdentifier,
-//            let icvc = segue.destination as? ImageDetailViewController,
-//            let cell = sender as? ImageDetailViewCell,
-//            let indexPath = self.searchCollectionView!.indexPath(for: cell) {
-//            gvcvc.detailPhotoData = searchImageData
-//            gvcvc.indexCell = indexPath
-//        }
-//        if identifier == Constants.SegueIdentifier.detailSegueFromPopulariew,
-//            let gvcvc = segue.destination as? ImageDetailViewController,
-//            let cell = sender as? ImageCollectionViewCell,
-//            let indexPath = self.popularCollectionView!.indexPath(for: cell) {
-//            gvcvc.detailPhotoData = popularImageData
-//            gvcvc.indexCell = indexPath
-//        }
-//    }
-    
-    
-    @IBAction func backButton(_ sender: UIButton) {
-        
-    }
-    
+
     func numberOfSections(in collectionView: UICollectionView) -> Int {
         return 1
     }
@@ -76,9 +54,9 @@ class ImageDetailViewController: UIViewController, UICollectionViewDelegate, UIC
         guard let url = detailPhotoData[indexPath.row].url else {
             return cellPopular
         }
+        imageCell.delegate = self
         imageCell.fetchImage(url: url)
         imageCell.imageView.contentMode = .scaleAspectFit
-//        let viewsImage = detailPhotoData[indexPath.row].views
         guard let titleText = detailPhotoData[indexPath.row].title else {
             return cellPopular
         }
@@ -87,7 +65,6 @@ class ImageDetailViewController: UIViewController, UICollectionViewDelegate, UIC
             return cellPopular
         }
         imageCell.viewText.text = "Views: \(viewText)"
-
         return cellPopular
     }
 
@@ -98,6 +75,9 @@ class ImageDetailViewController: UIViewController, UICollectionViewDelegate, UIC
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
         return 0
     }
-        
+    
+    func didTapBackButton(_ sender: ImageDetailViewCell) {
+      _ = navigationController?.popViewController(animated: true)
+    }
 }
 

@@ -10,9 +10,7 @@ import UIKit
 import SDWebImage
 
 class ImageCollectionViewCell: UICollectionViewCell {
-    
-
-    var imageArray: [[String: AnyObject]]?
+   var imageArray: [[String: AnyObject]]?
     @IBOutlet weak var imageView: UIImageView!
     
     func fetchImage(url: String?) {
