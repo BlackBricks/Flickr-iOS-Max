@@ -16,19 +16,20 @@ class ImageDetailViewController: UIViewController, UICollectionViewDelegate, UIC
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        collectionView.alpha = 0
         collectionView.delegate = self
         collectionView.dataSource = self
     }
     @IBOutlet weak var collectionView: UICollectionView!
-
+    @IBOutlet weak var bigSpinner: UIActivityIndicatorView!
+    
     override func viewDidAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        bigSpinner.startAnimating()
         guard let indexPath = indexCell else {
             return
         }
         collectionView?.scrollToItem(at: indexPath, at: .left, animated: false)
-        collectionView.alpha = 1
+        bigSpinner.stopAnimating()
     }
     
 //    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
@@ -75,21 +76,28 @@ class ImageDetailViewController: UIViewController, UICollectionViewDelegate, UIC
         guard let url = detailPhotoData[indexPath.row].url else {
             return cellPopular
         }
-        let titleText = detailPhotoData[indexPath.row].title
-        imageCell.titleText.text = "Title: \(titleText)"
-        let viewsImage = detailPhotoData[indexPath.row].views
-        imageCell.viewText.text = "Title: \(titleText)"
         imageCell.fetchImage(url: url)
         imageCell.imageView.contentMode = .scaleAspectFit
+//        let viewsImage = detailPhotoData[indexPath.row].views
+        guard let titleText = detailPhotoData[indexPath.row].title else {
+            return cellPopular
+        }
+        imageCell.titleText.text = "Title: \(titleText)"
+        guard let viewText = detailPhotoData[indexPath.row].views else {
+            return cellPopular
+        }
+        imageCell.viewText.text = "Views: \(viewText)"
+
         return cellPopular
     }
-    
+
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         return CGSize(width: collectionView.bounds.size.width, height: collectionView.bounds.size.height)
     }
-    
+
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
         return 0
     }
+        
 }
 

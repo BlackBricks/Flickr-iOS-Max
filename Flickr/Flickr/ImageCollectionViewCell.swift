@@ -11,6 +11,7 @@ import SDWebImage
 
 class ImageCollectionViewCell: UICollectionViewCell {
     
+
     var imageArray: [[String: AnyObject]]?
     @IBOutlet weak var imageView: UIImageView!
     
