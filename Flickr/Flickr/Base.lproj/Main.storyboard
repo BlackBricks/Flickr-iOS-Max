@@ -23,6 +23,10 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="XXG-KU-f7x">
+                                <rect key="frame" x="5" y="80" width="365" height="587"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                            </view>
                             <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" style="gray" translatesAutoresizingMaskIntoConstraints="NO" id="tQv-eq-G0g">
                                 <rect key="frame" x="0.0" y="130" width="375" height="20"/>
                             </activityIndicatorView>
@@ -220,11 +224,14 @@
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
                             <constraint firstAttribute="trailing" secondItem="ekC-4U-sMs" secondAttribute="trailing" constant="8" id="1pN-x1-5we"/>
+                            <constraint firstItem="XXG-KU-f7x" firstAttribute="leading" secondItem="PiP-4Q-qhI" secondAttribute="leading" constant="5" id="2St-CB-gby"/>
+                            <constraint firstItem="PiP-4Q-qhI" firstAttribute="bottom" secondItem="XXG-KU-f7x" secondAttribute="bottom" id="4Q0-JX-BYA"/>
                             <constraint firstItem="PiP-4Q-qhI" firstAttribute="trailing" secondItem="nf0-BU-07p" secondAttribute="trailing" constant="2" id="AOy-z4-o6f"/>
                             <constraint firstItem="nf0-BU-07p" firstAttribute="leading" secondItem="PiP-4Q-qhI" secondAttribute="leading" constant="2" id="CUW-ee-geq"/>
                             <constraint firstItem="phU-pP-vca" firstAttribute="top" secondItem="PiP-4Q-qhI" secondAttribute="top" priority="999" id="DTb-jW-EMa"/>
                             <constraint firstItem="phU-pP-vca" firstAttribute="top" secondItem="PiP-4Q-qhI" secondAttribute="top" priority="750" constant="-100" id="G4S-Jd-F4J"/>
                             <constraint firstItem="phU-pP-vca" firstAttribute="trailing" secondItem="PiP-4Q-qhI" secondAttribute="trailing" id="GOX-HG-R1f"/>
+                            <constraint firstItem="XXG-KU-f7x" firstAttribute="top" secondItem="PiP-4Q-qhI" secondAttribute="top" constant="60" id="GgK-4a-3ec"/>
                             <constraint firstItem="eZF-q3-2Qc" firstAttribute="bottom" secondItem="PiP-4Q-qhI" secondAttribute="bottom" id="M1Y-q3-2z9"/>
                             <constraint firstItem="PiP-4Q-qhI" firstAttribute="trailing" secondItem="OzU-nZ-xvI" secondAttribute="trailing" id="PcW-eE-6UW"/>
                             <constraint firstItem="OzU-nZ-xvI" firstAttribute="leading" secondItem="PiP-4Q-qhI" secondAttribute="leading" id="PtH-0H-5aP"/>
@@ -234,6 +241,7 @@
                             <constraint firstItem="aeO-4J-rt9" firstAttribute="top" secondItem="phU-pP-vca" secondAttribute="bottom" constant="-10" id="Z7K-Wp-GYp"/>
                             <constraint firstItem="aeO-4J-rt9" firstAttribute="leading" secondItem="PiP-4Q-qhI" secondAttribute="leading" constant="30" id="ZNz-zY-WEl"/>
                             <constraint firstItem="OzU-nZ-xvI" firstAttribute="top" secondItem="CKk-4e-jM0" secondAttribute="top" id="abK-Zf-i3H"/>
+                            <constraint firstItem="PiP-4Q-qhI" firstAttribute="trailing" secondItem="XXG-KU-f7x" secondAttribute="trailing" constant="5" id="b2t-IR-BOY"/>
                             <constraint firstItem="PiP-4Q-qhI" firstAttribute="bottom" secondItem="aeO-4J-rt9" secondAttribute="bottom" id="dcV-NH-lge"/>
                             <constraint firstItem="PiP-4Q-qhI" firstAttribute="bottom" secondItem="ekC-4U-sMs" secondAttribute="bottom" constant="8" id="gyV-G7-PFx"/>
                             <constraint firstItem="phU-pP-vca" firstAttribute="leading" secondItem="PiP-4Q-qhI" secondAttribute="leading" id="jEc-Di-8vr"/>
@@ -257,6 +265,7 @@
                         <outlet property="searchHistoryView" destination="aeO-4J-rt9" id="Zwi-d1-jYm"/>
                         <outlet property="searchTextField" destination="Slu-hn-Enb" id="Bvz-OD-927"/>
                         <outlet property="subViewForSpinner" destination="ekC-4U-sMs" id="K7A-rk-cG0"/>
+                        <outlet property="subviewForTapEvent" destination="XXG-KU-f7x" id="kNv-Vw-jak"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="aYM-57-5yT" userLabel="First Responder" sceneMemberID="firstResponder"/>
