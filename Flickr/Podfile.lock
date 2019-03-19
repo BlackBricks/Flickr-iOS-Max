@@ -1,26 +1,22 @@
 PODS:
   - Alamofire (4.4.0)
-  - CRRefresh (1.1.3)
   - SDWebImage (4.4.5):
     - SDWebImage/Core (= 4.4.5)
   - SDWebImage/Core (4.4.5)
 
 DEPENDENCIES:
   - Alamofire (= 4.4.0)
-  - CRRefresh
   - SDWebImage (= 4.4.5)
 
 SPEC REPOS:
   https://github.com/cocoapods/specs.git:
     - Alamofire
-    - CRRefresh
     - SDWebImage
 
 SPEC CHECKSUMS:
   Alamofire: dc44b1600b800eb63da6a19039a0083d62a6a62d
-  CRRefresh: 1415d4ae06837fa7bb064c44f2e102f3ef517044
   SDWebImage: ecc03494e973b93b80213649d32175f8d2d17d4d
 
-PODFILE CHECKSUM: 0de9f5feb2f0511bd938f941b1eebbbf5cd3ac11
+PODFILE CHECKSUM: 7f790cfc04a9137c84ed0cfd88192896a39c1a33
 
 COCOAPODS: 1.6.1

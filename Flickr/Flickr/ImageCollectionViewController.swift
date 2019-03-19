@@ -11,24 +11,27 @@ import UIKit
 import Alamofire
 import CRRefresh
 
+
 class ImageCollectionViewController: UIViewController,  UICollectionViewDelegate, UICollectionViewDataSource, UITextFieldDelegate, UICollectionViewDelegateFlowLayout, UIScrollViewDelegate, UITableViewDelegate, UITableViewDataSource, recentTableCellDelegate {
     
     /// Mark: - variables for searchCollectionView
     var searchImageData: [Photo] = [Photo]()
     var searchImageSizes: [CGSize] = [CGSize]()
+    var lastEnteredTextValue: String?
     
     /// Mark: - variables for popularCollectionView
     var popularImageData: [Photo] = [Photo]()
     var popularImageSizes: [CGSize] = [CGSize]()
     
     /// Mark: - common
-    private let refreshControl = UIRefreshControl()
     var lastContentOffset: CGFloat = 0
     var isSearching = false
     var pageFlickr = 1
     var recentIndexCell: Int?
     var actualPosition: CGPoint?
     var searchHistoryList = [String]()
+    var isNotUpdating = true
+    var insets = UIEdgeInsets(top: 150, left: 0, bottom: 0, right: 0)
     
     /// Mark: - Outlets
     @IBOutlet weak var magnifyImage: UIImageView!
@@ -88,13 +91,13 @@ class ImageCollectionViewController: UIViewController,  UICollectionViewDelegate
         setConstraintMode()
         setBehaviorTextField()
         setXibCellForRecentTableViewCell()
-//        addPullRefresh()
         searchTextField.clearButtonMode = .always
+        addPullRefresh()
         guard let defaults = UserDefaults.standard.array(forKey: "historySearch") else {
             return
         }
         if !defaults.isEmpty {
-        searchHistoryList = defaults as! [String]
+            searchHistoryList = defaults as! [String]
         }
     }
     
@@ -128,19 +131,6 @@ class ImageCollectionViewController: UIViewController,  UICollectionViewDelegate
             gvcvc.indexCell = indexPath
         }
     }
-//    func addPullRefresh() {
-//        popularCollectionView.cr.addHeadRefresh(animator: NormalHeaderAnimator()) { [weak self] in
-//
-//            self?.performFlickrPopular()
-//            print("reload")
-//            DispatchQueue.main.asyncAfter(deadline: .now() + 2, execute: {
-//                /// Stop refresh when your job finished, it will reset refresh footer if completion is true
-//                self?.popularCollectionView.cr.endHeaderRefresh()
-//            })
-//        }
-//        /// manual refresh
-//        popularCollectionView.cr.beginHeaderRefresh()
-//    }
     
     @IBAction func cancelButton(_ sender: DesignableButton) {
         searchTextField.text = ""
@@ -155,6 +145,21 @@ class ImageCollectionViewController: UIViewController,  UICollectionViewDelegate
     @objc func editingTextEventFunc(textField: UITextField) {
         searchHistoryHide()
     }
+    
+    @objc func refreshCurrentCollectionViewByPullToUpdate() {
+        print("reload")
+        pageFlickr = 1
+        isNotUpdating = true
+        if self.searchCollectionView.alpha == 0 {
+            self.performFlickrPopular()
+        } else {
+            guard let lastValue = self.lastEnteredTextValue else {
+                return
+            }
+            self.performFlickrSearch(url: lastValue)
+        }
+    }
+
     
     @objc func clickOnTextEventFunc(textField: UITextField) {
         UIView.animate(withDuration: 0.25,  animations: {
@@ -203,7 +208,14 @@ class ImageCollectionViewController: UIViewController,  UICollectionViewDelegate
         searchHistoryView.clipsToBounds = false
         searchHistoryView.layer.masksToBounds = false
     }
-    
+    func addPullRefresh() {
+        let refreshControl = UIRefreshControl()
+        refreshControl.addTarget(self, action: #selector(refreshCurrentCollectionViewByPullToUpdate), for: .valueChanged)
+        searchCollectionView.refreshControl = refreshControl
+        DispatchQueue.main.async {
+            self.searchCollectionView.refreshControl?.endRefreshing()
+        }
+    }
     
     func searchHistoryHide() {
         UIView.animate(withDuration: 0.1, animations: {
@@ -212,9 +224,9 @@ class ImageCollectionViewController: UIViewController,  UICollectionViewDelegate
     }
     
     func hideSearchCollectionView() {
-    UIView.animate(withDuration: 0.25,  animations: {
-        self.searchCollectionView.alpha = 0
-        self.searchCollectionView.isHidden = true
+        UIView.animate(withDuration: 0.25,  animations: {
+            self.searchCollectionView.alpha = 0
+            self.searchCollectionView.isHidden = true
         })
     }
     
@@ -250,6 +262,7 @@ class ImageCollectionViewController: UIViewController,  UICollectionViewDelegate
         }
         updateSearchHistory(text: searchingText)
         performFlickrSearch(url: searchingText)
+        lastEnteredTextValue = searchingText
         isSearching = true
         return
     }
@@ -267,7 +280,7 @@ class ImageCollectionViewController: UIViewController,  UICollectionViewDelegate
     func clearUserData(){
         UserDefaults.standard.removeObject(forKey: "historySearch")
     }
-
+    
     
     func displayAlert(_ message: String) {
         let alert = UIAlertController(title: "Alert", message: message, preferredStyle: UIAlertController.Style.alert)
@@ -276,21 +289,27 @@ class ImageCollectionViewController: UIViewController,  UICollectionViewDelegate
     }
     
     private func performFlickrSearch(url: String) {
-        if Thread.isMainThread {
+        guard isNotUpdating else {
+            return
+        }
+        isNotUpdating = false
+                   subViewForSpinner.alpha = 1
             let pageCalculated = String(pageFlickr)
             Alamofire.request(Router.search(text: url, page: pageCalculated)).responseJSON { (response) in
                 self.handlingSearchResponseData(data: response)
             }
-        }
     }
     
     private func performFlickrPopular() {
-        if Thread.isMainThread {
+        guard isNotUpdating else {
+            return
+        }
+        isNotUpdating = false
+                   subViewForSpinner.alpha = 1
             let pageCalculated = String(pageFlickr)
             Alamofire.request(Router.popular(page: pageCalculated)).responseJSON { (response) in
                 self.handlingPopularResponseData(data: response)
             }
-        }
     }
     
     func handlingPopularResponseData (data: DataResponse<Any> ) {
@@ -327,12 +346,15 @@ class ImageCollectionViewController: UIViewController,  UICollectionViewDelegate
                 self.popularCollectionView?.reloadData()
                 self.hideSearchCollectionView()
                 self.subViewForSpinner.alpha = 0
+                self.isNotUpdating = true
+                if self.popularImageData.count == 0 {
+                    self.displayAlert("Oops! it's a TRAP! Flickr service have problem and return 0 values, try to search different values or wait untill Flickr start working!")
+                }
             }
         }
     }
     
     func handlingSearchResponseData (data: DataResponse<Any> ) {
-        subViewForSpinner.alpha = 1
         let searchCollectionViewWidth = searchCollectionView.frame.size.width
         guard data.result.isSuccess else {
             self.displayAlert("Error get data \(String(describing: data.result.error))")
@@ -362,6 +384,7 @@ class ImageCollectionViewController: UIViewController,  UICollectionViewDelegate
                 self.searchCollectionView?.reloadData()
                 self.showSearchCollectionView()
                 self.subViewForSpinner.alpha = 0
+                self.isNotUpdating = true
             }
         }
     }
@@ -453,34 +476,35 @@ class ImageCollectionViewController: UIViewController,  UICollectionViewDelegate
     
     /// Mark: - UIScrollView delegate implementaion block
     func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
-        searchTextField.endEditing(true)
-        lastContentOffset = 0
-        searchHistoryHide()
-        UIView.animate(withDuration: 0.25,  animations: {
-            self.setMagnifyAndCancelButtonAlphasDefault()
-            self.view.layoutIfNeeded()
-        })
+        if scrollView != searchHistoryView {
+            searchTextField.endEditing(true)
+            lastContentOffset = 0
+            searchHistoryHide()
+
+        }
     }
     
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        let velocityOfVerticalScroll = scrollView.panGestureRecognizer.velocity(in: scrollView.superview).y
-        let isEnoughSpaceForSearchTextField = scrollView.contentOffset.y >= ConstantNumbers.offsetForHideSearchText
-        let isScrollingDown = velocityOfVerticalScroll < 0
-        let isScrollingUp = velocityOfVerticalScroll > 0
-        if isScrollingUp {
-            self.view.layoutIfNeeded()
-            UIView.animate(withDuration: 0.25,  animations: {
-                self.searchConstraint.priority = UILayoutPriority(rawValue: 999)
+        if scrollView != searchHistoryView {
+            let velocityOfVerticalScroll = scrollView.panGestureRecognizer.velocity(in: scrollView.superview).y
+            let isEnoughSpaceForSearchTextField = scrollView.contentOffset.y >= ConstantNumbers.offsetForHideSearchText
+            let isScrollingDown = velocityOfVerticalScroll < 0
+            let isScrollingUp = velocityOfVerticalScroll > 0
+            if isScrollingUp {
                 self.view.layoutIfNeeded()
-            })
-        } else if isScrollingDown && isEnoughSpaceForSearchTextField {
-            self.view.layoutIfNeeded()
-            UIView.animate(withDuration: 0.25, animations: {
-                self.searchConstraint.priority = UILayoutPriority(rawValue: 500)
+                UIView.animate(withDuration: 0.25,  animations: {
+                    self.searchConstraint.priority = UILayoutPriority(rawValue: 999)
+                    self.view.layoutIfNeeded()
+                })
+            } else if isScrollingDown && isEnoughSpaceForSearchTextField {
                 self.view.layoutIfNeeded()
-            })
-        } else {
-            return
+                UIView.animate(withDuration: 0.25, animations: {
+                    self.searchConstraint.priority = UILayoutPriority(rawValue: 500)
+                    self.view.layoutIfNeeded()
+                })
+            } else {
+                return
+            }
         }
     }
     
