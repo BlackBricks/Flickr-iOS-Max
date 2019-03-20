@@ -35,7 +35,7 @@ Secret: 0ccd083217302f35
     static let searchParams = [
         "method": "flickr.photos.search",
         "api_key": "\(FlickrAPI.key)",
-        "extras": "url_t, views, owner_name, icon_server",
+        "extras": "url_t, views, owner_name, icon_server, url_m_ url_z, url_o",
         "format": "json",
         "nojsoncallback": "1",
         "safe_search": "0",
@@ -48,7 +48,7 @@ Secret: 0ccd083217302f35
     static let popularParams = [
         "method": "flickr.interestingness.getList",
         "api_key": "\(FlickrAPI.key)",
-        "extras": "url_t, views, owner_name, icon_server",
+        "extras": "url_t, views, owner_name, icon_server, url_m_ url_z, url_o",
         "format": "json",
         "nojsoncallback": "1",
         "safe_search": "0",

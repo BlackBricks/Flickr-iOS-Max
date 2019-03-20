@@ -27,9 +27,6 @@
                                 <rect key="frame" x="5" y="80" width="365" height="587"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                             </view>
-                            <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" style="gray" translatesAutoresizingMaskIntoConstraints="NO" id="tQv-eq-G0g">
-                                <rect key="frame" x="0.0" y="130" width="375" height="20"/>
-                            </activityIndicatorView>
                             <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" alpha="0.0" contentMode="scaleToFill" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="eZF-q3-2Qc">
                                 <rect key="frame" x="2" y="20" width="371" height="647"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
@@ -235,8 +232,6 @@
                             <constraint firstItem="eZF-q3-2Qc" firstAttribute="bottom" secondItem="PiP-4Q-qhI" secondAttribute="bottom" id="M1Y-q3-2z9"/>
                             <constraint firstItem="PiP-4Q-qhI" firstAttribute="trailing" secondItem="OzU-nZ-xvI" secondAttribute="trailing" id="PcW-eE-6UW"/>
                             <constraint firstItem="OzU-nZ-xvI" firstAttribute="leading" secondItem="PiP-4Q-qhI" secondAttribute="leading" id="PtH-0H-5aP"/>
-                            <constraint firstItem="PiP-4Q-qhI" firstAttribute="trailing" secondItem="tQv-eq-G0g" secondAttribute="trailing" id="ROL-eO-TCk"/>
-                            <constraint firstItem="tQv-eq-G0g" firstAttribute="leading" secondItem="PiP-4Q-qhI" secondAttribute="leading" id="Tyo-Yh-fsZ"/>
                             <constraint firstItem="nf0-BU-07p" firstAttribute="top" secondItem="PiP-4Q-qhI" secondAttribute="top" id="UYb-1m-tyI"/>
                             <constraint firstItem="aeO-4J-rt9" firstAttribute="top" secondItem="phU-pP-vca" secondAttribute="bottom" constant="-10" id="Z7K-Wp-GYp"/>
                             <constraint firstItem="aeO-4J-rt9" firstAttribute="leading" secondItem="PiP-4Q-qhI" secondAttribute="leading" constant="30" id="ZNz-zY-WEl"/>
@@ -250,7 +245,6 @@
                             <constraint firstItem="eZF-q3-2Qc" firstAttribute="leading" secondItem="PiP-4Q-qhI" secondAttribute="leading" constant="2" id="lK3-17-CKe"/>
                             <constraint firstItem="nf0-BU-07p" firstAttribute="bottom" secondItem="PiP-4Q-qhI" secondAttribute="bottom" id="n4f-mr-pPo"/>
                             <constraint firstItem="PiP-4Q-qhI" firstAttribute="trailing" secondItem="eZF-q3-2Qc" secondAttribute="trailing" constant="2" id="rbf-uh-puq"/>
-                            <constraint firstItem="tQv-eq-G0g" firstAttribute="top" secondItem="phU-pP-vca" secondAttribute="bottom" constant="50" id="rej-gu-VQ7"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="PiP-4Q-qhI"/>
                     </view>

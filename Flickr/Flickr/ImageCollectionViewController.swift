@@ -9,6 +9,7 @@
 
 import UIKit
 import Alamofire
+import KafkaRefresh
 
 
 class ImageCollectionViewController: UIViewController,  UICollectionViewDelegate, UICollectionViewDataSource, UITextFieldDelegate, UICollectionViewDelegateFlowLayout, UIScrollViewDelegate, UITableViewDelegate, UITableViewDataSource, recentTableCellDelegate {
@@ -17,10 +18,12 @@ class ImageCollectionViewController: UIViewController,  UICollectionViewDelegate
     var searchImageData: [Photo] = [Photo]()
     var searchImageSizes: [CGSize] = [CGSize]()
     var lastEnteredTextValue: String?
+    var originSizesBySearch: [CGSize] = [CGSize]()
     
     /// Mark: - variables for popularCollectionView
     var popularImageData: [Photo] = [Photo]()
     var popularImageSizes: [CGSize] = [CGSize]()
+    var originSizesByPopular: [CGSize] = [CGSize]()
     
     /// Mark: - common
     var weOnPopularCollectionView = true
@@ -58,6 +61,7 @@ class ImageCollectionViewController: UIViewController,  UICollectionViewDelegate
     enum Router: URLRequestConvertible {
         case search(text: String, page: String)
         case popular(page: String)
+        
         static let baseURLString = Constants.FlickrAPI.baseUrl
         
         // MARK: URLRequestConvertible
@@ -70,6 +74,7 @@ class ImageCollectionViewController: UIViewController,  UICollectionViewDelegate
                     searchParams["text"] = text
                     searchParams["page"] = page
                     return (Constants.FlickrAPI.path, searchParams)
+                    
                 case let .popular(page):
                     var popularParams = Constants.popularParams
                     popularParams["page"] = page
@@ -87,6 +92,8 @@ class ImageCollectionViewController: UIViewController,  UICollectionViewDelegate
     override func viewDidLoad() {
         super.viewDidLoad()
         definesPresentationContext = true
+//        searchCollectionView.footRefreshControl.autoRefreshOnFoot = true
+//        popularCollectionView.footRefreshControl.autoRefreshOnFoot = true
         setDelegates_DataSources()
         setAlphasDefault()
         setConstraintMode()
@@ -214,6 +221,8 @@ class ImageCollectionViewController: UIViewController,  UICollectionViewDelegate
     
     @objc func tapSuperViewAction(recognizer: UITapGestureRecognizer) {
         showCurrentCollectionView()
+        searchTextField.endEditing(true)
+        searchHistoryHide()
     }
     
     func startEditingEvent() {
@@ -367,7 +376,7 @@ class ImageCollectionViewController: UIViewController,  UICollectionViewDelegate
                 print("Error parse data")
                 return
         }
-        
+        print("\(value)")
         DispatchQueue.global(qos: .background).async {
             let photos = Photo.getPhotos(from : photosData)
             if self.pageFlickr > 1 {
@@ -395,7 +404,6 @@ class ImageCollectionViewController: UIViewController,  UICollectionViewDelegate
         }
     }
     
-    
     func handlingSearchResponseData (data: DataResponse<Any> ) {
         let searchCollectionViewWidth = searchCollectionView.frame.size.width
         guard data.result.isSuccess else {
@@ -410,6 +418,7 @@ class ImageCollectionViewController: UIViewController,  UICollectionViewDelegate
                 print("Error parse data")
                 return
         }
+        print("\(value)")
         DispatchQueue.global(qos: .background).async {
             let photos = Photo.getPhotos(from : photosData)
             if self.pageFlickr > 1 {
@@ -427,6 +436,13 @@ class ImageCollectionViewController: UIViewController,  UICollectionViewDelegate
                 self.subViewForSpinner.alpha = 0
                 self.isNotUpdating = true
             }
+        }
+    }
+    
+    func performGetSizeRequest() {
+    let idArray = Photo.getID(from: searchImageData)
+        guard idArray.count == searchImageData.count else {
+            return
         }
     }
     
@@ -579,8 +595,10 @@ class ImageCollectionViewController: UIViewController,  UICollectionViewDelegate
     
     func searchTextByRecentList(_ index: Int) {
         let txt = searchHistoryList[index]
+        lastEnteredTextValue = txt
+        searchHistoryHide()
         searchTextField.text = txt
-        performTextSearch()
+        
     }
     
     func didTapClearButton(_ sender: RecentTableViewCell) {

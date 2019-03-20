@@ -9,6 +9,7 @@
 import UIKit
 
 class Photo {
+    var idPhoto: String?
     var url: String?
     var heightImage: String?
     var widthImage: String?
@@ -27,6 +28,7 @@ class Photo {
             interestInfo.widthImage = itemArray["width_t"] as? String
             interestInfo.nameOwner = itemArray["owner_name"] as? String
             interestInfo.icon = itemArray["icon_server"] as? String
+            interestInfo.idPhoto = itemArray["id"] as? String
             return interestInfo
         })
         return photo
@@ -45,4 +47,13 @@ class Photo {
         })
         return photo
     }
+    
+    class func getID(from photoArray: [Photo]) -> [String] {
+        let photoID = photoArray.map({ (itemArray) -> String in
+            guard let id = itemArray.idPhoto else { return String() }
+            return id
+        })
+        return photoID
+    }
+    
 }
