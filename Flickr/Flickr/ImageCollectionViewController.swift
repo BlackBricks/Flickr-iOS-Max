@@ -37,16 +37,20 @@ class ImageCollectionViewController: UIViewController,  UICollectionViewDelegate
     var insets = UIEdgeInsets(top: 150, left: 0, bottom: 0, right: 0)
     
     /// Mark: - Outlets
+    @IBOutlet weak var searchTextField: UITextField!
+    
     @IBOutlet weak var subviewForTapEvent: UIView!
+    @IBOutlet weak var searchContainerView: UIView!
+    @IBOutlet weak var subViewForSpinner: UIView!
     @IBOutlet weak var magnifyImage: UIImageView!
     @IBOutlet weak var searchCollectionView: UICollectionView!
     @IBOutlet weak var popularCollectionView: UICollectionView!
-    @IBOutlet weak var searchContainerView: UIView!
+    
     @IBOutlet weak var searchConstraint: NSLayoutConstraint!
-    @IBOutlet weak var subViewForSpinner: UIView!
-    @IBOutlet weak var cancelButtonOutler: DesignableButton!
-    @IBOutlet weak var searchTextField: UITextField!
     @IBOutlet weak var searchHistoryView: UITableView!
+    @IBOutlet weak var cancelButtonOutler: DesignableButton!
+    
+    
     
     /// Mark: - enums
     enum ConstantNumbers {
@@ -92,8 +96,8 @@ class ImageCollectionViewController: UIViewController,  UICollectionViewDelegate
     override func viewDidLoad() {
         super.viewDidLoad()
         definesPresentationContext = true
-//        searchCollectionView.footRefreshControl.autoRefreshOnFoot = true
-//        popularCollectionView.footRefreshControl.autoRefreshOnFoot = true
+        //        searchCollectionView.footRefreshControl.autoRefreshOnFoot = true
+        //        popularCollectionView.footRefreshControl.autoRefreshOnFoot = true
         setDelegates_DataSources()
         setAlphasDefault()
         setConstraintMode()
@@ -144,6 +148,7 @@ class ImageCollectionViewController: UIViewController,  UICollectionViewDelegate
     }
     
     @IBAction func cancelButton(_ sender: DesignableButton) {
+        isSearching = false
         showCurrentCollectionView()
         weOnPopularCollectionView = true
         searchTextField.text = ""
@@ -189,6 +194,7 @@ class ImageCollectionViewController: UIViewController,  UICollectionViewDelegate
     }
     
     func showCurrentCollectionView() {
+        self.subviewForTapEvent.alpha = 0
         UIView.animate(withDuration: 0.25,  animations: {
             if !self.weOnPopularCollectionView {
                 self.searchCollectionView.alpha = 1
@@ -198,6 +204,7 @@ class ImageCollectionViewController: UIViewController,  UICollectionViewDelegate
     }
     
     func setAlphasDefault() {
+        subviewForTapEvent.alpha = 0
         subViewForSpinner.alpha = 0
         searchCollectionView.alpha = 0
         popularCollectionView.alpha = 1
@@ -227,6 +234,7 @@ class ImageCollectionViewController: UIViewController,  UICollectionViewDelegate
     
     func startEditingEvent() {
         UIView.animate(withDuration: 0.25,  animations: {
+            self.subviewForTapEvent.alpha = 1
             self.searchCollectionView.alpha = 0
             self.popularCollectionView.alpha = 0
             self.magnifyImage.alpha = 1
@@ -395,6 +403,7 @@ class ImageCollectionViewController: UIViewController,  UICollectionViewDelegate
             DispatchQueue.main.async() {
                 self.popularCollectionView?.reloadData()
                 self.hideSearchCollectionView()
+                self.pageFlickr += 1
                 self.subViewForSpinner.alpha = 0
                 self.isNotUpdating = true
                 if self.popularImageData.count == 0 {
@@ -435,12 +444,13 @@ class ImageCollectionViewController: UIViewController,  UICollectionViewDelegate
                 self.showSearchCollectionView()
                 self.subViewForSpinner.alpha = 0
                 self.isNotUpdating = true
+                self.pageFlickr += 1
             }
         }
     }
     
     func performGetSizeRequest() {
-    let idArray = Photo.getID(from: searchImageData)
+        let idArray = Photo.getID(from: searchImageData)
         guard idArray.count == searchImageData.count else {
             return
         }
@@ -515,16 +525,16 @@ class ImageCollectionViewController: UIViewController,  UICollectionViewDelegate
     
     func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
         if collectionView == self.popularCollectionView {
-            if indexPath.row == (pageFlickr * ConstantNumbers.perPage) - ConstantNumbers.lastCells {
-                pageFlickr += 1
+            if indexPath.row >= popularImageData.count - ConstantNumbers.lastCells {
                 performFlickrPopular()
             }
         }
         if collectionView == self.searchCollectionView {
-            if indexPath.row == (pageFlickr * ConstantNumbers.perPage) - ConstantNumbers.lastCells {
-                pageFlickr += 1
+            if indexPath.row >= searchImageData.count - ConstantNumbers.lastCells {
                 performTextSearch()
             }
+        } else {
+            return
         }
     }
     
