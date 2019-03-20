@@ -20,8 +20,9 @@ class ImageCollectionViewCell: UICollectionViewCell {
         guard let urlHightQuality = url_High else {
             return
         }
-//        imageView.sd_setImage(with: URL(string: urlLowQuality), placeholderImage: UIImage(named: "placeholder.png"))
-        imageView.sd_setImage(with: URL(string: urlHightQuality), placeholderImage: UIImage(named: "placeholder.png"))
+        imageView.sd_setImage(with: URL(string: urlLowQuality), placeholderImage: UIImage(named: "placeholder.png")) { (image, error, cacheType, url) -> Void in
+            self.imageView.sd_setImage(with: URL(string: urlHightQuality), placeholderImage: UIImage(named: "placeholder.png"))
+        }
     }
 }
 

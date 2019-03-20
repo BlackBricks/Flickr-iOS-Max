@@ -68,24 +68,24 @@ class Photo {
 //                return url_o
 //            }
 //        }
-//        ///label="Large" width="1024" height="768"
-//        if imageData[indexPath.row].url_h != nil {
-//            if let url_h = imageData[indexPath.row].url_h {
-//                return url_h
-//            }
-//        }
-//        ///label="Medium 800" width="800" height="600"
-//        if imageData[indexPath.row].url_c != nil {
-//            if let url_c = imageData[indexPath.row].url_c {
-//                return url_c
-//            }
-//        }
-//        /// label="Medium 640" width="640" height="480"
-//        if imageData[indexPath.row].url_z != nil {
-//            if let url_z = imageData[indexPath.row].url_z {
-//                return url_z
-//            }
-//        }
+        ///label="Large" width="1024" height="768"
+        if imageData[indexPath.row].url_h != nil {
+            if let url_h = imageData[indexPath.row].url_h {
+                return url_h
+            }
+        }
+        ///label="Medium 800" width="800" height="600"
+        if imageData[indexPath.row].url_c != nil {
+            if let url_c = imageData[indexPath.row].url_c {
+                return url_c
+            }
+        }
+        /// label="Medium 640" width="640" height="480"
+        if imageData[indexPath.row].url_z != nil {
+            if let url_z = imageData[indexPath.row].url_z {
+                return url_z
+            }
+        }
         ///label="Small 320" width="320" height="240
         if imageData[indexPath.row].url_n != nil {
             if let url_n = imageData[indexPath.row].url_n {

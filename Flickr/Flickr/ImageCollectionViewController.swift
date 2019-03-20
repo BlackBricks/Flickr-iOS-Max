@@ -414,10 +414,10 @@ class ImageCollectionViewController: UIViewController,  UICollectionViewDelegate
             let photos = Photo.getPhotos(from : photosData)
             if self.pageFlickr > 1 {
                 self.popularImageData += photos
-                let newSizes = Photo.getSizes(from: self.popularImageData)
+                let newSizes = Photo.getSizes(from: photos)
                 let laySizes: [CGSize] = newSizes.lay_justify(for: popularCollectionViewWidth - ConstantNumbers.basicIndent,
                                                               preferredHeight: ConstantNumbers.justPrefferedHeight )
-                self.popularImageSizes = laySizes
+                self.popularImageSizes += laySizes
             } else {
                 self.popularImageData = photos
                 let newSizes = Photo.getSizes(from: self.popularImageData)
@@ -458,13 +458,17 @@ class ImageCollectionViewController: UIViewController,  UICollectionViewDelegate
             let photos = Photo.getPhotos(from : photosData)
             if self.pageFlickr > 1 {
                 self.searchImageData += photos
+                let newSizes = Photo.getSizes(from: photos)
+                let laySizes: [CGSize] = newSizes.lay_justify(for: searchCollectionViewWidth - ConstantNumbers.basicIndent,
+                                                                           preferredHeight: ConstantNumbers.justPrefferedHeight )
+                self.searchImageSizes += laySizes
             } else {
                 self.searchImageData = photos
+                self.searchImageSizes = Photo.getSizes(from: self.searchImageData)
+                let laySizes: [CGSize] = self.searchImageSizes.lay_justify(for: searchCollectionViewWidth - ConstantNumbers.basicIndent,
+                                                                           preferredHeight: ConstantNumbers.justPrefferedHeight )
+                 self.searchImageSizes = laySizes
             }
-            self.searchImageSizes = Photo.getSizes(from: self.searchImageData)
-            let laySizes: [CGSize] = self.searchImageSizes.lay_justify(for: searchCollectionViewWidth - ConstantNumbers.basicIndent,
-                                                                       preferredHeight: ConstantNumbers.justPrefferedHeight )
-            self.searchImageSizes = laySizes
             DispatchQueue.main.async() {
                 self.searchCollectionView.headRefreshControl.endRefreshing()
                 self.searchCollectionView?.reloadData()
