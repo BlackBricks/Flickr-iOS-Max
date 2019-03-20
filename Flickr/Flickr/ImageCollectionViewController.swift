@@ -6,7 +6,7 @@
 //  Copyright © 2019 metoSimka. All rights reserved.
 //
 
-
+import Foundation
 import UIKit
 import Alamofire
 import KafkaRefresh
@@ -25,6 +25,10 @@ class ImageCollectionViewController: UIViewController,  UICollectionViewDelegate
     var popularImageSizes: [CGSize] = [CGSize]()
     var originSizesByPopular: [CGSize] = [CGSize]()
     
+    /// Mark: - variables for tableView history list
+    var searchHistoryList = [String]()
+    var filteredHistoryList = [String]()
+    
     /// Mark: - common
     var weOnPopularCollectionView = true
     var lastContentOffset: CGFloat = 0
@@ -32,29 +36,24 @@ class ImageCollectionViewController: UIViewController,  UICollectionViewDelegate
     var pageFlickr = 1
     var recentIndexCell: Int?
     var actualPosition: CGPoint?
-    var searchHistoryList = [String]()
+    
     var isNotUpdating = true
-    var insets = UIEdgeInsets(top: 150, left: 0, bottom: 0, right: 0)
     
     /// Mark: - Outlets
     @IBOutlet weak var searchTextField: UITextField!
-    
     @IBOutlet weak var subviewForTapEvent: UIView!
     @IBOutlet weak var searchContainerView: UIView!
     @IBOutlet weak var subViewForSpinner: UIView!
     @IBOutlet weak var magnifyImage: UIImageView!
     @IBOutlet weak var searchCollectionView: UICollectionView!
     @IBOutlet weak var popularCollectionView: UICollectionView!
-    
     @IBOutlet weak var searchConstraint: NSLayoutConstraint!
     @IBOutlet weak var searchHistoryView: UITableView!
     @IBOutlet weak var cancelButtonOutler: DesignableButton!
-    
-    
-    
+ 
     /// Mark: - enums
     enum ConstantNumbers {
-        static let perPage = 100
+        static let perPage = 50
         static let xibHeight = 50
         static let lastCells = 15
         static let justPrefferedHeight: CGFloat = 180
@@ -70,7 +69,7 @@ class ImageCollectionViewController: UIViewController,  UICollectionViewDelegate
         
         // MARK: URLRequestConvertible
         func asURLRequest() throws -> URLRequest {
-            let perPages = "100"
+            let perPages = "50"
             let result: (path: String, parameters: Parameters) = {
                 switch self {
                 case let .search(text, page) :
@@ -96,15 +95,13 @@ class ImageCollectionViewController: UIViewController,  UICollectionViewDelegate
     override func viewDidLoad() {
         super.viewDidLoad()
         definesPresentationContext = true
-        //        searchCollectionView.footRefreshControl.autoRefreshOnFoot = true
-        //        popularCollectionView.footRefreshControl.autoRefreshOnFoot = true
         setDelegates_DataSources()
         setAlphasDefault()
         setConstraintMode()
         setBehaviorTextBar()
         setXibCellForRecentTableViewCell()
         searchTextField.clearButtonMode = .always
-        //        addPullRefresh()
+        addPullRefresh()
         guard let defaults = UserDefaults.standard.array(forKey: "historySearch") else {
             return
         }
@@ -121,7 +118,7 @@ class ImageCollectionViewController: UIViewController,  UICollectionViewDelegate
             return
         }
     }
-    
+  
     override func viewDidLayoutSubviews(){
         rebuildTableSize()
         searchHistoryView.reloadData()
@@ -161,7 +158,23 @@ class ImageCollectionViewController: UIViewController,  UICollectionViewDelegate
     
     /// Mark: - model func block
     @objc func editingTextEventFunc(textField: UITextField) {
-        searchHistoryHide()
+        if isTextFieldEditing() {
+            guard let text = searchTextField.text else {
+                return
+            }
+            var filtered = searchHistoryList
+            filtered = filtered.filter{
+                $0.contains(text)
+            }
+            print("\(searchHistoryList)")
+            print("\(filtered)")
+            filteredHistoryList = filtered
+            searchHistoryView.reloadData()
+        } else {
+            startEditingEvent()
+            rebuildTableSize()
+            searchHistoryView.reloadData()
+        }
     }
     
     @objc func refreshCurrentCollectionViewByPullToUpdate() {
@@ -170,6 +183,7 @@ class ImageCollectionViewController: UIViewController,  UICollectionViewDelegate
         isNotUpdating = true
         if self.searchCollectionView.alpha == 0 {
             self.performFlickrPopular()
+            return
         } else {
             guard let lastValue = self.lastEnteredTextValue else {
                 return
@@ -201,6 +215,16 @@ class ImageCollectionViewController: UIViewController,  UICollectionViewDelegate
             }
             self.popularCollectionView.alpha = 1
         })
+    }
+    
+    func isTextFieldEditing() -> Bool {
+        guard let text = searchTextField.text else {
+            return false
+        }
+        if text != "" && searchTextField.isEditing {
+            return true
+        }
+        return false
     }
     
     func setAlphasDefault() {
@@ -266,12 +290,14 @@ class ImageCollectionViewController: UIViewController,  UICollectionViewDelegate
     }
     
     func addPullRefresh() {
-        let refreshControl = UIRefreshControl()
-        refreshControl.addTarget(self, action: #selector(refreshCurrentCollectionViewByPullToUpdate), for: .valueChanged)
-        searchCollectionView.refreshControl = refreshControl
-        DispatchQueue.main.async {
-            self.searchCollectionView.refreshControl?.endRefreshing()
-        }
+        popularCollectionView.bindHeadRefreshHandler({
+            self.refreshCurrentCollectionViewByPullToUpdate()
+        }, themeColor: UIColor.black, refreshStyle: KafkaRefreshStyle.native)
+        
+        searchCollectionView.bindHeadRefreshHandler({
+            self.refreshCurrentCollectionViewByPullToUpdate()
+        }, themeColor: UIColor.black, refreshStyle: KafkaRefreshStyle.native)
+        
     }
     
     func searchHistoryHide() {
@@ -338,7 +364,6 @@ class ImageCollectionViewController: UIViewController,  UICollectionViewDelegate
         UserDefaults.standard.removeObject(forKey: "historySearch")
     }
     
-    
     func displayAlert(_ message: String) {
         let alert = UIAlertController(title: "Alert", message: message, preferredStyle: UIAlertController.Style.alert)
         alert.addAction(UIAlertAction(title: "Click", style: .default, handler: nil))
@@ -401,6 +426,7 @@ class ImageCollectionViewController: UIViewController,  UICollectionViewDelegate
                 self.popularImageSizes = laySizes
             }
             DispatchQueue.main.async() {
+                self.popularCollectionView.headRefreshControl.endRefreshing()
                 self.popularCollectionView?.reloadData()
                 self.hideSearchCollectionView()
                 self.pageFlickr += 1
@@ -440,19 +466,13 @@ class ImageCollectionViewController: UIViewController,  UICollectionViewDelegate
                                                                        preferredHeight: ConstantNumbers.justPrefferedHeight )
             self.searchImageSizes = laySizes
             DispatchQueue.main.async() {
+                self.searchCollectionView.headRefreshControl.endRefreshing()
                 self.searchCollectionView?.reloadData()
                 self.showSearchCollectionView()
                 self.subViewForSpinner.alpha = 0
                 self.isNotUpdating = true
                 self.pageFlickr += 1
             }
-        }
-    }
-    
-    func performGetSizeRequest() {
-        let idArray = Photo.getID(from: searchImageData)
-        guard idArray.count == searchImageData.count else {
-            return
         }
     }
     
@@ -485,10 +505,13 @@ class ImageCollectionViewController: UIViewController,  UICollectionViewDelegate
             let cellSearch = collectionView.dequeueReusableCell(withReuseIdentifier: "image Cell",
                                                                 for: indexPath)
             if let imageCell = cellSearch as? ImageCollectionViewCell {
-                guard let gettedUrl = searchImageData[indexPath.row].url else {
+                guard let maxQualityUrl = Photo.searchBestQualityInFuckingFlickr(from: searchImageData, indexPath: indexPath) else {
                     return cellSearch
                 }
-                imageCell.fetchImage(url: gettedUrl)
+                guard let lowQualityUrl = searchImageData[indexPath.row].url_t else {
+                    return UICollectionViewCell()
+                }
+                imageCell.fetchImage(url_Low: lowQualityUrl, url_High: maxQualityUrl)
                 return cellSearch
             }
         }
@@ -497,10 +520,13 @@ class ImageCollectionViewController: UIViewController,  UICollectionViewDelegate
             let cellPopular = collectionView.dequeueReusableCell(withReuseIdentifier: "PopularImage Cell",
                                                                  for: indexPath)
             if let imageCell = cellPopular as? ImageCollectionViewCell {
-                guard let url = popularImageData[indexPath.row].url else {
+                guard let lowQualityUrl = popularImageData[indexPath.row].url_t else {
                     return cellPopular
                 }
-                imageCell.fetchImage(url: url)
+                guard let maxQualityUrl = Photo.searchBestQualityInFuckingFlickr(from: popularImageData, indexPath: indexPath) else {
+                    return cellPopular
+                }
+                imageCell.fetchImage(url_Low: lowQualityUrl, url_High: maxQualityUrl)
                 return cellPopular
             }
         }
@@ -582,17 +608,27 @@ class ImageCollectionViewController: UIViewController,  UICollectionViewDelegate
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        if isTextFieldEditing() {
+            return filteredHistoryList.count
+        }
         return searchHistoryList.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "RecentCell", for: indexPath)
         
-        if let recentCell = cell as? RecentTableViewCell {
-            recentCell.delegate = self
-            recentCell.index = indexPath.row
-            recentCell.setText(searchHistoryList)
-            return recentCell
+        if !isTextFieldEditing() {
+            if let recentCell = cell as? RecentTableViewCell {
+                recentCell.delegate = self
+                recentCell.setText(searchHistoryList[indexPath.row])
+                return recentCell
+            }
+        } else {
+            if let recentCell = cell as? RecentTableViewCell {
+                recentCell.delegate = self
+                recentCell.setText(filteredHistoryList[indexPath.row])
+                return recentCell
+            }
         }
         return cell
     }

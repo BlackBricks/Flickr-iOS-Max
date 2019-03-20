@@ -13,7 +13,6 @@ class ImageDetailViewController: UIViewController, UICollectionViewDelegate, UIC
     var detailPhotoData = [Photo]()
     var indexCell: IndexPath?
     let BackIdentifier = "Show main view"
-    
     @IBOutlet weak var collectionView: UICollectionView!
     @IBOutlet weak var bigSpinner: UIActivityIndicatorView!
     
@@ -46,16 +45,17 @@ class ImageDetailViewController: UIViewController, UICollectionViewDelegate, UIC
     
     func collectionView(_ collectionView: UICollectionView,
                         cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        
         let cellPopular = collectionView.dequeueReusableCell(withReuseIdentifier: "Detail Image Cell",
                                                              for: indexPath)
         guard let imageCell = cellPopular as? ImageDetailViewCell else {
             return UICollectionViewCell()
         }
-        guard let url = detailPhotoData[indexPath.row].url else {
-            return cellPopular
+        guard let imageURL = Photo.searchBestQualityInFuckingFlickr(from: detailPhotoData, indexPath: indexPath) else {
+            return UICollectionViewCell()
         }
         imageCell.delegate = self
-        imageCell.fetchImage(url: url)
+        imageCell.fetchImage(url: imageURL)
         imageCell.imageView.contentMode = .scaleAspectFit
         guard let titleText = detailPhotoData[indexPath.row].title else {
             return cellPopular
@@ -67,6 +67,7 @@ class ImageDetailViewController: UIViewController, UICollectionViewDelegate, UIC
         imageCell.viewText.text = "Views: \(viewText)"
         return cellPopular
     }
+
 
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         return CGSize(width: collectionView.bounds.size.width, height: collectionView.bounds.size.height)

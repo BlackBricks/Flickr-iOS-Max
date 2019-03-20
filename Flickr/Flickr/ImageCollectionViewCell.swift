@@ -10,13 +10,35 @@ import UIKit
 import SDWebImage
 
 class ImageCollectionViewCell: UICollectionViewCell {
-   var imageArray: [[String: AnyObject]]?
+    var imageArray: [[String: AnyObject]]?
     @IBOutlet weak var imageView: UIImageView!
     
-    func fetchImage(url: String?) {
-        guard let url = url else {
+    func fetchImage(url_Low: String?, url_High: String?) {
+        guard let urlLowQuality = url_Low else {
             return
         }
-        imageView.sd_setImage(with: URL(string: url), placeholderImage: UIImage(named: "placeholder.png"))
+        guard let urlHightQuality = url_High else {
+            return
+        }
+//        imageView.sd_setImage(with: URL(string: urlLowQuality), placeholderImage: UIImage(named: "placeholder.png"))
+        imageView.sd_setImage(with: URL(string: urlHightQuality), placeholderImage: UIImage(named: "placeholder.png"))
+    }
+}
+
+extension UIImageView {
+    public func sd_setImageWithURLWithFade(url: URL!, placeholderImage placeholder: UIImage!) {
+        self.sd_setImage(with: url, placeholderImage: placeholder) { (image, error, cacheType, url) -> Void in
+            if let downLoadedImage = image {
+                if cacheType == .none {
+                    self.alpha = 0
+                    UIView.transition(with: self, duration: 0.3, options: UIView.AnimationOptions.transitionCrossDissolve, animations: { () -> Void in
+                        self.image = downLoadedImage
+                        self.alpha = 1
+                    }, completion: nil)
+                }
+            } else {
+                self.image = placeholder
+            }
+        }
     }
 }
