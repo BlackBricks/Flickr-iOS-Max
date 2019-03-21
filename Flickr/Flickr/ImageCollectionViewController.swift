@@ -323,6 +323,7 @@ class ImageCollectionViewController: UIViewController,  UICollectionViewDelegate
     }
     
     func performTextSearch() {
+        pageFlickr = 1
         searchHistoryHide()
         searchTextField.resignFirstResponder()
         let searchText = searchTextField.text
@@ -333,9 +334,9 @@ class ImageCollectionViewController: UIViewController,  UICollectionViewDelegate
             return
         }
         updateSearchHistory(text: searchingText)
-        performFlickrSearch(url: searchingText)
         lastEnteredTextValue = searchingText
         isSearching = true
+        performFlickrSearch(url: searchingText)
         return
     }
     
@@ -632,8 +633,11 @@ class ImageCollectionViewController: UIViewController,  UICollectionViewDelegate
     func searchTextByRecentList(_ index: Int) {
         let txt = searchHistoryList[index]
         lastEnteredTextValue = txt
-        searchHistoryHide()
+         UIView.animate(withDuration: 0.25,  animations: {
+        self.searchHistoryHide()
+         })
         searchTextField.text = txt
+        performTextSearch()
         
     }
     
