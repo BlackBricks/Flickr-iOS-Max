@@ -33,7 +33,8 @@ class ImageCollectionViewController: UIViewController,  UICollectionViewDelegate
     var recentIndexCell: Int?
     var actualPosition: CGPoint?
     var isNotUpdating = true
-    let refreshControl = UIRefreshControl()
+    let refreshControlForSearch = UIRefreshControl()
+    let refreshControlForPopular = UIRefreshControl()
     
     /// Mark: - Outlets
     @IBOutlet weak var searchTextField: UITextField!
@@ -48,7 +49,7 @@ class ImageCollectionViewController: UIViewController,  UICollectionViewDelegate
     
     /// Mark: - enums
     enum ConstantNumbers {
-        static let insetForCollectionViews = 62
+        static let insetFromPopularCollectionView = 62
         static let perPage = 50
         static let xibHeight = 50
         static let lastCells = 15
@@ -60,7 +61,6 @@ class ImageCollectionViewController: UIViewController,  UICollectionViewDelegate
     enum Router: URLRequestConvertible {
         case search(text: String, page: String)
         case popular(page: String)
-        
         static let baseURLString = Constants.FlickrAPI.baseUrl
         
         // MARK: URLRequestConvertible
@@ -126,11 +126,14 @@ class ImageCollectionViewController: UIViewController,  UICollectionViewDelegate
     }
     
     func customPullToUpdate() {
-        let refreshView = UIView(frame: CGRect(x: 0, y: ConstantNumbers.insetForCollectionViews, width: 0, height: 0))
-        searchCollectionView.addSubview(refreshView)
-        popularCollectionView.addSubview(refreshView)
-        refreshControl.addTarget(self, action: #selector(refreshCurrentCollectionViewByPullToUpdate), for: .valueChanged)
-        refreshView.addSubview(refreshControl)
+        let refreshViewSearch = UIView(frame: CGRect(x: 0, y: 62, width: 0, height: 0))
+        let refreshViewPopular = UIView(frame: CGRect(x: 0, y: 62, width: 0, height: 0))
+        searchCollectionView.addSubview(refreshViewSearch)
+        popularCollectionView.addSubview(refreshViewPopular)
+        refreshControlForSearch.addTarget(self, action: #selector(refreshCurrentCollectionViewByPullToUpdate), for: .valueChanged)
+        refreshControlForPopular.addTarget(self, action: #selector(refreshCurrentCollectionViewByPullToUpdate), for: .valueChanged)
+        refreshViewSearch.addSubview(refreshControlForSearch)
+        refreshViewPopular.addSubview(refreshControlForPopular)
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
@@ -500,7 +503,7 @@ class ImageCollectionViewController: UIViewController,  UICollectionViewDelegate
                 self.searchImageSizes = laySizes
             }
             DispatchQueue.main.async() {
-                self.refreshControl.endRefreshing()
+                self.refreshControlForSearch.endRefreshing()
 //                self.searchCollectionView.headRefreshControl.endRefreshing()
                 self.searchCollectionView?.reloadData()
                 self.showSearchCollectionView()
