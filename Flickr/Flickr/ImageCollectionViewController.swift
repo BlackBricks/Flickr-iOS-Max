@@ -28,6 +28,7 @@ class ImageCollectionViewController: UIViewController,  UICollectionViewDelegate
     var filteredHistoryList = [String]()
     
     /// Mark: - common
+    var isOnSearchCollectionView = false
     var lastContentOffset: CGFloat = 0
     var isSearching = false
     var pageFlickr = 1
@@ -45,7 +46,7 @@ class ImageCollectionViewController: UIViewController,  UICollectionViewDelegate
     @IBOutlet weak var searchConstraint: NSLayoutConstraint!
     @IBOutlet weak var searchHistoryView: UITableView!
     @IBOutlet weak var cancelButtonOutler: DesignableButton!
- 
+    
     /// Mark: - enums
     enum ConstantNumbers {
         static let perPage = 50
@@ -113,7 +114,7 @@ class ImageCollectionViewController: UIViewController,  UICollectionViewDelegate
             return
         }
     }
-  
+    
     override func viewDidLayoutSubviews(){
         rebuildTableSize()
         searchHistoryView.reloadData()
@@ -140,13 +141,24 @@ class ImageCollectionViewController: UIViewController,  UICollectionViewDelegate
     }
     
     @IBAction func cancelButton(_ sender: DesignableButton) {
-        isSearching = false
         searchTextField.text = ""
         searchTextField.endEditing(true)
-        UIView.animate(withDuration: 0.25,  animations: {
-            self.setAlphasDefault()
-            self.view.layoutIfNeeded()
-        })
+        let hided = isCollectionsViewHidedBoth()
+        if hided {
+            UIView.animate(withDuration: 0.25,  animations: {
+                self.popularCollectionView.alpha = 1
+                self.searchHistoryHide()
+                if self.isSearching {
+                    self.searchCollectionView.alpha = 1
+                }
+            })
+        } else {
+            isSearching = false
+            UIView.animate(withDuration: 0.25,  animations: {
+                self.setAlphasDefault()
+            })
+        }
+         self.view.layoutIfNeeded()
     }
     
     /// Mark: - model func block
@@ -242,6 +254,11 @@ class ImageCollectionViewController: UIViewController,  UICollectionViewDelegate
         })
         searchHistoryView.reloadData()
         searchHistoryShowMustGoOn()
+    }
+    
+    func isCollectionsViewHidedBoth() -> Bool {
+        let check = (searchCollectionView.alpha == 0) && (popularCollectionView.alpha == 0)
+        return check
     }
     
     func setBehaviorTextBar() {
@@ -432,14 +449,14 @@ class ImageCollectionViewController: UIViewController,  UICollectionViewDelegate
                 self.searchImageData += photos
                 let newSizes = Photo.getSizes(from: photos)
                 let laySizes: [CGSize] = newSizes.lay_justify(for: searchCollectionViewWidth - ConstantNumbers.basicIndent,
-                                                                           preferredHeight: ConstantNumbers.justPrefferedHeight )
+                                                              preferredHeight: ConstantNumbers.justPrefferedHeight )
                 self.searchImageSizes += laySizes
             } else {
                 self.searchImageData = photos
                 self.searchImageSizes = Photo.getSizes(from: self.searchImageData)
                 let laySizes: [CGSize] = self.searchImageSizes.lay_justify(for: searchCollectionViewWidth - ConstantNumbers.basicIndent,
                                                                            preferredHeight: ConstantNumbers.justPrefferedHeight )
-                 self.searchImageSizes = laySizes
+                self.searchImageSizes = laySizes
             }
             DispatchQueue.main.async() {
                 self.searchCollectionView.headRefreshControl.endRefreshing()
