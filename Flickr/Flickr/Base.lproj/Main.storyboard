@@ -256,7 +256,7 @@
                         <outlet property="searchCollectionView" destination="nf0-BU-07p" id="Dhd-O1-fep"/>
                         <outlet property="searchConstraint" destination="DTb-jW-EMa" id="jLS-Sz-XWt"/>
                         <outlet property="searchContainerView" destination="phU-pP-vca" id="3Ln-ly-ZCZ"/>
-                        <outlet property="searchHistoryView" destination="aeO-4J-rt9" id="Zwi-d1-jYm"/>
+                        <outlet property="searchHistoryTableView" destination="aeO-4J-rt9" id="Zwi-d1-jYm"/>
                         <outlet property="searchTextField" destination="Slu-hn-Enb" id="Bvz-OD-927"/>
                         <outlet property="subViewForSpinner" destination="ekC-4U-sMs" id="K7A-rk-cG0"/>
                     </connections>
