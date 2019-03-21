@@ -9,8 +9,6 @@
 import Foundation
 import UIKit
 import Alamofire
-import KafkaRefresh
-
 
 class ImageCollectionViewController: UIViewController,  UICollectionViewDelegate, UICollectionViewDataSource, UITextFieldDelegate, UICollectionViewDelegateFlowLayout, UIScrollViewDelegate, UITableViewDelegate, UITableViewDataSource, recentTableCellDelegate {
     
@@ -35,6 +33,7 @@ class ImageCollectionViewController: UIViewController,  UICollectionViewDelegate
     var recentIndexCell: Int?
     var actualPosition: CGPoint?
     var isNotUpdating = true
+    let refreshControl = UIRefreshControl()
     
     /// Mark: - Outlets
     @IBOutlet weak var searchTextField: UITextField!
@@ -49,6 +48,7 @@ class ImageCollectionViewController: UIViewController,  UICollectionViewDelegate
     
     /// Mark: - enums
     enum ConstantNumbers {
+        static let insetForCollectionViews = 62
         static let perPage = 50
         static let xibHeight = 50
         static let lastCells = 15
@@ -98,7 +98,7 @@ class ImageCollectionViewController: UIViewController,  UICollectionViewDelegate
         loadFormUserDefaults()
         setXibCellForRecentTableViewCell()
         searchTextField.clearButtonMode = .always
-        addPullRefresh()
+        customPullToUpdate()
     }
     
     func loadFormUserDefaults() {
@@ -123,6 +123,14 @@ class ImageCollectionViewController: UIViewController,  UICollectionViewDelegate
     override func viewDidLayoutSubviews(){
         rebuildTableSize()
         searchHistoryTableView.reloadData()
+    }
+    
+    func customPullToUpdate() {
+        let refreshView = UIView(frame: CGRect(x: 0, y: ConstantNumbers.insetForCollectionViews, width: 0, height: 0))
+        searchCollectionView.addSubview(refreshView)
+        popularCollectionView.addSubview(refreshView)
+        refreshControl.addTarget(self, action: #selector(refreshCurrentCollectionViewByPullToUpdate), for: .valueChanged)
+        refreshView.addSubview(refreshControl)
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
@@ -292,16 +300,6 @@ class ImageCollectionViewController: UIViewController,  UICollectionViewDelegate
         searchHistoryTableView.layer.masksToBounds = false
     }
     
-    func addPullRefresh() {
-        popularCollectionView.bindHeadRefreshHandler({
-            self.refreshCurrentCollectionViewByPullToUpdate()
-        }, themeColor: UIColor.black, refreshStyle: KafkaRefreshStyle.native)
-        
-        searchCollectionView.bindHeadRefreshHandler({
-            self.refreshCurrentCollectionViewByPullToUpdate()
-        }, themeColor: UIColor.black, refreshStyle: KafkaRefreshStyle.native)
-    }
-    
     func searchHistoryHide() {
         UIView.animate(withDuration: 0.1, animations: {
             self.searchHistoryTableView.alpha = 0
@@ -458,7 +456,7 @@ class ImageCollectionViewController: UIViewController,  UICollectionViewDelegate
                 self.popularImageSizes = laySizes
             }
             DispatchQueue.main.async() {
-                self.popularCollectionView.headRefreshControl.endRefreshing()
+//                self.popularCollectionView.headRefreshControl.endRefreshing()
                 self.popularCollectionView?.reloadData()
                 self.hideSearchCollectionView()
                 self.pageFlickr += 1
@@ -502,7 +500,8 @@ class ImageCollectionViewController: UIViewController,  UICollectionViewDelegate
                 self.searchImageSizes = laySizes
             }
             DispatchQueue.main.async() {
-                self.searchCollectionView.headRefreshControl.endRefreshing()
+                self.refreshControl.endRefreshing()
+//                self.searchCollectionView.headRefreshControl.endRefreshing()
                 self.searchCollectionView?.reloadData()
                 self.showSearchCollectionView()
                 self.subViewForSpinner.alpha = 0

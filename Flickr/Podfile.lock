@@ -1,60 +1,22 @@
 PODS:
   - Alamofire (4.4.0)
-  - KafkaRefresh (1.3.0):
-    - KafkaRefresh/Category (= 1.3.0)
-    - KafkaRefresh/Configuration (= 1.3.0)
-    - KafkaRefresh/Core (= 1.3.0)
-    - KafkaRefresh/Default (= 1.3.0)
-    - KafkaRefresh/Style (= 1.3.0)
-    - KafkaRefresh/UIKit (= 1.3.0)
-  - KafkaRefresh/Category (1.3.0)
-  - KafkaRefresh/Configuration (1.3.0):
-    - KafkaRefresh/UIKit/FootKit
-    - KafkaRefresh/UIKit/HeadKit
-  - KafkaRefresh/Core (1.3.0):
-    - KafkaRefresh/Category
-  - KafkaRefresh/Default (1.3.0):
-    - KafkaRefresh/Style
-  - KafkaRefresh/Style (1.3.0)
-  - KafkaRefresh/UIKit (1.3.0):
-    - KafkaRefresh/UIKit/FootKit (= 1.3.0)
-    - KafkaRefresh/UIKit/HeadKit (= 1.3.0)
-    - KafkaRefresh/UIKit/LayerKit (= 1.3.0)
-  - KafkaRefresh/UIKit/FootKit (1.3.0):
-    - KafkaRefresh/Category
-    - KafkaRefresh/Core
-    - KafkaRefresh/Default
-    - KafkaRefresh/Style
-    - KafkaRefresh/UIKit/LayerKit
-  - KafkaRefresh/UIKit/HeadKit (1.3.0):
-    - KafkaRefresh/Category
-    - KafkaRefresh/Core
-    - KafkaRefresh/Default
-    - KafkaRefresh/Style
-    - KafkaRefresh/UIKit/LayerKit
-  - KafkaRefresh/UIKit/LayerKit (1.3.0):
-    - KafkaRefresh/Category
-    - KafkaRefresh/Default
   - SDWebImage (4.4.5):
     - SDWebImage/Core (= 4.4.5)
   - SDWebImage/Core (4.4.5)
 
 DEPENDENCIES:
   - Alamofire (= 4.4.0)
-  - KafkaRefresh (= 1.3.0)
   - SDWebImage (= 4.4.5)
 
 SPEC REPOS:
   https://github.com/cocoapods/specs.git:
     - Alamofire
-    - KafkaRefresh
     - SDWebImage
 
 SPEC CHECKSUMS:
   Alamofire: dc44b1600b800eb63da6a19039a0083d62a6a62d
-  KafkaRefresh: 49c022888ee6444461f8c9599567e2b7dbc23f4d
   SDWebImage: ecc03494e973b93b80213649d32175f8d2d17d4d
 
-PODFILE CHECKSUM: 1cd05ee47ce68678ff46067d6146fb7437ad2d83
+PODFILE CHECKSUM: 7f790cfc04a9137c84ed0cfd88192896a39c1a33
 
 COCOAPODS: 1.6.1
