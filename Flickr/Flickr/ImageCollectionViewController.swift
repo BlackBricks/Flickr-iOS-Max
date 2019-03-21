@@ -167,10 +167,10 @@ class ImageCollectionViewController: UIViewController,  UICollectionViewDelegate
     }
     
     /// Mark: - model func block
-    @objc func editingTextEventFunc(textField: UITextField) {
-        if isTextFieldEditing() {
+    func getFilteredHistory() -> Bool {
+        if !isTextFieldEmpty() {
             guard let text = searchTextField.text else {
-                return
+                return false
             }
             var filtered = searchHistoryList
             filtered = filtered.filter{
@@ -179,11 +179,18 @@ class ImageCollectionViewController: UIViewController,  UICollectionViewDelegate
             print("\(searchHistoryList)")
             print("\(filtered)")
             filteredHistoryList = filtered
-            searchHistoryTableView.reloadData()
-        } else {
-            startEditingEvent()
             rebuildTableSize()
             searchHistoryTableView.reloadData()
+            return true
+        }
+        return false
+    }
+    
+    @objc func editingTextEventFunc(textField: UITextField) {
+        if getFilteredHistory() {
+            return
+        } else {
+            startEditingEvent()
         }
     }
     
@@ -203,7 +210,18 @@ class ImageCollectionViewController: UIViewController,  UICollectionViewDelegate
     }
     
     @objc func clickOnTextEventFunc(textField: UITextField) {
+       _ = getFilteredHistory()
         startEditingEvent()
+    }
+    
+    func isTextFieldEmpty() -> Bool {
+        guard let textField = searchTextField.text else {
+            return false
+        }
+        if textField.count == 0 || textField == "" {
+            return true
+        }
+        return false
     }
     
     func setDelegates_DataSources() {
@@ -215,16 +233,6 @@ class ImageCollectionViewController: UIViewController,  UICollectionViewDelegate
     func setMagnifyAndCancelButtonAlphasDefault() {
         cancelButtonOutler.alpha = 0
         magnifyImage.alpha = 0.5
-    }
-    
-    func isTextFieldEditing() -> Bool {
-        guard let text = searchTextField.text else {
-            return false
-        }
-        if text != "" && searchTextField.isEditing {
-            return true
-        }
-        return false
     }
     
     func setAlphasDefault() {
@@ -258,10 +266,8 @@ class ImageCollectionViewController: UIViewController,  UICollectionViewDelegate
             self.searchHistoryTableView.alpha = 1
             self.view.layoutIfNeeded()
         })
-        searchHistoryShowMustGoOn()
-        rebuildTableSize()
         searchHistoryTableView.reloadData()
-  
+        rebuildTableSize()
     }
     
     func isCollectionsViewHidedBoth() -> Bool {
@@ -294,7 +300,6 @@ class ImageCollectionViewController: UIViewController,  UICollectionViewDelegate
         searchCollectionView.bindHeadRefreshHandler({
             self.refreshCurrentCollectionViewByPullToUpdate()
         }, themeColor: UIColor.black, refreshStyle: KafkaRefreshStyle.native)
-        
     }
     
     func searchHistoryHide() {
@@ -374,6 +379,17 @@ class ImageCollectionViewController: UIViewController,  UICollectionViewDelegate
         searchHistoryTableView.reloadData()
         clearUserData()
         UserDefaults.standard.set(searchHistoryList, forKey: "historySearch")
+    }
+    
+    func searchTextByRecentList(_ index: Int) {
+        let txt = searchHistoryList[index]
+        lastEnteredTextValue = txt
+        UIView.animate(withDuration: 0.25,  animations: {
+            self.searchHistoryHide()
+        })
+        searchTextField.text = txt
+        pageFlickr = 1
+        performTextSearch()
     }
     
     func clearUserData(){
@@ -612,7 +628,7 @@ class ImageCollectionViewController: UIViewController,  UICollectionViewDelegate
                     self.view.layoutIfNeeded()
                 })
             } else {
-                return
+                rebuildTableSize()
             }
         }
     }
@@ -627,16 +643,15 @@ class ImageCollectionViewController: UIViewController,  UICollectionViewDelegate
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        if isTextFieldEditing() {
+        if !isTextFieldEmpty() {
             return filteredHistoryList.count
         }
         return searchHistoryList.count
     }
-    
+
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "RecentCell", for: indexPath)
-        
-        if !isTextFieldEditing() {
+        if isTextFieldEmpty() {
             if let recentCell = cell as? RecentTableViewCell {
                 recentCell.delegate = self
                 recentCell.setText(searchHistoryList[indexPath.row])
@@ -655,17 +670,6 @@ class ImageCollectionViewController: UIViewController,  UICollectionViewDelegate
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         recentIndexCell = indexPath.row
         searchTextByRecentList(indexPath.row)
-    }
-    
-    func searchTextByRecentList(_ index: Int) {
-        let txt = searchHistoryList[index]
-        lastEnteredTextValue = txt
-         UIView.animate(withDuration: 0.25,  animations: {
-        self.searchHistoryHide()
-         })
-        searchTextField.text = txt
-        pageFlickr = 1
-        performTextSearch()
     }
     
     func didTapClearButton(_ sender: RecentTableViewCell) {
@@ -699,3 +703,4 @@ extension UIViewController {
         }
     }
 }
+
