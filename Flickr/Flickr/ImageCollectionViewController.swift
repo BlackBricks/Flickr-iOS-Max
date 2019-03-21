@@ -18,30 +18,25 @@ class ImageCollectionViewController: UIViewController,  UICollectionViewDelegate
     var searchImageData: [Photo] = [Photo]()
     var searchImageSizes: [CGSize] = [CGSize]()
     var lastEnteredTextValue: String?
-    var originSizesBySearch: [CGSize] = [CGSize]()
     
     /// Mark: - variables for popularCollectionView
     var popularImageData: [Photo] = [Photo]()
     var popularImageSizes: [CGSize] = [CGSize]()
-    var originSizesByPopular: [CGSize] = [CGSize]()
     
     /// Mark: - variables for tableView history list
     var searchHistoryList = [String]()
     var filteredHistoryList = [String]()
     
     /// Mark: - common
-    var weOnPopularCollectionView = true
     var lastContentOffset: CGFloat = 0
     var isSearching = false
     var pageFlickr = 1
     var recentIndexCell: Int?
     var actualPosition: CGPoint?
-    
     var isNotUpdating = true
     
     /// Mark: - Outlets
     @IBOutlet weak var searchTextField: UITextField!
-    @IBOutlet weak var subviewForTapEvent: UIView!
     @IBOutlet weak var searchContainerView: UIView!
     @IBOutlet weak var subViewForSpinner: UIView!
     @IBOutlet weak var magnifyImage: UIImageView!
@@ -146,8 +141,6 @@ class ImageCollectionViewController: UIViewController,  UICollectionViewDelegate
     
     @IBAction func cancelButton(_ sender: DesignableButton) {
         isSearching = false
-        showCurrentCollectionView()
-        weOnPopularCollectionView = true
         searchTextField.text = ""
         searchTextField.endEditing(true)
         UIView.animate(withDuration: 0.25,  animations: {
@@ -207,16 +200,6 @@ class ImageCollectionViewController: UIViewController,  UICollectionViewDelegate
         magnifyImage.alpha = 0.5
     }
     
-    func showCurrentCollectionView() {
-        self.subviewForTapEvent.alpha = 0
-        UIView.animate(withDuration: 0.25,  animations: {
-            if !self.weOnPopularCollectionView {
-                self.searchCollectionView.alpha = 1
-            }
-            self.popularCollectionView.alpha = 1
-        })
-    }
-    
     func isTextFieldEditing() -> Bool {
         guard let text = searchTextField.text else {
             return false
@@ -228,7 +211,6 @@ class ImageCollectionViewController: UIViewController,  UICollectionViewDelegate
     }
     
     func setAlphasDefault() {
-        subviewForTapEvent.alpha = 0
         subViewForSpinner.alpha = 0
         searchCollectionView.alpha = 0
         popularCollectionView.alpha = 1
@@ -250,15 +232,8 @@ class ImageCollectionViewController: UIViewController,  UICollectionViewDelegate
         startEditingEvent()
     }
     
-    @objc func tapSuperViewAction(recognizer: UITapGestureRecognizer) {
-        showCurrentCollectionView()
-        searchTextField.endEditing(true)
-        searchHistoryHide()
-    }
-    
     func startEditingEvent() {
         UIView.animate(withDuration: 0.25,  animations: {
-            self.subviewForTapEvent.alpha = 1
             self.searchCollectionView.alpha = 0
             self.popularCollectionView.alpha = 0
             self.magnifyImage.alpha = 1
@@ -273,9 +248,6 @@ class ImageCollectionViewController: UIViewController,  UICollectionViewDelegate
         let tapForImageRecognizer = UITapGestureRecognizer(target: self, action: #selector(tapImageAction))
         magnifyImage.isUserInteractionEnabled = true
         magnifyImage.addGestureRecognizer(tapForImageRecognizer)
-        let tapForSuperviewRecognizer = UITapGestureRecognizer(target: self, action: #selector(tapSuperViewAction))
-        subviewForTapEvent.isUserInteractionEnabled = true
-        subviewForTapEvent.addGestureRecognizer(tapForSuperviewRecognizer)
         searchTextField.addTarget(self, action: #selector(clickOnTextEventFunc), for: UIControl.Event.touchDown)
         searchTextField.addTarget(self, action: #selector(editingTextEventFunc), for: UIControl.Event.editingChanged)
         searchTextField.attributedPlaceholder = NSAttributedString(string: "Search Flickr",
@@ -482,8 +454,6 @@ class ImageCollectionViewController: UIViewController,  UICollectionViewDelegate
     
     /// Mark: - UITextField delegate implementaion block
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-        showCurrentCollectionView()
-        weOnPopularCollectionView = false
         pageFlickr = 1
         performTextSearch()
         return true
@@ -639,7 +609,6 @@ class ImageCollectionViewController: UIViewController,  UICollectionViewDelegate
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         recentIndexCell = indexPath.row
-        weOnPopularCollectionView = false
         searchTextByRecentList(indexPath.row)
     }
     

@@ -20,11 +20,16 @@ class ImageCollectionViewCell: UICollectionViewCell {
         guard let urlHightQuality = url_High else {
             return
         }
-        imageView.sd_setImage(with: URL(string: urlLowQuality), placeholderImage: UIImage(named: "placeholder.png")) { (image, error, cacheType, url) -> Void in
-            self.imageView.sd_setImage(with: URL(string: urlHightQuality), placeholderImage: UIImage(named: "placeholder.png"))
+        imageView.sd_setImage(with: URL(string: urlLowQuality), placeholderImage: UIImage(named: "placeholder.png")) //{ (image, error, cacheType, url) -> Void in
+//            self.imageView.sd_setImage(with: URL(string: urlHightQuality), placeholderImage: UIImage(named: "placeholder.png"))
+//
+//            SDWebImageManager.shared().loadImage(with: URL(string: urlLowQuality), options: .lowPriority , progress: { (<#Int#>, <#Int#>, <#URL?#>) in
+//
+//            }, completed: { (imageView, NSData, NSError, SDImageCacheType, Bool, URL?) in
+//
+//            })
         }
     }
-}
 
 extension UIImageView {
     public func sd_setImageWithURLWithFade(url: URL!, placeholderImage placeholder: UIImage!) {
