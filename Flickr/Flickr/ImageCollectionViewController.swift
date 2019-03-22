@@ -37,9 +37,12 @@ class ImageCollectionViewController: UIViewController,  UICollectionViewDelegate
     let refreshControlForPopular = UIRefreshControl()
     
     /// Mark: - Outlets
+    @IBOutlet weak var heightConstraintTableView: NSLayoutConstraint!
+    
     @IBOutlet weak var textSearch: UITextField!
     @IBOutlet weak var containerSearchTextFieldView: UIView!
     @IBOutlet weak var subViewForSpinner: UIView!
+
     @IBOutlet weak var imageMagnify: UIImageView!
     @IBOutlet weak var collectionViewSearch: UICollectionView!
     @IBOutlet weak var collectionViewPopular: UICollectionView!
@@ -49,6 +52,7 @@ class ImageCollectionViewController: UIViewController,  UICollectionViewDelegate
     
     /// Mark: - enums
     enum ConstantNumbers {
+        static let valueForBottomConstrainTableView: CGFloat = 400
         static let standartTimeForAnimation = 0.25
         static let insetFromPopularCollectionView = 62
         static let perPage = 50
@@ -247,7 +251,10 @@ class ImageCollectionViewController: UIViewController,  UICollectionViewDelegate
     }
     
     func setConstraintMode() {
+        tableViewHistorySearch.clipsToBounds = true
         constraintForHideTextField.priority = UILayoutPriority(rawValue: 999)
+        heightConstraintTableView.constant = 0
+        heightConstraintTableView.isActive = true
         constraintForHideTextField.isActive = true
     }
     
@@ -317,11 +324,10 @@ class ImageCollectionViewController: UIViewController,  UICollectionViewDelegate
     }
     
     func rebuildTableSize() {
-          tableViewHistorySearch.reloadData()
-        tableViewHistorySearch.frame = CGRect(x: tableViewHistorySearch.frame.origin.x,
-                                         y: tableViewHistorySearch.frame.origin.y,
-                                         width: tableViewHistorySearch.frame.size.width,
-                                         height: CGFloat(tableViewHistorySearch.contentSize.height))
+        tableViewHistorySearch.reloadData()
+        heightConstraintTableView.constant = tableViewHistorySearch.contentSize.height
+        tableViewHistorySearch.translatesAutoresizingMaskIntoConstraints = false
+ 
     }
     
     func isWeOnSearchCollectionAndShouldUseLastTextValue() -> Bool {
