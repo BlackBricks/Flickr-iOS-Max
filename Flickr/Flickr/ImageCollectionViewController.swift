@@ -384,6 +384,12 @@ class ImageCollectionViewController: UIViewController,  UICollectionViewDelegate
         self.present(alert, animated: true, completion: nil)
     }
     
+    func finishCalculcateResponseData() {
+        self.pageFlickr += 1
+        self.subViewForSpinner.alpha = 0
+        self.isNotUpdating = true
+    }
+    
     func transformDataResponseIntoDict(from data: DataResponse<Any>) -> [[String : AnyObject]] {
         guard data.result.isSuccess else {
             self.displayAlert("Error get data \(String(describing: data.result.error))")
@@ -401,69 +407,28 @@ class ImageCollectionViewController: UIViewController,  UICollectionViewDelegate
         return photosData
     }
     
-    func calculationSearchImageData(responeDict: [[String: AnyObject]] ) {
-        let collectionViewWidth = self.collectionViewPopular.frame.size.width
-        DispatchQueue.global(qos: .background).async {
+    func calculationImageData(responeDict: [[String: AnyObject]], photoData: [Photo], photoSizes: [CGSize], collectionWidth: CGFloat) -> (photos: [Photo], sizes: [CGSize]) {
+        var imageData = photoData
+        var imageSizes = photoSizes
             let photos = Photo.getPhotos(from : responeDict)
             if self.pageFlickr > 1 {
-                self.searchImageData += photos
+                imageData += photos
                 let newSizes = Photo.getSizes(from: photos)
-                let laySizes: [CGSize] = newSizes.lay_justify(for: collectionViewWidth - ConstantNumbers.basicIndent,
+                let laySizes: [CGSize] = newSizes.lay_justify(for: collectionWidth - ConstantNumbers.basicIndent,
                                                               preferredHeight: ConstantNumbers.justPrefferedHeight )
-                self.searchImageSizes += laySizes
+                imageSizes += laySizes
             } else {
-                self.searchImageData = photos
-                let newSizes = Photo.getSizes(from: self.searchImageData)
-                let laySizes: [CGSize] = newSizes.lay_justify(for: collectionViewWidth - ConstantNumbers.basicIndent,
+                imageData = photos
+                let newSizes = Photo.getSizes(from: imageData)
+                let laySizes: [CGSize] = newSizes.lay_justify(for: collectionWidth - ConstantNumbers.basicIndent,
                                                               preferredHeight: ConstantNumbers.justPrefferedHeight )
-                self.searchImageSizes = laySizes
+                imageSizes = laySizes
             }
-            DispatchQueue.main.async() {
-                self.finishCalculcateResponseData()
-            }
+           return (imageData, imageSizes)
         }
-    }
     
-    func calculationPopularImageData(responeDict: [[String: AnyObject]] ) {
-        let collectionViewWidth = self.collectionViewPopular.frame.size.width
-        DispatchQueue.global(qos: .background).async {
-            let photos = Photo.getPhotos(from : responeDict)
-            if self.pageFlickr > 1 {
-                self.popularImageData += photos
-                let newSizes = Photo.getSizes(from: photos)
-                let laySizes: [CGSize] = newSizes.lay_justify(for: collectionViewWidth - ConstantNumbers.basicIndent,
-                                                              preferredHeight: ConstantNumbers.justPrefferedHeight )
-                self.popularImageSizes += laySizes
-            } else {
-                self.popularImageData = photos
-                let newSizes = Photo.getSizes(from: self.popularImageData)
-                let laySizes: [CGSize] = newSizes.lay_justify(for: collectionViewWidth - ConstantNumbers.basicIndent,
-                                                              preferredHeight: ConstantNumbers.justPrefferedHeight )
-                self.popularImageSizes = laySizes
-            }
-            DispatchQueue.main.async() {
-                self.finishCalculcateResponseData()
-            }
-        }
-    }
+        
     
-    func finishCalculcateResponseData() {
-        self.pageFlickr += 1
-        self.subViewForSpinner.alpha = 0
-        self.isNotUpdating = true
-        if isSearching {
-            self.refreshControlForSearch.endRefreshing()
-            self.collectionViewSearch?.reloadData()
-            self.showSearchCollectionView()
-        } else {
-            self.refreshControlForPopular.endRefreshing()
-            self.collectionViewPopular?.reloadData()
-            self.hideSearchCollectionView()
-        }
-        if self.popularImageData.count == 0 {
-            self.displayAlert("Oops! it's a TRAP! Flickr service have problem and return 0 values, try to search different values or wait untill Flickr start working!")
-        }
-    }
     
     private func performFlickrSearch(url: String) {
         guard isNotUpdating else {
@@ -491,13 +456,42 @@ class ImageCollectionViewController: UIViewController,  UICollectionViewDelegate
     func handlingPopularResponseData (data: DataResponse<Any> ) {
         subViewForSpinner.alpha = 1
         let photosData = transformDataResponseIntoDict(from: data)
-        calculationPopularImageData(responeDict: photosData)
+        let popularCollectionWidth = self.collectionViewSearch.frame.size.width
+        DispatchQueue.global(qos: .background).async {
+            let responsePopular = self.calculationImageData(responeDict: photosData,
+                                                            photoData: self.popularImageData,
+                                                            photoSizes: self.popularImageSizes,
+                                                            collectionWidth: popularCollectionWidth)
+            self.popularImageData = responsePopular.photos
+            self.popularImageSizes = responsePopular.sizes
+            DispatchQueue.main.async {
+                self.finishCalculcateResponseData()
+                self.refreshControlForPopular.endRefreshing()
+                self.collectionViewPopular?.reloadData()
+                self.hideSearchCollectionView()
+            }
         }
+    }
     
     func handlingSearchResponseData (data: DataResponse<Any> ) {
         subViewForSpinner.alpha = 1
         let photosData = transformDataResponseIntoDict(from: data)
-        calculationSearchImageData(responeDict: photosData)
+        let searchCollectionWidth = self.collectionViewSearch.frame.size.width
+        DispatchQueue.global(qos: .background).async {
+            let responseSearch = self.calculationImageData(responeDict: photosData,
+                                                           photoData: self.searchImageData,
+                                                           photoSizes: self.searchImageSizes,
+                                                           collectionWidth: searchCollectionWidth)
+            self.searchImageData = responseSearch.photos
+            self.searchImageSizes = responseSearch.sizes
+            DispatchQueue.main.async {
+                self.finishCalculcateResponseData()
+                self.refreshControlForSearch.endRefreshing()
+                self.collectionViewSearch?.reloadData()
+                self.showSearchCollectionView()
+            }
+            
+        }
     }
     
     /// Mark: - UITextField delegate implementaion block
