@@ -8,7 +8,7 @@
 
 import UIKit
 
-class ImageDetailViewController: UIViewController, UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, ImageDetailViewCellDelegate {
+class ImageDetailViewController: UIViewController, UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
 
     var detailPhotoData = [Photo]()
     var indexCell: IndexPath?
@@ -21,6 +21,7 @@ class ImageDetailViewController: UIViewController, UICollectionViewDelegate, UIC
         collectionView.delegate = self
         collectionView.dataSource = self
         collectionView.alpha = 0
+        
     }
  
     override func viewDidAppear(_ animated: Bool) {
@@ -34,6 +35,10 @@ class ImageDetailViewController: UIViewController, UICollectionViewDelegate, UIC
         collectionView.alpha = 1
     }
 
+    @IBAction func backButton(_ sender: UIButton) {
+         _ = navigationController?.popViewController(animated: true)
+    }
+    
     func numberOfSections(in collectionView: UICollectionView) -> Int {
         return 1
     }
@@ -54,9 +59,9 @@ class ImageDetailViewController: UIViewController, UICollectionViewDelegate, UIC
         guard let imageURL = Photo.searchBestQualityInFuckingFlickr(from: detailPhotoData, indexPath: indexPath) else {
             return UICollectionViewCell()
         }
-        imageCell.delegate = self
         imageCell.fetchImage(url: imageURL)
         imageCell.imageView.contentMode = .scaleAspectFit
+        imageCell.setScrollView()
         guard let titleText = detailPhotoData[indexPath.row].title else {
             return cellPopular
         }
@@ -72,13 +77,10 @@ class ImageDetailViewController: UIViewController, UICollectionViewDelegate, UIC
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         return CGSize(width: collectionView.bounds.size.width, height: collectionView.bounds.size.height)
     }
-
+    
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
         return 0
     }
-    
-    func didTapBackButton(_ sender: ImageDetailViewCell) {
-      _ = navigationController?.popViewController(animated: true)
-    }
+
 }
 

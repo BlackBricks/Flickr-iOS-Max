@@ -9,23 +9,27 @@
 import UIKit
 import SDWebImage
 
-protocol ImageDetailViewCellDelegate : class {
-    func didTapBackButton(_ sender: ImageDetailViewCell)
-}
-
-class ImageDetailViewCell: UICollectionViewCell {
+class ImageDetailViewCell: UICollectionViewCell, UIScrollViewDelegate {
     
-    weak var delegate: ImageDetailViewCellDelegate?
+    @IBOutlet weak var scrollView: UIScrollView!
     @IBOutlet weak var titleText: UILabel!
     @IBOutlet weak var viewText: UILabel!
     @IBOutlet weak var imageView: UIImageView!
-    @IBAction func backButton(_ sender: UIButton) {
-        delegate?.didTapBackButton(self)
-    }
     
     func fetchImage(url: String?) {
         guard let url = url else { return }
         imageView.sd_setImage(with: URL(string: url), placeholderImage: UIImage(named: "placeholder.png"))
     }
+    func setScrollView() {
+        scrollView.delegate = self
+        scrollView.minimumZoomScale = 1.0
+        scrollView.maximumZoomScale = 6.0
+        scrollView.frame = self.contentView.bounds
+        scrollView.contentSize = self.contentView.bounds.size
+    }
     
+    func viewForZooming(in scrollView: UIScrollView) -> UIView? {
+        
+        return imageView
+    }
 }
