@@ -221,9 +221,14 @@ class ImageCollectionViewController: UIViewController,  UICollectionViewDelegate
         }
     }
     
-    @objc func clickOnTextEventFunc(textField: UITextField) {
+    func initUpdateHistoryTableView() {
         updateHistoryList()
         startEditingState()
+    }
+
+    
+    @objc func clickOnTextEventFunc(textField: UITextField) {
+        initUpdateHistoryTableView()
     }
     
     func setDelegates_DataSources() {
@@ -336,7 +341,6 @@ class ImageCollectionViewController: UIViewController,  UICollectionViewDelegate
         tableViewHistorySearch.reloadData()
         heightConstraintTableView.constant = tableViewHistorySearch.contentSize.height
         tableViewHistorySearch.translatesAutoresizingMaskIntoConstraints = false
-        
     }
     
     func performTextSearch() {
@@ -426,10 +430,7 @@ class ImageCollectionViewController: UIViewController,  UICollectionViewDelegate
             }
            return (imageData, imageSizes)
         }
-    
-        
-    
-    
+  
     private func performFlickrSearch(url: String) {
         guard isNotUpdating else {
             return
@@ -490,7 +491,6 @@ class ImageCollectionViewController: UIViewController,  UICollectionViewDelegate
                 self.collectionViewSearch?.reloadData()
                 self.showSearchCollectionView()
             }
-            
         }
     }
     
@@ -651,7 +651,8 @@ class ImageCollectionViewController: UIViewController,  UICollectionViewDelegate
         }
         defaultHistoryList.remove(at: tappedIndexPath.row)
         UserDefaults.standard.set(filteredHistoryList, forKey: "historySearch")
-        rebuildTableSize()
+        initUpdateHistoryTableView()
+
     }
     
     override func didReceiveMemoryWarning() {
