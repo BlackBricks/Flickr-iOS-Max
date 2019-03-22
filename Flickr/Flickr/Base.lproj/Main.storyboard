@@ -258,7 +258,7 @@
                         <outlet property="imageMagnify" destination="Cjb-MD-n8h" id="Gch-p1-475"/>
                         <outlet property="subViewForSpinner" destination="ekC-4U-sMs" id="K7A-rk-cG0"/>
                         <outlet property="tableViewHistorySearch" destination="aeO-4J-rt9" id="Zwi-d1-jYm"/>
-                        <outlet property="textSearch" destination="Slu-hn-Enb" id="Bvz-OD-927"/>
+                        <outlet property="textFieldSearch" destination="Slu-hn-Enb" id="Bvz-OD-927"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="aYM-57-5yT" userLabel="First Responder" sceneMemberID="firstResponder"/>

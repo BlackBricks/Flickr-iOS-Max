@@ -24,6 +24,7 @@ class ImageCollectionViewController: UIViewController,  UICollectionViewDelegate
     /// Mark: - variables for tableView history list
     var defaultHistoryList = [String]()
     var filteredHistoryList = [String]()
+    var isUserInTextFieldInteraction = false
     
     /// Mark: - common
     var isOnSearchCollectionView = false
@@ -38,11 +39,9 @@ class ImageCollectionViewController: UIViewController,  UICollectionViewDelegate
     
     /// Mark: - Outlets
     @IBOutlet weak var heightConstraintTableView: NSLayoutConstraint!
-    
-    @IBOutlet weak var textSearch: UITextField!
+    @IBOutlet weak var textFieldSearch: UITextField!
     @IBOutlet weak var containerSearchTextFieldView: UIView!
     @IBOutlet weak var subViewForSpinner: UIView!
-
     @IBOutlet weak var imageMagnify: UIImageView!
     @IBOutlet weak var collectionViewSearch: UICollectionView!
     @IBOutlet weak var collectionViewPopular: UICollectionView!
@@ -102,7 +101,7 @@ class ImageCollectionViewController: UIViewController,  UICollectionViewDelegate
         setBehaviorTextBar()
         loadFormUserDefaults()
         setXibCellForRecentTableViewCell()
-        textSearch.clearButtonMode = .always
+        textFieldSearch.clearButtonMode = .always
         customPullToUpdate()
     }
     
@@ -113,7 +112,7 @@ class ImageCollectionViewController: UIViewController,  UICollectionViewDelegate
         if !defaults.isEmpty {
             defaultHistoryList = defaults as! [String]
         }
-      
+        
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -147,24 +146,23 @@ class ImageCollectionViewController: UIViewController,  UICollectionViewDelegate
         if identifier == Constants.SegueIdentifier.detailSegueFromSearchView,
             let gvcvc = segue.destination as? ImageDetailViewController,
             let cell = sender as? ImageCollectionViewCell,
-            let indexPath = self.collectionViewSearch!.indexPath(for: cell) {
+            let indexPath = self.collectionViewSearch?.indexPath(for: cell) {
             gvcvc.detailPhotoData = searchImageData
             gvcvc.indexCell = indexPath
         }
         if identifier == Constants.SegueIdentifier.detailSegueFromPopulariew,
             let gvcvc = segue.destination as? ImageDetailViewController,
             let cell = sender as? ImageCollectionViewCell,
-            let indexPath = self.collectionViewPopular!.indexPath(for: cell) {
+            let indexPath = self.collectionViewPopular?.indexPath(for: cell) {
             gvcvc.detailPhotoData = popularImageData
             gvcvc.indexCell = indexPath
         }
     }
     
     @IBAction func cancelButton(_ sender: DesignableButton) {
-        textSearch.text = ""
-        textSearch.endEditing(true)
-        let hided = isCollectionsViewHidedBoth()
-        if hided {
+        textFieldSearch.text = ""
+        textFieldSearch.endEditing(true)
+        if isUserInTextFieldInteraction {
             UIView.animate(withDuration: ConstantNumbers.standartTimeForAnimation,  animations: {
                 self.collectionViewPopular.alpha = 1
                 self.searchHistoryHide()
@@ -178,11 +176,12 @@ class ImageCollectionViewController: UIViewController,  UICollectionViewDelegate
                 self.setAlphasDefault()
             })
         }
-         self.view.layoutIfNeeded()
+        isUserInTextFieldInteraction = false
+        self.view.layoutIfNeeded()
     }
     
     func filtergHistory() {
-        guard let text = textSearch.text else {
+        guard let text = textFieldSearch.text else {
             return
         }
         if text.isEmpty {
@@ -193,18 +192,18 @@ class ImageCollectionViewController: UIViewController,  UICollectionViewDelegate
                 $0.contains(text)
             }
             filteredHistoryList = filtered
+        }
     }
-    }
-        
+    
     /// Mark: - model func block
     func updateHistoryList() {
-            filtergHistory()
-            rebuildTableSize()
+        filtergHistory()
+        rebuildTableSize()
     }
     
     @objc func editingTextEventFunc(textField: UITextField) {
-            updateHistoryList()
-            startEditingState()
+        updateHistoryList()
+        startEditingState()
     }
     
     @objc func refreshCurrentCollectionViewByPullToUpdate() {
@@ -228,7 +227,7 @@ class ImageCollectionViewController: UIViewController,  UICollectionViewDelegate
     }
     
     func setDelegates_DataSources() {
-        textSearch.delegate = self
+        textFieldSearch.delegate = self
         tableViewHistorySearch.delegate = self
         tableViewHistorySearch.dataSource = self
     }
@@ -259,7 +258,7 @@ class ImageCollectionViewController: UIViewController,  UICollectionViewDelegate
     }
     
     @objc func tapImageAction(recognizer: UITapGestureRecognizer) {
-        textSearch.becomeFirstResponder()
+        textFieldSearch.becomeFirstResponder()
         startEditingState()
     }
     
@@ -275,6 +274,7 @@ class ImageCollectionViewController: UIViewController,  UICollectionViewDelegate
     }
     
     func startEditingState() {
+        isUserInTextFieldInteraction = true
         UIView.animate(withDuration: ConstantNumbers.standartTimeForAnimation,  animations: {
             self.hideAllCollectionViews()
             self.showEditingStyle()
@@ -283,17 +283,19 @@ class ImageCollectionViewController: UIViewController,  UICollectionViewDelegate
     }
     
     func isCollectionsViewHidedBoth() -> Bool {
-        let check = (collectionViewSearch.alpha == 0) && (collectionViewPopular.alpha == 0)
-        return check
+        if isUserInTextFieldInteraction {
+            return true
+        }
+        return false
     }
     
     func setBehaviorTextBar() {
         let tapForImageRecognizer = UITapGestureRecognizer(target: self, action: #selector(tapImageAction))
         imageMagnify.isUserInteractionEnabled = true
         imageMagnify.addGestureRecognizer(tapForImageRecognizer)
-        textSearch.addTarget(self, action: #selector(clickOnTextEventFunc), for: UIControl.Event.touchDown)
-        textSearch.addTarget(self, action: #selector(editingTextEventFunc), for: UIControl.Event.editingChanged)
-        textSearch.attributedPlaceholder = NSAttributedString(string: "Search Flickr",
+        textFieldSearch.addTarget(self, action: #selector(clickOnTextEventFunc), for: UIControl.Event.touchDown)
+        textFieldSearch.addTarget(self, action: #selector(editingTextEventFunc), for: UIControl.Event.editingChanged)
+        textFieldSearch.attributedPlaceholder = NSAttributedString(string: "Search Flickr",
                                                                    attributes: [NSAttributedString.Key.foregroundColor: UIColor.white])
     }
     
@@ -334,37 +336,15 @@ class ImageCollectionViewController: UIViewController,  UICollectionViewDelegate
         tableViewHistorySearch.reloadData()
         heightConstraintTableView.constant = tableViewHistorySearch.contentSize.height
         tableViewHistorySearch.translatesAutoresizingMaskIntoConstraints = false
- 
-    }
-    
-    func isWeOnSearchCollectionAndShouldUseLastTextValue() -> Bool {
-        if isSearching {
-            guard let lastValue = self.lastEnteredTextValue else {
-                return false
-            }
-            if lastValue.isEmpty {
-                return false
-            }
-        }
-         return true
+        
     }
     
     func performTextSearch() {
         searchHistoryHide()
-        textSearch.resignFirstResponder()
-        let searchText = textSearch.text
-        guard var searchingText = searchText else {
+        isUserInTextFieldInteraction = false
+        textFieldSearch.resignFirstResponder()
+        guard let searchingText = lastEnteredTextValue else {
             return
-        }
-        if searchingText.isEmpty {
-            if isSearching {
-                if isWeOnSearchCollectionAndShouldUseLastTextValue() {
-                    guard let lastValue = self.lastEnteredTextValue else {
-                        return
-                    }
-                    searchingText = lastValue
-                }
-            }
         }
         updateSearchHistory(text: searchingText)
         lastEnteredTextValue = searchingText
@@ -384,12 +364,12 @@ class ImageCollectionViewController: UIViewController,  UICollectionViewDelegate
     }
     
     func searchTextByRecentList(_ index: Int) {
-        let txt = defaultHistoryList[index]
+        let txt = filteredHistoryList[index]
         lastEnteredTextValue = txt
         UIView.animate(withDuration: ConstantNumbers.standartTimeForAnimation,  animations: {
             self.searchHistoryHide()
         })
-        textSearch.text = txt
+        textFieldSearch.text = lastEnteredTextValue
         pageFlickr = 1
         performTextSearch()
     }
@@ -402,6 +382,87 @@ class ImageCollectionViewController: UIViewController,  UICollectionViewDelegate
         let alert = UIAlertController(title: "Alert", message: message, preferredStyle: UIAlertController.Style.alert)
         alert.addAction(UIAlertAction(title: "Click", style: .default, handler: nil))
         self.present(alert, animated: true, completion: nil)
+    }
+    
+    func transformDataResponseIntoDict(from data: DataResponse<Any>) -> [[String : AnyObject]] {
+        guard data.result.isSuccess else {
+            self.displayAlert("Error get data \(String(describing: data.result.error))")
+            return [[String : AnyObject]]()
+        }
+        guard
+            let value = data.result.value as? [String: AnyObject],
+            let dict = value["photos"] as? [String: AnyObject],
+            let photosData = dict["photo"] as? [[String: AnyObject]]
+            else {
+                print("Error parse data")
+                return [[String : AnyObject]]()
+        }
+        print("\(value)")
+        return photosData
+    }
+    
+    func calculationSearchImageData(responeDict: [[String: AnyObject]] ) {
+        let collectionViewWidth = self.collectionViewPopular.frame.size.width
+        DispatchQueue.global(qos: .background).async {
+            let photos = Photo.getPhotos(from : responeDict)
+            if self.pageFlickr > 1 {
+                self.searchImageData += photos
+                let newSizes = Photo.getSizes(from: photos)
+                let laySizes: [CGSize] = newSizes.lay_justify(for: collectionViewWidth - ConstantNumbers.basicIndent,
+                                                              preferredHeight: ConstantNumbers.justPrefferedHeight )
+                self.searchImageSizes += laySizes
+            } else {
+                self.searchImageData = photos
+                let newSizes = Photo.getSizes(from: self.searchImageData)
+                let laySizes: [CGSize] = newSizes.lay_justify(for: collectionViewWidth - ConstantNumbers.basicIndent,
+                                                              preferredHeight: ConstantNumbers.justPrefferedHeight )
+                self.searchImageSizes = laySizes
+            }
+            DispatchQueue.main.async() {
+                self.finishCalculcateResponseData()
+            }
+        }
+    }
+    
+    func calculationPopularImageData(responeDict: [[String: AnyObject]] ) {
+        let collectionViewWidth = self.collectionViewPopular.frame.size.width
+        DispatchQueue.global(qos: .background).async {
+            let photos = Photo.getPhotos(from : responeDict)
+            if self.pageFlickr > 1 {
+                self.popularImageData += photos
+                let newSizes = Photo.getSizes(from: photos)
+                let laySizes: [CGSize] = newSizes.lay_justify(for: collectionViewWidth - ConstantNumbers.basicIndent,
+                                                              preferredHeight: ConstantNumbers.justPrefferedHeight )
+                self.popularImageSizes += laySizes
+            } else {
+                self.popularImageData = photos
+                let newSizes = Photo.getSizes(from: self.popularImageData)
+                let laySizes: [CGSize] = newSizes.lay_justify(for: collectionViewWidth - ConstantNumbers.basicIndent,
+                                                              preferredHeight: ConstantNumbers.justPrefferedHeight )
+                self.popularImageSizes = laySizes
+            }
+            DispatchQueue.main.async() {
+                self.finishCalculcateResponseData()
+            }
+        }
+    }
+    
+    func finishCalculcateResponseData() {
+        self.pageFlickr += 1
+        self.subViewForSpinner.alpha = 0
+        self.isNotUpdating = true
+        if isSearching {
+            self.refreshControlForSearch.endRefreshing()
+            self.collectionViewSearch?.reloadData()
+            self.showSearchCollectionView()
+        } else {
+            self.refreshControlForPopular.endRefreshing()
+            self.collectionViewPopular?.reloadData()
+            self.hideSearchCollectionView()
+        }
+        if self.popularImageData.count == 0 {
+            self.displayAlert("Oops! it's a TRAP! Flickr service have problem and return 0 values, try to search different values or wait untill Flickr start working!")
+        }
     }
     
     private func performFlickrSearch(url: String) {
@@ -421,7 +482,6 @@ class ImageCollectionViewController: UIViewController,  UICollectionViewDelegate
             return
         }
         isNotUpdating = false
-        subViewForSpinner.alpha = 1
         let pageCalculated = String(pageFlickr)
         Alamofire.request(Router.popular(page: pageCalculated)).responseJSON { (response) in
             self.handlingPopularResponseData(data: response)
@@ -429,94 +489,20 @@ class ImageCollectionViewController: UIViewController,  UICollectionViewDelegate
     }
     
     func handlingPopularResponseData (data: DataResponse<Any> ) {
-        let popularCollectionViewWidth = collectionViewPopular.frame.size.width
         subViewForSpinner.alpha = 1
-        guard data.result.isSuccess else {
-            self.displayAlert("Error get data \(String(describing: data.result.error))")
-            return
+        let photosData = transformDataResponseIntoDict(from: data)
+        calculationPopularImageData(responeDict: photosData)
         }
-        guard
-            let value = data.result.value as? [String: AnyObject],
-            let dict = value["photos"] as? [String: AnyObject],
-            let photosData = dict["photo"] as? [[String: AnyObject]]
-            else {
-                print("Error parse data")
-                return
-        }
-        print("\(value)")
-        DispatchQueue.global(qos: .background).async {
-            let photos = Photo.getPhotos(from : photosData)
-            if self.pageFlickr > 1 {
-                self.popularImageData += photos
-                let newSizes = Photo.getSizes(from: photos)
-                let laySizes: [CGSize] = newSizes.lay_justify(for: popularCollectionViewWidth - ConstantNumbers.basicIndent,
-                                                              preferredHeight: ConstantNumbers.justPrefferedHeight )
-                self.popularImageSizes += laySizes
-            } else {
-                self.popularImageData = photos
-                let newSizes = Photo.getSizes(from: self.popularImageData)
-                let laySizes: [CGSize] = newSizes.lay_justify(for: popularCollectionViewWidth - ConstantNumbers.basicIndent,
-                                                              preferredHeight: ConstantNumbers.justPrefferedHeight )
-                self.popularImageSizes = laySizes
-            }
-            DispatchQueue.main.async() {
-//                self.popularCollectionView.headRefreshControl.endRefreshing()
-                self.collectionViewPopular?.reloadData()
-                self.hideSearchCollectionView()
-                self.pageFlickr += 1
-                self.subViewForSpinner.alpha = 0
-                self.isNotUpdating = true
-                if self.popularImageData.count == 0 {
-                    self.displayAlert("Oops! it's a TRAP! Flickr service have problem and return 0 values, try to search different values or wait untill Flickr start working!")
-                }
-            }
-        }
-    }
     
     func handlingSearchResponseData (data: DataResponse<Any> ) {
-        let searchCollectionViewWidth = collectionViewSearch.frame.size.width
-        guard data.result.isSuccess else {
-            self.displayAlert("Error get data \(String(describing: data.result.error))")
-            return
-        }
-        guard
-            let value = data.result.value as? [String: AnyObject],
-            let dict = value["photos"] as? [String: AnyObject],
-            let photosData = dict["photo"] as? [[String: AnyObject]]
-            else {
-                print("Error parse data")
-                return
-        }
-        print("\(value)")
-        DispatchQueue.global(qos: .background).async {
-            let photos = Photo.getPhotos(from : photosData)
-            if self.pageFlickr > 1 {
-                self.searchImageData += photos
-                let newSizes = Photo.getSizes(from: photos)
-                let laySizes: [CGSize] = newSizes.lay_justify(for: searchCollectionViewWidth - ConstantNumbers.basicIndent,
-                                                              preferredHeight: ConstantNumbers.justPrefferedHeight )
-                self.searchImageSizes += laySizes
-            } else {
-                self.searchImageData = photos
-                self.searchImageSizes = Photo.getSizes(from: self.searchImageData)
-                let laySizes: [CGSize] = self.searchImageSizes.lay_justify(for: searchCollectionViewWidth - ConstantNumbers.basicIndent,
-                                                                           preferredHeight: ConstantNumbers.justPrefferedHeight )
-                self.searchImageSizes = laySizes
-            }
-            DispatchQueue.main.async() {
-                self.refreshControlForSearch.endRefreshing()
-//                self.searchCollectionView.headRefreshControl.endRefreshing()
-                self.collectionViewSearch?.reloadData()
-                self.showSearchCollectionView()
-                self.subViewForSpinner.alpha = 0
-                self.isNotUpdating = true
-                self.pageFlickr += 1
-            }
-        }
+        subViewForSpinner.alpha = 1
+        let photosData = transformDataResponseIntoDict(from: data)
+        calculationSearchImageData(responeDict: photosData)
     }
     
     /// Mark: - UITextField delegate implementaion block
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        lastEnteredTextValue = textFieldSearch.text
         pageFlickr = 1
         performTextSearch()
         return true
@@ -606,7 +592,7 @@ class ImageCollectionViewController: UIViewController,  UICollectionViewDelegate
     /// Mark: - UIScrollView delegate implementaion block
     func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
         if scrollView != tableViewHistorySearch {
-            textSearch.endEditing(true)
+            textFieldSearch.endEditing(true)
             lastContentOffset = 0
             searchHistoryHide()
         }
@@ -646,21 +632,19 @@ class ImageCollectionViewController: UIViewController,  UICollectionViewDelegate
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-            return filteredHistoryList.count
+        return filteredHistoryList.count
     }
- 
-
+    
+    
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "RecentCell", for: indexPath)
-            if let recentCell = cell as? RecentTableViewCell {
-                recentCell.delegate = self
-                recentCell.setText(filteredHistoryList[indexPath.row])
-                return recentCell
-            }
-        return cell
+        if let recentCell = cell as? RecentTableViewCell {
+            recentCell.delegate = self
+            recentCell.setText(filteredHistoryList[indexPath.row])
+            return recentCell
         }
-    
-    
+        return cell
+    }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         recentIndexCell = indexPath.row
