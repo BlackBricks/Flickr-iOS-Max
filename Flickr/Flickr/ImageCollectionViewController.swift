@@ -263,14 +263,21 @@ class ImageCollectionViewController: UIViewController,  UICollectionViewDelegate
         startEditingState()
     }
     
+    func hideAllCollectionViews() {
+        self.collectionViewSearch.alpha = 0
+        self.collectionViewPopular.alpha = 0
+    }
+    
+    func showEditingStyle() {
+        self.imageMagnify.alpha = 1
+        self.buttonCancel.alpha = 1
+        self.tableViewHistorySearch.alpha = 1
+    }
+    
     func startEditingState() {
         UIView.animate(withDuration: ConstantNumbers.standartTimeForAnimation,  animations: {
-            self.collectionViewSearch.alpha = 0
-            self.collectionViewPopular.alpha = 0
-            self.imageMagnify.alpha = 1
-            self.buttonCancel.alpha = 1
-            self.tableViewHistorySearch.alpha = 1
-            self.view.layoutIfNeeded()
+            self.hideAllCollectionViews()
+            self.showEditingStyle()
         })
         rebuildTableSize()
     }
