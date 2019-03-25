@@ -26,11 +26,14 @@ class ImageDetailViewCell: UICollectionViewCell, UIScrollViewDelegate {
         imageView.sd_setImage(with: URL(string: url), placeholderImage: UIImage(named: "placeholder.png"))
     }
     func setScrollView() {
+        imageView.contentMode = .scaleAspectFit
         scrollView.delegate = self
         scrollView.minimumZoomScale = DetailConstants.minZoom
         scrollView.maximumZoomScale = DetailConstants.maxZoom
         scrollView.frame = self.contentView.bounds
         scrollView.contentSize = self.contentView.bounds.size
+        scrollView.bounds.size.width = self.imageView.bounds.size.width
+        scrollView.bounds.size.height = self.imageView.bounds.size.height
     }
     
     func viewForZooming(in scrollView: UIScrollView) -> UIView? {

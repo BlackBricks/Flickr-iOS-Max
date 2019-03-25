@@ -10,6 +10,7 @@ import UIKit
 
 class ImageDetailViewController: UIViewController, UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
 
+    var cellOffset:CGFloat = 8
     var detailPhotoData = [Photo]()
     var indexCell: IndexPath?
     let BackIdentifier = "Show main view"
@@ -30,7 +31,7 @@ class ImageDetailViewController: UIViewController, UICollectionViewDelegate, UIC
         guard let indexPath = indexCell else {
             return
         }
-        collectionView?.scrollToItem(at: indexPath, at: .left, animated: false)
+        collectionView?.scrollToItem(at: indexPath, at: .centeredHorizontally, animated: false)
         bigSpinner.stopAnimating()
         collectionView.alpha = 1
     }
@@ -60,7 +61,6 @@ class ImageDetailViewController: UIViewController, UICollectionViewDelegate, UIC
             return UICollectionViewCell()
         }
         imageCell.fetchImage(url: imageURL)
-        imageCell.imageView.contentMode = .scaleAspectFit
         imageCell.setScrollView()
         guard let titleText = detailPhotoData[indexPath.row].title else {
             return cellPopular
@@ -75,11 +75,14 @@ class ImageDetailViewController: UIViewController, UICollectionViewDelegate, UIC
 
 
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        return CGSize(width: collectionView.bounds.size.width, height: collectionView.bounds.size.height)
+        return CGSize(width: collectionView.bounds.size.width - cellOffset, height: collectionView.bounds.size.height)
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
-        return 0
+        return cellOffset
+    }
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
+        return UIEdgeInsets(top: 0, left: cellOffset/2, bottom: 0, right: cellOffset/2);
     }
 
 }
