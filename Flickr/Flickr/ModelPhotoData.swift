@@ -62,43 +62,43 @@ class Photo {
     }
     
     class func searchBestQualityInFuckingFlickr(from imageData: [Photo], indexPath: IndexPath ) -> String? {
-//        ///label="Original" width="2400" height="1800
-//        if imageData[indexPath.row].url_o != nil {
-//            if let url_o = imageData[indexPath.row].url_o {
-//                return url_o
-//            }
-//        }
-        ///label="Large" width="1024" height="768"
+
+        if imageData[indexPath.row].url_o != nil {
+            if let url_o = imageData[indexPath.row].url_o {
+                return url_o
+            }
+        }
+        
         if imageData[indexPath.row].url_h != nil {
             if let url_h = imageData[indexPath.row].url_h {
                 return url_h
             }
         }
-        ///label="Medium 800" width="800" height="600"
+
         if imageData[indexPath.row].url_c != nil {
             if let url_c = imageData[indexPath.row].url_c {
                 return url_c
             }
         }
-        /// label="Medium 640" width="640" height="480"
+
         if imageData[indexPath.row].url_z != nil {
             if let url_z = imageData[indexPath.row].url_z {
                 return url_z
             }
         }
-        ///label="Small 320" width="320" height="240
+    
         if imageData[indexPath.row].url_n != nil {
             if let url_n = imageData[indexPath.row].url_n {
                 return url_n
             }
         }
-        ///"Small" width="240" height="180"
+    
         if imageData[indexPath.row].url_m != nil {
             if let url_m = imageData[indexPath.row].url_m {
                 return url_m
             }
         }
-        ///"Thumbnail" width="100" height="75"
+ 
         if imageData[indexPath.row].url_t != nil {
             if let url_t = imageData[indexPath.row].url_t {
                 return url_t

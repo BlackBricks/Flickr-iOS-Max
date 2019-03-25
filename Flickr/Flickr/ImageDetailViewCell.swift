@@ -11,6 +11,11 @@ import SDWebImage
 
 class ImageDetailViewCell: UICollectionViewCell, UIScrollViewDelegate {
     
+    enum DetailConstants {
+        static let minZoom: CGFloat = 1.0
+        static let maxZoom: CGFloat = 6.0
+    }
+    
     @IBOutlet weak var scrollView: UIScrollView!
     @IBOutlet weak var titleText: UILabel!
     @IBOutlet weak var viewText: UILabel!
@@ -22,8 +27,8 @@ class ImageDetailViewCell: UICollectionViewCell, UIScrollViewDelegate {
     }
     func setScrollView() {
         scrollView.delegate = self
-        scrollView.minimumZoomScale = 1.0
-        scrollView.maximumZoomScale = 6.0
+        scrollView.minimumZoomScale = DetailConstants.minZoom
+        scrollView.maximumZoomScale = DetailConstants.maxZoom
         scrollView.frame = self.contentView.bounds
         scrollView.contentSize = self.contentView.bounds.size
     }
