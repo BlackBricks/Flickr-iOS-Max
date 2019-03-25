@@ -649,8 +649,9 @@ class ImageCollectionViewController: UIViewController,  UICollectionViewDelegate
         guard let tappedIndexPath = tableViewHistorySearch.indexPath(for: sender) else {
             return
         }
-        defaultHistoryList.remove(at: tappedIndexPath.row)
-        UserDefaults.standard.set(filteredHistoryList, forKey: "historySearch")
+        let removedValue = filteredHistoryList.remove(at: tappedIndexPath.row)
+        defaultHistoryList = defaultHistoryList.filter { $0 != removedValue }
+        UserDefaults.standard.set(defaultHistoryList, forKey: "historySearch")
         initUpdateHistoryTableView()
 
     }
