@@ -15,6 +15,7 @@ protocol imageDetailViewCellDelegate : class {
 
 class ImageDetailViewCell: UICollectionViewCell, UIScrollViewDelegate, UIGestureRecognizerDelegate {
     
+    var scale: CGFloat?
     var isHided = false
     enum DetailConstants {
         static let minZoom: CGFloat = 1.0
@@ -56,7 +57,10 @@ class ImageDetailViewCell: UICollectionViewCell, UIScrollViewDelegate, UIGesture
         func addZoom() {
             scrollView.clipsToBounds = true
             scrollView.minimumZoomScale = DetailConstants.minZoom
-            scrollView.maximumZoomScale = DetailConstants.maxZoom
+            guard let maximumScale = scale else {
+                return
+            }
+            scrollView.maximumZoomScale = maximumScale
             scrollView.frame = self.contentView.bounds
 //            print("\(self.contentView.bounds.size)")
 //            print("\(imageView.frame.size)")
@@ -100,7 +104,6 @@ class ImageDetailViewCell: UICollectionViewCell, UIScrollViewDelegate, UIGesture
             })
         }
     }
-    
     
     func viewForZooming(in scrollView: UIScrollView) -> UIView? {
         return imageView

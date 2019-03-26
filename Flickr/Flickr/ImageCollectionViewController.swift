@@ -515,7 +515,7 @@ class ImageCollectionViewController: UIViewController,  UICollectionViewDelegate
             let cellSearch = collectionView.dequeueReusableCell(withReuseIdentifier: "image Cell",
                                                                 for: indexPath)
             if let imageCell = cellSearch as? ImageCollectionViewCell {
-                guard let maxQualityUrl = Photo.searchBestQualityInFuckingFlickr(from: searchImageData, indexPath: indexPath) else {
+                guard let maxQualityUrl = Photo.searchBestQualityInFuckingFlickr(from: searchImageData, indexPath: indexPath).url else {
                     return cellSearch
                 }
                 guard let lowQualityUrl = searchImageData[indexPath.row].url_t else {
@@ -533,7 +533,7 @@ class ImageCollectionViewController: UIViewController,  UICollectionViewDelegate
                 guard let lowQualityUrl = popularImageData[indexPath.row].url_t else {
                     return cellPopular
                 }
-                guard let maxQualityUrl = Photo.searchBestQualityInFuckingFlickr(from: popularImageData, indexPath: indexPath) else {
+                guard let maxQualityUrl = Photo.searchBestQualityInFuckingFlickr(from: popularImageData, indexPath: indexPath).url else {
                     return cellPopular
                 }
                 imageCell.fetchImage(url_Low: lowQualityUrl, url_High: maxQualityUrl)

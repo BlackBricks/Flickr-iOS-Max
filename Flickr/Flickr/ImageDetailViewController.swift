@@ -85,8 +85,8 @@ class ImageDetailViewController: UIViewController, UICollectionViewDelegate, UIC
         guard let imageCell = cellPopular as? ImageDetailViewCell else {
             return UICollectionViewCell()
         }
-        
-        guard let imageURL = Photo.searchBestQualityInFuckingFlickr(from: detailPhotoData, indexPath: indexPath) else {
+        let photoBest = Photo.searchBestQualityInFuckingFlickr(from: detailPhotoData, indexPath: indexPath)
+        guard let imageURL = photoBest.url else {
             return UICollectionViewCell()
         }
         guard let icon_farm = detailPhotoData[indexPath.row].icon_farm else {
@@ -102,6 +102,7 @@ class ImageDetailViewController: UIViewController, UICollectionViewDelegate, UIC
         let heigthImage = calcSize(index: indexPath).height
         imageCell.setConstraints(heigthImage: heigthImage)
         imageCell.delegate = self
+        imageCell.scale = photoBest.scaleFactor
         if isHiden {
             imageCell.infoView.alpha = 0
         } else {

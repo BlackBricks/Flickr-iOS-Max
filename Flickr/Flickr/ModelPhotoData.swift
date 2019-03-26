@@ -70,49 +70,58 @@ class Photo {
         return photo
     }
     
-    class func searchBestQualityInFuckingFlickr(from imageData: [Photo], indexPath: IndexPath ) -> String? {
+    class func searchBestQualityInFuckingFlickr(from imageData: [Photo], indexPath: IndexPath ) -> (url :String? ,scaleFactor: CGFloat)  {
+        var scaleFactor: CGFloat = 7
+        var url: String?
 
         if imageData[indexPath.row].url_o != nil {
             if let url_o = imageData[indexPath.row].url_o {
-                return url_o
+                url = url_o
+                return (url, scaleFactor)
             }
         }
-        
+        scaleFactor -= 1
         if imageData[indexPath.row].url_h != nil {
             if let url_h = imageData[indexPath.row].url_h {
-                return url_h
+                url = url_h
+                return (url, scaleFactor)
             }
         }
-
+        scaleFactor -= 1
         if imageData[indexPath.row].url_c != nil {
             if let url_c = imageData[indexPath.row].url_c {
-                return url_c
+                url = url_c
+                return (url, scaleFactor)
             }
         }
-
+        scaleFactor -= 1
         if imageData[indexPath.row].url_z != nil {
             if let url_z = imageData[indexPath.row].url_z {
-                return url_z
+                url = url_z
+                return (url, scaleFactor)
             }
         }
-    
+        scaleFactor -= 1
         if imageData[indexPath.row].url_n != nil {
             if let url_n = imageData[indexPath.row].url_n {
-                return url_n
+                url = url_n
+                return (url, scaleFactor)
             }
         }
-    
+        scaleFactor -= 1
         if imageData[indexPath.row].url_m != nil {
             if let url_m = imageData[indexPath.row].url_m {
-                return url_m
+                url = url_m
+                return (url, scaleFactor)
             }
         }
- 
+        scaleFactor -= 1
         if imageData[indexPath.row].url_t != nil {
             if let url_t = imageData[indexPath.row].url_t {
-                return url_t
+                url = url_t
+                return (url, scaleFactor)
             }
         }
-        return nil
+        return (nil, 0)
     }
 }
