@@ -226,7 +226,6 @@ class ImageCollectionViewController: UIViewController,  UICollectionViewDelegate
         startEditingState()
     }
 
-    
     @objc func clickOnTextEventFunc(textField: UITextField) {
         initUpdateHistoryTableView()
     }
@@ -261,6 +260,7 @@ class ImageCollectionViewController: UIViewController,  UICollectionViewDelegate
         heightConstraintTableView.isActive = true
         constraintForHideTextField.isActive = true
     }
+    
     
     @objc func tapImageAction(recognizer: UITapGestureRecognizer) {
         textFieldSearch.becomeFirstResponder()
@@ -407,12 +407,9 @@ class ImageCollectionViewController: UIViewController,  UICollectionViewDelegate
                 print("Error parse data")
                 return [[String : AnyObject]]()
         }
-        print("\(value)")
+//        print("\(value)")
         return photosData
     }
-    
-//    func calculationImageData(responeDict: [[String: AnyObject]], photoData: [Photo], photoSizes: [CGSize], collectionWidth: CGFloat) -> (photos: [Photo], sizes:
-//        }
   
     private func performFlickrSearch(url: String) {
         guard isNotUpdating else {
@@ -625,7 +622,6 @@ class ImageCollectionViewController: UIViewController,  UICollectionViewDelegate
         return filteredHistoryList.count
     }
     
-    
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "RecentCell", for: indexPath)
         if let recentCell = cell as? RecentTableViewCell {
@@ -649,7 +645,6 @@ class ImageCollectionViewController: UIViewController,  UICollectionViewDelegate
         defaultHistoryList = defaultHistoryList.filter { $0 != removedValue }
         UserDefaults.standard.set(defaultHistoryList, forKey: "historySearch")
         initUpdateHistoryTableView()
-
     }
     
     override func didReceiveMemoryWarning() {

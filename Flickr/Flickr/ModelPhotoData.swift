@@ -21,8 +21,10 @@ class Photo {
     var widthImage: String?
     var title: String?
     var views: String?
-    var nameOwner: String?
-    var icon: String?
+    var icon_server: String?
+    var icon_farm : String?
+    var nsid: String?
+    var ownerName: String?
     
     class func getPhotos (from photoArray: [[String: AnyObject]]) -> [Photo] {
         let photo = photoArray.map({ (itemArray) -> Photo in
@@ -32,8 +34,6 @@ class Photo {
             interestInfo.views = itemArray["views"] as? String
             interestInfo.heightImage = itemArray["height_t"] as? String
             interestInfo.widthImage = itemArray["width_t"] as? String
-            interestInfo.nameOwner = itemArray["owner_name"] as? String
-            interestInfo.icon = itemArray["icon_server"] as? String
             interestInfo.idPhoto = itemArray["id"] as? String
             interestInfo.url_o = itemArray["url_o"] as? String
             interestInfo.url_h = itemArray["url_h"] as? String
@@ -42,6 +42,15 @@ class Photo {
             interestInfo.url_n = itemArray["url_n"] as? String
             interestInfo.url_m = itemArray["url_m"] as? String
             interestInfo.url_t = itemArray["url_t"] as? String
+            interestInfo.icon_server = itemArray["iconserver"] as? String
+            interestInfo.nsid = itemArray["owner"] as? String
+            interestInfo.ownerName = itemArray["ownername"] as? String
+            let icon_farm_Int = itemArray["iconfarm"] as? Int
+            guard let iconFarm = icon_farm_Int else {
+                return Photo()
+            }
+            interestInfo.icon_farm = String(iconFarm)
+            
             return interestInfo
         })
         return photo

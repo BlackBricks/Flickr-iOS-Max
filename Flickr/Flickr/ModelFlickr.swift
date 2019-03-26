@@ -48,7 +48,7 @@ Secret: 0ccd083217302f35
     static let popularParams = [
         "method": "flickr.interestingness.getList",
         "api_key": "\(FlickrAPI.key)",
-        "extras": "url_t, url_m_ url_z, url_o, url_h, url_b, url_c, views, owner_name, icon_server, url_m_ url_z, url_o",
+        "extras": "url_t, url_m_ url_z, url_o, url_h, url_b, url_c, views, owner_name, icon_server, icon-farm, nsid",
         "format": "json",
         "nojsoncallback": "1",
         "safe_search": "0",
