@@ -15,6 +15,7 @@ protocol imageDetailViewCellDelegate : class {
 
 class ImageDetailViewCell: UICollectionViewCell, UIScrollViewDelegate, UIGestureRecognizerDelegate {
     
+    var heigthImage: CGFloat?
     var scale: CGFloat?
     var isHided = false
     enum DetailConstants {
@@ -66,11 +67,12 @@ class ImageDetailViewCell: UICollectionViewCell, UIScrollViewDelegate, UIGesture
 //            print("\(imageView.frame.size)")
 //            print("\(scrollView.frame.height)")
 //            print("\(heigthImage)")
-//            scrollView.contentSize = self.contentView.bounds.size
+//            scrollView.contentSize =                      self.contentView.bounds.size
         }
     
     func setScrollView() {
         addZoom()
+        scrollView.isPagingEnabled = false
         scrollView.delegate = self
         imageView.contentMode = .scaleAspectFit
         addTap()
@@ -82,7 +84,7 @@ class ImageDetailViewCell: UICollectionViewCell, UIScrollViewDelegate, UIGesture
         doubleTap.numberOfTapsRequired = 2
         self.scrollView.addGestureRecognizer(doubleTap)
         
-        let singleTap = UITapGestureRecognizer(target: self, action: #selector(doubleTapped))
+        let singleTap = UITapGestureRecognizer(target: self, action: #selector(tapCellAction))
         singleTap.numberOfTapsRequired = 1
         self.scrollView.addGestureRecognizer(singleTap)
         
@@ -103,6 +105,19 @@ class ImageDetailViewCell: UICollectionViewCell, UIScrollViewDelegate, UIGesture
                     self.scrollView.zoomScale = 1
             })
         }
+    }
+    
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        guard let height = heigthImage else {
+            return
+        }
+        contentView.frame = CGRect(x: 0, y: 0, width: scrollView.frame.size.width, height: height )
+        
+        
+        
+        
+        
+        
     }
     
     func viewForZooming(in scrollView: UIScrollView) -> UIView? {

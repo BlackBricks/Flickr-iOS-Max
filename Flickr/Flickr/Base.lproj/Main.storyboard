@@ -340,8 +340,8 @@
                                                                 <constraint firstAttribute="height" constant="48" id="ftD-T0-sqb"/>
                                                             </constraints>
                                                             <userDefinedRuntimeAttributes>
-                                                                <userDefinedRuntimeAttribute type="number" keyPath="cornerRadius">
-                                                                    <real key="value" value="12012824012824"/>
+                                                                <userDefinedRuntimeAttribute type="number" keyPath="borderWidth">
+                                                                    <real key="value" value="2"/>
                                                                 </userDefinedRuntimeAttribute>
                                                             </userDefinedRuntimeAttributes>
                                                         </imageView>
@@ -434,6 +434,7 @@
                         <viewLayoutGuide key="safeArea" id="DuF-Ko-Rgj"/>
                     </view>
                     <connections>
+                        <outlet property="backButton" destination="5OE-Ce-4jf" id="TWy-tY-U50"/>
                         <outlet property="bigSpinner" destination="p8e-xZ-ecd" id="vso-RZ-lqQ"/>
                         <outlet property="collectionView" destination="kBF-v4-mnv" id="S8X-t9-Lma"/>
                     </connections>

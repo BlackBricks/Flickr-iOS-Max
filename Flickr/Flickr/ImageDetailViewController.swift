@@ -19,10 +19,12 @@ class ImageDetailViewController: UIViewController, UICollectionViewDelegate, UIC
             if isHiden {
                 UIView.animate(withDuration: 0.5, animations: {
                     cell.infoView.alpha = 1
+                    self.backButton.alpha = 1
                 })
             } else {
                 UIView.animate(withDuration: 0.5, animations: {
                     cell.infoView.alpha = 0
+                    self.backButton.alpha = 0
                 })
             }
             if isHiden {
@@ -39,7 +41,7 @@ class ImageDetailViewController: UIViewController, UICollectionViewDelegate, UIC
     let BackIdentifier = "Show main view"
     @IBOutlet weak var collectionView: UICollectionView!
     @IBOutlet weak var bigSpinner: UIActivityIndicatorView!
-    
+    @IBOutlet weak var backButton: UIButton!
     override func viewDidLoad() {
         super.viewDidLoad()
         collectionView.delegate = self
@@ -66,7 +68,6 @@ class ImageDetailViewController: UIViewController, UICollectionViewDelegate, UIC
         let url = "http://farm\(iconFarm).staticflickr.com/\(iconServer)/buddyicons/\(nsid).jpg"
         return url
     }
-    
     
     func numberOfSections(in collectionView: UICollectionView) -> Int {
         return 1
@@ -111,7 +112,6 @@ class ImageDetailViewController: UIViewController, UICollectionViewDelegate, UIC
         imageCell.scrollView.zoomScale = 1
         imageCell.setScrollView()
         imageCell.fetchImage(url: imageURL, icon: iconURL)
-       
         let titleText = detailPhotoData[indexPath.row].title
         imageCell.titleText.text = "Title: \(titleText ?? "")"
         let viewText = detailPhotoData[indexPath.row].views
@@ -128,10 +128,11 @@ class ImageDetailViewController: UIViewController, UICollectionViewDelegate, UIC
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
         return 0
     }
+    
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
         return UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0);
     }
-    
+
     func calcSize(index: IndexPath) -> CGSize {
         guard let heigthImage_string = detailPhotoData[index.row].heightImage else {
             return CGSize()
@@ -152,5 +153,16 @@ class ImageDetailViewController: UIViewController, UICollectionViewDelegate, UIC
         let heigth = konst * heigthImage
         return CGSize(width: widthView, height: heigth)
     }
+    
+//    func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
+//        if scrollView == collectionView {
+//            var currentCellOffset = self.collectionView.contentOffset
+//            currentCellOffset.x = currentCellOffset.x + (self.collectionView.frame.size.width / 2)
+//            guard let indexPath = self.collectionView.indexPathForItem(at: currentCellOffset) else {
+//                return
+//            }
+//            self.collectionView.scrollToItem(at: indexPath, at: .centeredHorizontally, animated: true)
+//        }
+//    }
 }
 

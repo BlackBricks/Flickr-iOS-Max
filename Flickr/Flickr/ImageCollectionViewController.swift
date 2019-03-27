@@ -112,7 +112,6 @@ class ImageCollectionViewController: UIViewController,  UICollectionViewDelegate
         if !defaults.isEmpty {
             defaultHistoryList = defaults as! [String]
         }
-        
     }
     
     override func viewWillAppear(_ animated: Bool) {

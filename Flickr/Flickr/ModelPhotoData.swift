@@ -115,7 +115,7 @@ class Photo {
                 return (url, scaleFactor)
             }
         }
-        scaleFactor -= 1
+        scaleFactor -= 0.999
         if imageData[indexPath.row].url_t != nil {
             if let url_t = imageData[indexPath.row].url_t {
                 url = url_t
