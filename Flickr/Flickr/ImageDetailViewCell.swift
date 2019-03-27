@@ -19,6 +19,7 @@ class ImageDetailViewCell: UICollectionViewCell, UIScrollViewDelegate, UIGesture
     var isHided = false
     var zoomFactor: CGFloat?
     enum DetailConstants {
+        static let magicZoomValue: CGFloat = 1.0001
         static let minZoom: CGFloat = 1.0
         static let placeholder = "https://www.flickr.com/images/buddyicon.gif"
     }
@@ -53,7 +54,7 @@ class ImageDetailViewCell: UICollectionViewCell, UIScrollViewDelegate, UIGesture
             return 1
         }
         if maxZoom < 1 {
-            return 1
+            return DetailConstants.magicZoomValue
         } else {
             return maxZoom
         }
