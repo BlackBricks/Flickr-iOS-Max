@@ -104,8 +104,10 @@ class ImageDetailViewController: UIViewController, UICollectionViewDelegate, UIC
         guard let size = detailPhotoData[indexPath.row].size_best else {
             return UICollectionViewCell()
         }
+        let sizeImage = calcSize(index: indexPath)
         imageCell.zoomFactor = calculateMaximumZoom(imageSize: size)
-        
+        imageCell.zoomForDoubleTap = defineZoomForDoubleTap(imageSize: sizeImage)
+      
         /// Mark : - setup default options for new cell
         if isHiden {
             imageCell.infoView.alpha = 0
@@ -144,26 +146,31 @@ class ImageDetailViewController: UIViewController, UICollectionViewDelegate, UIC
         return maxZoom
     }
     
-    /// Mark :
-//    func calcSize(index: IndexPath) -> CGSize {
-//        guard let heigthImage_string = detailPhotoData[index.row].heightImage else {
-//            return CGSize()
-//        }
-//        guard let heigthImage_Int = Int(heigthImage_string) else {
-//            return CGSize()
-//        }
-//        guard let widthImage_string =  detailPhotoData[index.row].widthImage else {
-//            return CGSize()
-//        }
-//        guard let widthImage_Int = Int(widthImage_string) else {
-//            return CGSize()
-//        }
-//        let heigthImage = CGFloat(heigthImage_Int)
-//        let widthImage = CGFloat(widthImage_Int)
-//        let widthView = collectionView.bounds.size.width - cellOffset
-//        let konst = widthView / widthImage
-//        let heigth = konst * heigthImage
-//        return CGSize(width: widthView, height: heigth)
-//    }
+    func defineZoomForDoubleTap(imageSize: CGSize) -> CGFloat {
+        
+        let zoomForDoubleTap = self.view.frame.size.height/imageSize.height
+        return zoomForDoubleTap
+    }
+ 
+    func calcSize(index: IndexPath) -> CGSize {
+        guard let heigthImage_string = detailPhotoData[index.row].height_t else {
+            return CGSize()
+        }
+        guard let heigthImage_Int = Int(heigthImage_string) else {
+            return CGSize()
+        }
+        guard let widthImage_string =  detailPhotoData[index.row].width_t else {
+            return CGSize()
+        }
+        guard let widthImage_Int = Int(widthImage_string) else {
+            return CGSize()
+        }
+        let heigthImage = CGFloat(heigthImage_Int)
+        let widthImage = CGFloat(widthImage_Int)
+        let widthView = collectionView.bounds.size.width - cellOffset
+        let konst = widthView / widthImage
+        let heigth = konst * heigthImage
+        return CGSize(width: widthView, height: heigth)
+    }
 }
 

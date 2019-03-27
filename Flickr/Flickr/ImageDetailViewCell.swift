@@ -18,6 +18,7 @@ class ImageDetailViewCell: UICollectionViewCell, UIScrollViewDelegate, UIGesture
     var heigthImage: CGFloat?
     var isHided = false
     var zoomFactor: CGFloat?
+    var zoomForDoubleTap: CGFloat?
     enum DetailConstants {
         static let magicZoomValue: CGFloat = 1.0001
         static let minZoom: CGFloat = 1.0
@@ -98,8 +99,11 @@ class ImageDetailViewCell: UICollectionViewCell, UIScrollViewDelegate, UIGesture
     @objc func doubleTapped(touch: UITapGestureRecognizer) {
     let touchPoint = touch.location(in: self.scrollView)
     print("\(touchPoint.x, touchPoint.y)")
-        if scrollView.zoomScale == 1 {
-            scrollView.zoomToPoint(zoomPoint: touchPoint, withScale: 2, animated: true)
+        guard let doubleTapZoom = zoomForDoubleTap else {
+            return
+        }
+        if self.scrollView.zoomScale == 1 {
+            scrollView.zoomToPoint(zoomPoint: touchPoint, withScale: doubleTapZoom, animated: true)
         } else {
             UIView.animate(withDuration: 0.25, animations: {
                     self.scrollView.zoomScale = 1
