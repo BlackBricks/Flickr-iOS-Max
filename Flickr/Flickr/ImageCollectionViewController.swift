@@ -161,20 +161,18 @@ class ImageCollectionViewController: UIViewController,  UICollectionViewDelegate
     @IBAction func cancelButton(_ sender: DesignableButton) {
         textFieldSearch.text = ""
         textFieldSearch.endEditing(true)
-        if isUserInTextFieldInteraction {
-            UIView.animate(withDuration: ConstantNumbers.standartTimeForAnimation,  animations: {
+        UIView.animate(withDuration: ConstantNumbers.standartTimeForAnimation,  animations: {
+            if self.isUserInTextFieldInteraction {
                 self.collectionViewPopular.alpha = 1
                 self.searchHistoryHide()
                 if self.isSearching {
                     self.collectionViewSearch.alpha = 1
                 }
-            })
-        } else {
-            isSearching = false
-            UIView.animate(withDuration: ConstantNumbers.standartTimeForAnimation,  animations: {
+            } else {
+                self.isSearching = false
                 self.setAlphasDefault()
-            })
-        }
+            }
+        })
         isUserInTextFieldInteraction = false
         self.view.layoutIfNeeded()
     }
@@ -224,7 +222,7 @@ class ImageCollectionViewController: UIViewController,  UICollectionViewDelegate
         updateHistoryList()
         startEditingState()
     }
-
+    
     @objc func clickOnTextEventFunc(textField: UITextField) {
         initUpdateHistoryTableView()
     }
@@ -285,7 +283,6 @@ class ImageCollectionViewController: UIViewController,  UICollectionViewDelegate
         })
         rebuildTableSize()
     }
-    
     func isCollectionsViewHidedBoth() -> Bool {
         if isUserInTextFieldInteraction {
             return true
@@ -406,10 +403,10 @@ class ImageCollectionViewController: UIViewController,  UICollectionViewDelegate
                 print("Error parse data")
                 return [[String : AnyObject]]()
         }
-//        print("\(value)")
+        //        print("\(value)")
         return photosData
     }
-  
+    
     private func performFlickrSearch(url: String) {
         guard isNotUpdating else {
             return
@@ -443,11 +440,11 @@ class ImageCollectionViewController: UIViewController,  UICollectionViewDelegate
             if self.pageFlickr == 1 {
                 self.popularImageData = newData
                 self.popularImageSizes = laySizes
-                } else {
+            } else {
                 self.popularImageData += newData
                 self.popularImageSizes += laySizes
             }
-             DispatchQueue.main.async {
+            DispatchQueue.main.async {
                 self.finishCalculcateResponseData()
                 self.refreshControlForPopular.endRefreshing()
                 self.collectionViewPopular?.reloadData()
@@ -514,10 +511,11 @@ class ImageCollectionViewController: UIViewController,  UICollectionViewDelegate
             let cellSearch = collectionView.dequeueReusableCell(withReuseIdentifier: "image Cell",
                                                                 for: indexPath)
             if let imageCell = cellSearch as? ImageCollectionViewCell {
-                guard let maxQualityUrl = Photo.searchBestQualityInFuckingFlickr(from: searchImageData, indexPath: indexPath).url else {
-                    return cellSearch
-                }
+                
                 guard let lowQualityUrl = searchImageData[indexPath.row].url_t else {
+                    return UICollectionViewCell()
+                }
+                guard let maxQualityUrl = searchImageData[indexPath.row].url_best else {
                     return UICollectionViewCell()
                 }
                 imageCell.fetchImage(url_Low: lowQualityUrl, url_High: maxQualityUrl)
@@ -529,11 +527,12 @@ class ImageCollectionViewController: UIViewController,  UICollectionViewDelegate
             let cellPopular = collectionView.dequeueReusableCell(withReuseIdentifier: "PopularImage Cell",
                                                                  for: indexPath)
             if let imageCell = cellPopular as? ImageCollectionViewCell {
+                
                 guard let lowQualityUrl = popularImageData[indexPath.row].url_t else {
                     return cellPopular
                 }
-                guard let maxQualityUrl = Photo.searchBestQualityInFuckingFlickr(from: popularImageData, indexPath: indexPath).url else {
-                    return cellPopular
+                guard let maxQualityUrl = popularImageData[indexPath.row].url_best else {
+                    return UICollectionViewCell()
                 }
                 imageCell.fetchImage(url_Low: lowQualityUrl, url_High: maxQualityUrl)
                 return cellPopular
@@ -590,21 +589,19 @@ class ImageCollectionViewController: UIViewController,  UICollectionViewDelegate
             let isEnoughSpaceForSearchTextField = scrollView.contentOffset.y >= ConstantNumbers.offsetForHideSearchText
             let isScrollingDown = velocityOfVerticalScroll < 0
             let isScrollingUp = velocityOfVerticalScroll > 0
-            if isScrollingUp {
-                self.view.layoutIfNeeded()
-                UIView.animate(withDuration: ConstantNumbers.standartTimeForAnimation,  animations: {
+            UIView.animate(withDuration: ConstantNumbers.standartTimeForAnimation,  animations: {
+                if isScrollingUp {
+                    self.view.layoutIfNeeded()
                     self.constraintForHideTextField.priority = UILayoutPriority(rawValue: 999)
                     self.view.layoutIfNeeded()
-                })
-            } else if isScrollingDown && isEnoughSpaceForSearchTextField {
-                self.view.layoutIfNeeded()
-                UIView.animate(withDuration: ConstantNumbers.standartTimeForAnimation, animations: {
+                } else if isScrollingDown && isEnoughSpaceForSearchTextField {
+                    self.view.layoutIfNeeded()
                     self.constraintForHideTextField.priority = UILayoutPriority(rawValue: 500)
                     self.view.layoutIfNeeded()
-                })
-            } else {
-                rebuildTableSize()
-            }
+                }
+            })
+        } else {
+            rebuildTableSize()
         }
     }
     

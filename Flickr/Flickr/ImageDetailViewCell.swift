@@ -16,11 +16,10 @@ protocol imageDetailViewCellDelegate : class {
 class ImageDetailViewCell: UICollectionViewCell, UIScrollViewDelegate, UIGestureRecognizerDelegate {
     
     var heigthImage: CGFloat?
-    var scale: CGFloat?
     var isHided = false
+    var zoomFactor: CGFloat?
     enum DetailConstants {
         static let minZoom: CGFloat = 1.0
-        static let maxZoom: CGFloat = 6.0
         static let placeholder = "https://www.flickr.com/images/buddyicon.gif"
     }
     weak var delegate: imageDetailViewCellDelegate?
@@ -39,47 +38,47 @@ class ImageDetailViewCell: UICollectionViewCell, UIScrollViewDelegate, UIGesture
         guard let icon = icon else {
             return
         }
-        iconView.sd_setImage(with: URL(string: DetailConstants.placeholder)) { (image, error, cache, url) in
-            self.iconView.sd_setImage(with: URL(string: icon), placeholderImage: self.iconView.image)
-        }
+        
+        imageView.sd_setImage(with: URL(string: icon), placeholderImage: UIImage(named: "placeholder.png"))
+        
+//        iconView.sd_setImage(with: URL(string: DetailConstants.placeholder)) { (image, error, cache, url) in
+//            self.iconView.sd_setImage(with: URL(string: icon), placeholderImage: self.iconView.image)
+//        }
+        print("\(icon)")
         imageView.sd_setImage(with: URL(string: url), placeholderImage: UIImage(named: "placeholder.png"))
     }
-    
-    func setHeight(height: CGFloat) {
-        scrollView.bounds.size.height = height
-    }
-    
-    func setConstraints(heigthImage: CGFloat) {
-        print("\(imageView.frame.size.height)")
-        print("\(self.contentView.frame.height)")
-        print("\(heigthImage)")
 
+    func defineMaxZoom(calculatedZoom: CGFloat?) -> CGFloat {
+        guard let maxZoom = zoomFactor else {
+            return 1
+        }
+        if maxZoom < 1 {
+            return 1
+        } else {
+            return maxZoom
+        }
     }
+    
         func addZoom() {
             scrollView.clipsToBounds = true
+            scrollView.bouncesZoom = true
             scrollView.minimumZoomScale = DetailConstants.minZoom
-            guard let maximumScale = scale else {
-                return
-            }
-            scrollView.maximumZoomScale = maximumScale
-            scrollView.frame = self.contentView.bounds
+            scrollView.maximumZoomScale = defineMaxZoom(calculatedZoom: zoomFactor)
 //            print("\(self.contentView.bounds.size)")
 //            print("\(imageView.frame.size)")
 //            print("\(scrollView.frame.height)")
 //            print("\(heigthImage)")
-//            scrollView.contentSize =                      self.contentView.bounds.size
         }
     
     func setScrollView() {
-        addZoom()
         scrollView.isPagingEnabled = false
         scrollView.delegate = self
         imageView.contentMode = .scaleAspectFit
         addTap()
+        addZoom()
     }
     
     func addTap() {
-        
         let doubleTap = UITapGestureRecognizer(target: self, action: #selector(doubleTapped))
         doubleTap.numberOfTapsRequired = 2
         self.scrollView.addGestureRecognizer(doubleTap)
@@ -106,20 +105,7 @@ class ImageDetailViewCell: UICollectionViewCell, UIScrollViewDelegate, UIGesture
             })
         }
     }
-    
-    func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        guard let height = heigthImage else {
-            return
-        }
-        contentView.frame = CGRect(x: 0, y: 0, width: scrollView.frame.size.width, height: height )
-        
-        
-        
-        
-        
-        
-    }
-    
+
     func viewForZooming(in scrollView: UIScrollView) -> UIView? {
         return imageView
     }
@@ -142,8 +128,9 @@ extension UIScrollView {
                               y: newZoomPoint.y - zoomSize.height / 2.0,
                               width: zoomSize.width,
                               height: zoomSize.height)
-        
+
         //apply the resize
         self.zoom(to: zoomRect, animated: animated)
     }
 }
+

@@ -16,16 +16,16 @@ class ImageDetailViewController: UIViewController, UICollectionViewDelegate, UIC
             guard let cell = cell as? ImageDetailViewCell else {
                 continue
             }
-            if isHiden {
-                UIView.animate(withDuration: 0.5, animations: {
+            UIView.animate(withDuration: 0.5, animations: {
+                if self.isHiden {
                     cell.infoView.alpha = 1
                     self.backButton.alpha = 1
-                })
+                
             } else {
-                UIView.animate(withDuration: 0.5, animations: {
                     cell.infoView.alpha = 0
                     self.backButton.alpha = 0
-                })
+                }
+            })
             }
             if isHiden {
                 isHiden = false
@@ -33,8 +33,6 @@ class ImageDetailViewController: UIViewController, UICollectionViewDelegate, UIC
                 isHiden = true
             }
         }
-    }
-
     var cellOffset:CGFloat = 16
     var detailPhotoData = [Photo]()
     var indexCell: IndexPath?
@@ -86,10 +84,8 @@ class ImageDetailViewController: UIViewController, UICollectionViewDelegate, UIC
         guard let imageCell = cellPopular as? ImageDetailViewCell else {
             return UICollectionViewCell()
         }
-        let photoBest = Photo.searchBestQualityInFuckingFlickr(from: detailPhotoData, indexPath: indexPath)
-        guard let imageURL = photoBest.url else {
-            return UICollectionViewCell()
-        }
+        
+        /// Mark : - get data for creation url for avatar icon
         guard let icon_farm = detailPhotoData[indexPath.row].icon_farm else {
             return UICollectionViewCell()
         }
@@ -100,17 +96,27 @@ class ImageDetailViewController: UIViewController, UICollectionViewDelegate, UIC
             return UICollectionViewCell()
         }
         let iconURL = createURLForIcon(iconFarm: icon_farm, iconServer: icon_server, nsid: nsid)
-        let heigthImage = calcSize(index: indexPath).height
-        imageCell.setConstraints(heigthImage: heigthImage)
-        imageCell.delegate = self
-        imageCell.scale = photoBest.scaleFactor
+        
+        /// Mark : - get best url and size for image
+        guard let imageURL = detailPhotoData[indexPath.row].url_best else {
+            return UICollectionViewCell()
+        }
+        guard let size = detailPhotoData[indexPath.row].size_best else {
+            return UICollectionViewCell()
+        }
+        imageCell.zoomFactor = calculateMaximumZoom(imageSize: size)
+        
+        /// Mark : - setup default options for new cell
         if isHiden {
             imageCell.infoView.alpha = 0
         } else {
             imageCell.infoView.alpha = 1
         }
         imageCell.scrollView.zoomScale = 1
+        imageCell.delegate = self
         imageCell.setScrollView()
+        
+        /// Mark : - update images, texts
         imageCell.fetchImage(url: imageURL, icon: iconURL)
         let titleText = detailPhotoData[indexPath.row].title
         imageCell.titleText.text = "Title: \(titleText ?? "")"
@@ -133,36 +139,31 @@ class ImageDetailViewController: UIViewController, UICollectionViewDelegate, UIC
         return UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0);
     }
 
-    func calcSize(index: IndexPath) -> CGSize {
-        guard let heigthImage_string = detailPhotoData[index.row].heightImage else {
-            return CGSize()
-        }
-        guard let heigthImage_Int = Int(heigthImage_string) else {
-            return CGSize()
-        }
-        guard let widthImage_string =  detailPhotoData[index.row].widthImage else {
-            return CGSize()
-        }
-        guard let widthImage_Int = Int(widthImage_string) else {
-            return CGSize()
-        }
-        let heigthImage = CGFloat(heigthImage_Int)
-        let widthImage = CGFloat(widthImage_Int)
-        let widthView = collectionView.bounds.size.width - cellOffset
-        let konst = widthView / widthImage
-        let heigth = konst * heigthImage
-        return CGSize(width: widthView, height: heigth)
+    func calculateMaximumZoom(imageSize: CGSize) -> CGFloat {
+        let maxZoom = imageSize.width/self.view.frame.size.width
+        return maxZoom
     }
     
-//    func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
-//        if scrollView == collectionView {
-//            var currentCellOffset = self.collectionView.contentOffset
-//            currentCellOffset.x = currentCellOffset.x + (self.collectionView.frame.size.width / 2)
-//            guard let indexPath = self.collectionView.indexPathForItem(at: currentCellOffset) else {
-//                return
-//            }
-//            self.collectionView.scrollToItem(at: indexPath, at: .centeredHorizontally, animated: true)
+    /// Mark :
+//    func calcSize(index: IndexPath) -> CGSize {
+//        guard let heigthImage_string = detailPhotoData[index.row].heightImage else {
+//            return CGSize()
 //        }
+//        guard let heigthImage_Int = Int(heigthImage_string) else {
+//            return CGSize()
+//        }
+//        guard let widthImage_string =  detailPhotoData[index.row].widthImage else {
+//            return CGSize()
+//        }
+//        guard let widthImage_Int = Int(widthImage_string) else {
+//            return CGSize()
+//        }
+//        let heigthImage = CGFloat(heigthImage_Int)
+//        let widthImage = CGFloat(widthImage_Int)
+//        let widthView = collectionView.bounds.size.width - cellOffset
+//        let konst = widthView / widthImage
+//        let heigth = konst * heigthImage
+//        return CGSize(width: widthView, height: heigth)
 //    }
 }
 

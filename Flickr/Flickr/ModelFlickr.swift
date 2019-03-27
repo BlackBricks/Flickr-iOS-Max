@@ -11,6 +11,7 @@ import UIKit
 
 struct Constants {
     
+    static let listQualitySuffix = ["_o","_h","_c","_z","_n","_m","_t"]
     struct SegueIdentifier {
         static let detailSegueFromSearchView = "Show Detail From SearchView"
         static let detailSegueFromPopulariew = "Show Detail From PopularView"
