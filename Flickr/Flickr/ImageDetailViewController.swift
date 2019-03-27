@@ -128,15 +128,15 @@ class ImageDetailViewController: UIViewController, UICollectionViewDelegate, UIC
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        return CGSize(width: collectionView.bounds.size.width, height: collectionView.bounds.size.height)
+        return CGSize(width: collectionView.bounds.size.width - cellOffset, height: collectionView.bounds.size.height)
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
-        return 0
+        return cellOffset
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
-        return UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0);
+        return UIEdgeInsets(top: 0, left: cellOffset/2, bottom: 0, right: cellOffset/2);
     }
 
     func calculateMaximumZoom(imageSize: CGSize) -> CGFloat {

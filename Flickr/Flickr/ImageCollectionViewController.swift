@@ -403,7 +403,7 @@ class ImageCollectionViewController: UIViewController,  UICollectionViewDelegate
                 print("Error parse data")
                 return [[String : AnyObject]]()
         }
-        //        print("\(value)")
+                print("\(value)")
         return photosData
     }
     

@@ -61,15 +61,24 @@ class Photo {
         for urlSuffix in Constants.listQualitySuffix {
             let url_best: String?
             let width: String?
-            let height : String?
+            var height : Int?
             url_best = data["url" + urlSuffix] as? String
             guard let url = url_best else {
                 continue
             }
             width = data["width" + urlSuffix] as? String
-            height = data["height" + urlSuffix] as? String
+            height = data["height" + urlSuffix] as? Int
+            if height == nil {
+                if let lol_its_not_Int = data["height" + urlSuffix] as? String {
+                height = Int(lol_its_not_Int)
+                }
+            }
+            guard let height_forFloat = height else {
+                return (nil, nil)
+            }
+            let height_int = Int(height_forFloat)
             let image_width =  fromStringToCGFloat(word: width)
-            let image_height = fromStringToCGFloat(word: height)
+            let image_height = CGFloat(height_int)
             let size = CGSize(width: image_width, height: image_height)
             return (url, size)
         }
