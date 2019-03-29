@@ -41,7 +41,7 @@ class ImageDetailViewCell: UICollectionViewCell, UIScrollViewDelegate, UIGesture
             return
         }
         
-        imageView.sd_setImage(with: URL(string: icon), placeholderImage: UIImage(named: "placeholder.png"))
+        iconView.sd_setImage(with: URL(string: icon), placeholderImage: UIImage(named: "placeholder.png"))
         
 //        iconView.sd_setImage(with: URL(string: DetailConstants.placeholder)) { (image, error, cache, url) in
 //            self.iconView.sd_setImage(with: URL(string: icon), placeholderImage: self.iconView.image)
@@ -61,23 +61,13 @@ class ImageDetailViewCell: UICollectionViewCell, UIScrollViewDelegate, UIGesture
         }
     }
     
-        func addZoom() {
-            scrollView.clipsToBounds = true
-            scrollView.bouncesZoom = true
-            scrollView.minimumZoomScale = DetailConstants.minZoom
-            scrollView.maximumZoomScale = defineMaxZoom(calculatedZoom: zoomFactor)
-//            print("\(self.contentView.bounds.size)")
-//            print("\(imageView.frame.size)")
-//            print("\(scrollView.frame.height)")
-//            print("\(heigthImage)")
-        }
-    
     func setScrollView() {
-        scrollView.isPagingEnabled = true
         scrollView.delegate = self
         imageView.contentMode = .scaleAspectFit
         addTap()
-        addZoom()
+        scrollView.minimumZoomScale = DetailConstants.minZoom
+        scrollView.maximumZoomScale = defineMaxZoom(calculatedZoom: zoomFactor)
+       
     }
     
     func addTap() {
@@ -113,6 +103,26 @@ class ImageDetailViewCell: UICollectionViewCell, UIScrollViewDelegate, UIGesture
 
     func viewForZooming(in scrollView: UIScrollView) -> UIView? {
         return imageView
+    }
+}
+
+extension UIImageView{
+    func imageFrame()->CGRect{
+        let imageViewSize = self.frame.size
+        guard let imageSize = self.image?.size else{return CGRect.zero}
+        let imageRatio = imageSize.width / imageSize.height
+        let imageViewRatio = imageViewSize.width / imageViewSize.height
+        if imageRatio < imageViewRatio {
+            let scaleFactor = imageViewSize.height / imageSize.height
+            let width = imageSize.width * scaleFactor
+            let topLeftX = (imageViewSize.width - width) * 0.5
+            return CGRect(x: topLeftX, y: 0, width: width, height: imageViewSize.height)
+        }else{
+            let scalFactor = imageViewSize.width / imageSize.width
+            let height = imageSize.height * scalFactor
+            let topLeftY = (imageViewSize.height - height) * 0.5
+            return CGRect(x: 0, y: topLeftY, width: imageViewSize.width, height: height)
+        }
     }
 }
 

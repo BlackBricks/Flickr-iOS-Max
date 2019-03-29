@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import SDWebImage
 
 class ImageDetailViewController: UIViewController, UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, imageDetailViewCellDelegate {
     
@@ -87,6 +88,8 @@ class ImageDetailViewController: UIViewController, UICollectionViewDelegate, UIC
         imageCell.zoomForDoubleTap = defineZoomForDoubleTap(imageSize: sizeImage)
       
         /// Mark : - setup default options for new cell
+//        imageCell.iconView = sd_setImage(with: URL(string: icon), placeholderImage: UIImage(named: "placeholder.png"))
+        imageCell.heigthImage = calcSize(index: indexPath).height
 //        if isHiden {
 //            imageCell.infoView.alpha = 0
 //        } else {
@@ -103,7 +106,7 @@ class ImageDetailViewController: UIViewController, UICollectionViewDelegate, UIC
         let viewText = detailPhotoData[indexPath.row].views
         imageCell.viewText.text = "Views: \(viewText ?? "")"
         let nickText = detailPhotoData[indexPath.row].ownerName
-        imageCell.nickLabel.text = ": \(nickText ?? "")"
+        imageCell.nickLabel.text = " \(nickText ?? "")"
         return cellPopular
     }
     
@@ -127,7 +130,6 @@ class ImageDetailViewController: UIViewController, UICollectionViewDelegate, UIC
     }
     
     func defineZoomForDoubleTap(imageSize: CGSize) -> CGFloat {
-        
         let zoomForDoubleTap = self.view.frame.size.height/imageSize.height
         return zoomForDoubleTap
     }
@@ -152,6 +154,8 @@ class ImageDetailViewController: UIViewController, UICollectionViewDelegate, UIC
         let heigth = konst * heigthImage
         return CGSize(width: widthView, height: heigth)
     }
+    
+    
     
     func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
 

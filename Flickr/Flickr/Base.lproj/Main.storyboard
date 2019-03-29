@@ -113,14 +113,14 @@
                                         <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                     </imageView>
                                     <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="Search Flickr" minimumFontSize="17" clearButtonMode="whileEditing" translatesAutoresizingMaskIntoConstraints="NO" id="Slu-hn-Enb">
-                                        <rect key="frame" x="72" y="17" width="191" height="26"/>
+                                        <rect key="frame" x="72" y="16.5" width="203" height="27"/>
                                         <color key="backgroundColor" white="0.33333333329999998" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <fontDescription key="fontDescription" name="Cormorant-Italic" family="Cormorant" pointSize="22"/>
                                         <textInputTraits key="textInputTraits" keyboardAppearance="alert" returnKeyType="search"/>
                                     </textField>
                                     <button opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="LCy-dP-L24" customClass="DesignableButton" customModule="Flickr" customModuleProvider="target">
-                                        <rect key="frame" x="275" y="12" width="88" height="36"/>
+                                        <rect key="frame" x="287" y="12" width="76" height="36"/>
                                         <fontDescription key="fontDescription" name="Cormorant-Italic" family="Cormorant" pointSize="18"/>
                                         <inset key="contentEdgeInsets" minX="16" minY="8" maxX="16" maxY="8"/>
                                         <state key="normal" title="Cancel">
@@ -293,26 +293,26 @@
                                             <rect key="frame" x="0.0" y="0.0" width="376" height="646"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleAspectFit" alwaysBounceHorizontal="YES" pagingEnabled="YES" translatesAutoresizingMaskIntoConstraints="NO" id="jwX-tL-Wxa">
+                                                <scrollView multipleTouchEnabled="YES" contentMode="scaleAspectFit" translatesAutoresizingMaskIntoConstraints="NO" id="jwX-tL-Wxa">
                                                     <rect key="frame" x="0.0" y="0.0" width="376" height="646"/>
                                                     <subviews>
-                                                        <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" image="magnify" translatesAutoresizingMaskIntoConstraints="NO" id="EgN-CH-YTQ">
+                                                        <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" image="Screenshot 2019-03-20 at 14.11.35" translatesAutoresizingMaskIntoConstraints="NO" id="EgN-CH-YTQ">
                                                             <rect key="frame" x="0.0" y="0.0" width="376" height="646"/>
                                                             <color key="tintColor" white="0.66666666666666663" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                         </imageView>
                                                     </subviews>
                                                     <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
                                                     <constraints>
-                                                        <constraint firstItem="EgN-CH-YTQ" firstAttribute="top" secondItem="jwX-tL-Wxa" secondAttribute="top" id="0Uc-b1-eVI"/>
-                                                        <constraint firstAttribute="trailing" secondItem="EgN-CH-YTQ" secondAttribute="trailing" id="696-3w-eck"/>
-                                                        <constraint firstItem="EgN-CH-YTQ" firstAttribute="width" secondItem="jwX-tL-Wxa" secondAttribute="width" id="bwG-Nc-29u"/>
-                                                        <constraint firstAttribute="bottom" secondItem="EgN-CH-YTQ" secondAttribute="bottom" id="epr-Gh-xCL"/>
-                                                        <constraint firstItem="EgN-CH-YTQ" firstAttribute="centerY" secondItem="jwX-tL-Wxa" secondAttribute="centerY" id="hmx-S4-QvR"/>
-                                                        <constraint firstItem="EgN-CH-YTQ" firstAttribute="leading" secondItem="jwX-tL-Wxa" secondAttribute="leading" id="lZD-Ks-B19"/>
+                                                        <constraint firstItem="EgN-CH-YTQ" firstAttribute="centerY" secondItem="jwX-tL-Wxa" secondAttribute="centerY" id="Cfr-2t-1pL"/>
+                                                        <constraint firstItem="EgN-CH-YTQ" firstAttribute="leading" secondItem="jwX-tL-Wxa" secondAttribute="leading" id="LcG-fQ-BKM"/>
+                                                        <constraint firstItem="EgN-CH-YTQ" firstAttribute="top" secondItem="jwX-tL-Wxa" secondAttribute="top" id="SbT-G5-K58"/>
+                                                        <constraint firstAttribute="trailing" secondItem="EgN-CH-YTQ" secondAttribute="trailing" id="bQx-WC-R5u"/>
+                                                        <constraint firstAttribute="bottom" secondItem="EgN-CH-YTQ" secondAttribute="bottom" id="qfA-jQ-nk2"/>
+                                                        <constraint firstItem="EgN-CH-YTQ" firstAttribute="centerX" secondItem="jwX-tL-Wxa" secondAttribute="centerX" id="rjz-KN-lLS"/>
                                                     </constraints>
                                                     <inset key="scrollIndicatorInsets" minX="-20" minY="0.0" maxX="0.0" maxY="0.0"/>
                                                 </scrollView>
-                                                <view userInteractionEnabled="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="c5O-hR-jqx">
+                                                <view userInteractionEnabled="NO" contentMode="scaleAspectFit" translatesAutoresizingMaskIntoConstraints="NO" id="c5O-hR-jqx">
                                                     <rect key="frame" x="0.0" y="0.0" width="376" height="646"/>
                                                     <subviews>
                                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="title" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="SFb-2h-rIp">
@@ -342,15 +342,15 @@
                                                             </constraints>
                                                         </imageView>
                                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="1Yb-UX-gLh">
-                                                            <rect key="frame" x="72" y="24" width="256" height="24.5"/>
+                                                            <rect key="frame" x="72" y="24" width="240" height="25"/>
                                                             <fontDescription key="fontDescription" name="Cormorant-Italic" family="Cormorant" pointSize="20"/>
                                                             <color key="textColor" red="0.99940687419999996" green="0.90858131649999996" blue="0.75631183390000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                             <nil key="highlightedColor"/>
                                                         </label>
                                                     </subviews>
                                                     <constraints>
+                                                        <constraint firstAttribute="trailing" secondItem="1Yb-UX-gLh" secondAttribute="trailing" constant="64" id="0NR-52-Vnf"/>
                                                         <constraint firstItem="1Yb-UX-gLh" firstAttribute="leading" secondItem="Cxy-eh-z83" secondAttribute="trailing" constant="12" id="QEQ-6T-t9l"/>
-                                                        <constraint firstAttribute="trailing" secondItem="1Yb-UX-gLh" secondAttribute="trailing" constant="48" id="SRj-xo-nNc"/>
                                                         <constraint firstAttribute="trailing" secondItem="SFb-2h-rIp" secondAttribute="trailing" id="UNd-iy-KNp"/>
                                                         <constraint firstAttribute="bottom" secondItem="C0R-Nv-oKW" secondAttribute="bottom" constant="12" id="VZB-eK-iwS"/>
                                                         <constraint firstItem="SFb-2h-rIp" firstAttribute="leading" secondItem="c5O-hR-jqx" secondAttribute="leading" constant="12" id="ZLb-Si-xqV"/>
@@ -458,6 +458,7 @@
         </scene>
     </scenes>
     <resources>
+        <image name="Screenshot 2019-03-20 at 14.11.35" width="850" height="683"/>
         <image name="close" width="24" height="24"/>
         <image name="magnify" width="48" height="48"/>
     </resources>
