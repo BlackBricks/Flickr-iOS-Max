@@ -73,7 +73,7 @@ class ImageDetailViewCell: UICollectionViewCell, UIScrollViewDelegate, UIGesture
         }
     
     func setScrollView() {
-        scrollView.isPagingEnabled = false
+        scrollView.isPagingEnabled = true
         scrollView.delegate = self
         imageView.contentMode = .scaleAspectFit
         addTap()

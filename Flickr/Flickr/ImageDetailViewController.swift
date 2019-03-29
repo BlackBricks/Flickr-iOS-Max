@@ -11,7 +11,7 @@ import UIKit
 class ImageDetailViewController: UIViewController, UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, imageDetailViewCellDelegate {
     
     var isHiden = false
-    var cellOffset:CGFloat = 16
+    var cellOffset:CGFloat = 24
     var detailPhotoData = [Photo]()
     var indexCell: IndexPath?
     let BackIdentifier = "Show main view"
@@ -112,11 +112,13 @@ class ImageDetailViewController: UIViewController, UICollectionViewDelegate, UIC
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
-        return 0
+        self.collectionView?.isPagingEnabled = true
+        self.collectionView?.frame = view.frame.insetBy(dx: (-cellOffset/2), dy: 0.0)
+        return cellOffset
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
-        return UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0);
+        return UIEdgeInsets(top: 0, left: cellOffset/2, bottom: 0, right: cellOffset/2);
     }
 
     func calculateMaximumZoom(imageSize: CGSize) -> CGFloat {
@@ -152,6 +154,7 @@ class ImageDetailViewController: UIViewController, UICollectionViewDelegate, UIC
     }
     
     func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
+
         guard let imageCell = cell as? ImageDetailViewCell else {
             return
         }
