@@ -11,28 +11,6 @@ import UIKit
 class ImageDetailViewController: UIViewController, UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, imageDetailViewCellDelegate {
     
     var isHiden = false
-    func didTapScrollView(_ sender: ImageDetailViewCell) {
-        for cell in self.collectionView.visibleCells {
-            guard let cell = cell as? ImageDetailViewCell else {
-                continue
-            }
-            UIView.animate(withDuration: 0.5, animations: {
-                if self.isHiden {
-                    cell.infoView.alpha = 1
-                    self.backButton.alpha = 1
-                
-            } else {
-                    cell.infoView.alpha = 0
-                    self.backButton.alpha = 0
-                }
-            })
-            }
-            if isHiden {
-                isHiden = false
-            } else {
-                isHiden = true
-            }
-        }
     var cellOffset:CGFloat = 16
     var detailPhotoData = [Photo]()
     var indexCell: IndexPath?
@@ -109,15 +87,15 @@ class ImageDetailViewController: UIViewController, UICollectionViewDelegate, UIC
         imageCell.zoomForDoubleTap = defineZoomForDoubleTap(imageSize: sizeImage)
       
         /// Mark : - setup default options for new cell
-        if isHiden {
-            imageCell.infoView.alpha = 0
-        } else {
-            imageCell.infoView.alpha = 1
-        }
-        imageCell.scrollView.zoomScale = 1
-        imageCell.delegate = self
-        imageCell.setScrollView()
-        
+//        if isHiden {
+//            imageCell.infoView.alpha = 0
+//        } else {
+//            imageCell.infoView.alpha = 1
+//        }
+//        imageCell.scrollView.zoomScale = 1
+//        imageCell.delegate = self
+//        imageCell.setScrollView()
+//
         /// Mark : - update images, texts
         imageCell.fetchImage(url: imageURL, icon: iconURL)
         let titleText = detailPhotoData[indexPath.row].title
@@ -130,15 +108,15 @@ class ImageDetailViewController: UIViewController, UICollectionViewDelegate, UIC
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        return CGSize(width: collectionView.bounds.size.width - cellOffset, height: collectionView.bounds.size.height)
+        return CGSize(width: collectionView.bounds.size.width, height: collectionView.bounds.size.height)
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
-        return cellOffset
+        return 0
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
-        return UIEdgeInsets(top: 0, left: cellOffset/2, bottom: 0, right: cellOffset/2);
+        return UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0);
     }
 
     func calculateMaximumZoom(imageSize: CGSize) -> CGFloat {
@@ -167,10 +145,47 @@ class ImageDetailViewController: UIViewController, UICollectionViewDelegate, UIC
         }
         let heigthImage = CGFloat(heigthImage_Int)
         let widthImage = CGFloat(widthImage_Int)
-        let widthView = collectionView.bounds.size.width - cellOffset
+        let widthView = collectionView.bounds.size.width
         let konst = widthView / widthImage
         let heigth = konst * heigthImage
         return CGSize(width: widthView, height: heigth)
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
+        guard let imageCell = cell as? ImageDetailViewCell else {
+            return
+        }
+        if isHiden {
+            imageCell.infoView.alpha = 0
+        } else {
+            imageCell.infoView.alpha = 1
+        }
+        imageCell.scrollView.zoomScale = 1
+        imageCell.delegate = self
+        imageCell.setScrollView()
+    }
+    
+    func didTapScrollView(_ sender: ImageDetailViewCell) {
+        for cell in self.collectionView.visibleCells {
+            guard let cell = cell as? ImageDetailViewCell else {
+                continue
+            }
+            UIView.animate(withDuration: 0.5, animations: {
+                if self.isHiden {
+                    cell.infoView.alpha = 1
+                    self.backButton.alpha = 1
+                    
+                } else {
+                    cell.infoView.alpha = 0
+                    self.backButton.alpha = 0
+                }
+            })
+        }
+        if isHiden {
+            isHiden = false
+        } else {
+            isHiden = true
+        }
     }
 }
 
