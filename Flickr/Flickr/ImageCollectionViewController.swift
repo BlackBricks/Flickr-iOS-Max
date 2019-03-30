@@ -258,7 +258,6 @@ class ImageCollectionViewController: UIViewController,  UICollectionViewDelegate
         constraintForHideTextField.isActive = true
     }
     
-    
     @objc func tapImageAction(recognizer: UITapGestureRecognizer) {
         textFieldSearch.becomeFirstResponder()
         startEditingState()

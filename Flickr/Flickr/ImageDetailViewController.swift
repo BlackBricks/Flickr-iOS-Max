@@ -11,29 +11,29 @@ import SDWebImage
 
 class ImageDetailViewController: UIViewController, UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, imageDetailViewCellDelegate {
     
+    var curIndexPath: IndexPath?
     var isHiden = false
     var cellOffset:CGFloat = 24
     var detailPhotoData = [Photo]()
     var indexCell: IndexPath?
     let BackIdentifier = "Show main view"
     @IBOutlet weak var collectionView: UICollectionView!
-    @IBOutlet weak var bigSpinner: UIActivityIndicatorView!
     @IBOutlet weak var backButton: UIButton!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         collectionView.delegate = self
         collectionView.dataSource = self
         collectionView.alpha = 0
+               self.collectionView?.isPagingEnabled = true
     }
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        bigSpinner.startAnimating()
         guard let indexPath = indexCell else {
             return
         }
         collectionView?.scrollToItem(at: indexPath, at: .centeredHorizontally, animated: false)
-        bigSpinner.stopAnimating()
         collectionView.alpha = 1
     }
     
@@ -54,7 +54,7 @@ class ImageDetailViewController: UIViewController, UICollectionViewDelegate, UIC
                         numberOfItemsInSection section: Int) -> Int {
         return detailPhotoData.count
     }
-
+    
     func collectionView(_ collectionView: UICollectionView,
                         cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         
@@ -80,27 +80,12 @@ class ImageDetailViewController: UIViewController, UICollectionViewDelegate, UIC
         guard let imageURL = detailPhotoData[indexPath.row].url_best else {
             return UICollectionViewCell()
         }
-        guard let size = detailPhotoData[indexPath.row].size_best else {
+        guard let imageSize = detailPhotoData[indexPath.row].size_best else {
             return UICollectionViewCell()
         }
-        let sizeImage = calcSize(index: indexPath)
-        imageCell.zoomFactor = calculateMaximumZoom(imageSize: size)
-        imageCell.zoomForDoubleTap = defineZoomForDoubleTap(imageSize: sizeImage)
-      
-        /// Mark : - setup default options for new cell
-//        imageCell.iconView = sd_setImage(with: URL(string: icon), placeholderImage: UIImage(named: "placeholder.png"))
-        imageCell.heigthImage = calcSize(index: indexPath).height
-//        if isHiden {
-//            imageCell.infoView.alpha = 0
-//        } else {
-//            imageCell.infoView.alpha = 1
-//        }
-//        imageCell.scrollView.zoomScale = 1
-//        imageCell.delegate = self
-//        imageCell.setScrollView()
-//
-        /// Mark : - update images, texts
+        
         imageCell.fetchImage(url: imageURL, icon: iconURL)
+        imageCell.setScrollViewBehavior(for: imageSize)
         let titleText = detailPhotoData[indexPath.row].title
         imageCell.titleText.text = "Title: \(titleText ?? "")"
         let viewText = detailPhotoData[indexPath.row].views
@@ -115,50 +100,19 @@ class ImageDetailViewController: UIViewController, UICollectionViewDelegate, UIC
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
-        self.collectionView?.isPagingEnabled = true
         self.collectionView?.frame = view.frame.insetBy(dx: (-cellOffset/2), dy: 0.0)
         return cellOffset
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
-        return UIEdgeInsets(top: 0, left: cellOffset/2, bottom: 0, right: cellOffset/2);
-    }
-
-    func calculateMaximumZoom(imageSize: CGSize) -> CGFloat {
-        let maxZoom = imageSize.width/self.view.frame.size.width
-        return maxZoom
+        return UIEdgeInsets(top: 0, left: cellOffset/2, bottom: 0, right: cellOffset/2)
     }
     
-    func defineZoomForDoubleTap(imageSize: CGSize) -> CGFloat {
-        let zoomForDoubleTap = self.view.frame.size.height/imageSize.height
-        return zoomForDoubleTap
+    func collectionView(_ collectionView: UICollectionView, didHighlightItemAt indexPath: IndexPath) {
+        curIndexPath = indexPath
     }
- 
-    func calcSize(index: IndexPath) -> CGSize {
-        guard let heigthImage_string = detailPhotoData[index.row].height_t else {
-            return CGSize()
-        }
-        guard let heigthImage_Int = Int(heigthImage_string) else {
-            return CGSize()
-        }
-        guard let widthImage_string =  detailPhotoData[index.row].width_t else {
-            return CGSize()
-        }
-        guard let widthImage_Int = Int(widthImage_string) else {
-            return CGSize()
-        }
-        let heigthImage = CGFloat(heigthImage_Int)
-        let widthImage = CGFloat(widthImage_Int)
-        let widthView = collectionView.bounds.size.width
-        let konst = widthView / widthImage
-        let heigth = konst * heigthImage
-        return CGSize(width: widthView, height: heigth)
-    }
-    
-    
     
     func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
-
         guard let imageCell = cell as? ImageDetailViewCell else {
             return
         }
@@ -167,9 +121,11 @@ class ImageDetailViewController: UIViewController, UICollectionViewDelegate, UIC
         } else {
             imageCell.infoView.alpha = 1
         }
-        imageCell.scrollView.zoomScale = 1
         imageCell.delegate = self
-        imageCell.setScrollView()
+        guard let imageSize = detailPhotoData[indexPath.row].size_best else {
+            return 
+        }
+        imageCell.setScrollViewBehavior(for: imageSize)
     }
     
     func didTapScrollView(_ sender: ImageDetailViewCell) {
@@ -194,5 +150,7 @@ class ImageDetailViewController: UIViewController, UICollectionViewDelegate, UIC
             isHiden = true
         }
     }
+    
 }
+
 

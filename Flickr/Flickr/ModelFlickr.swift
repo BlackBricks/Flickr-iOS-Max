@@ -17,6 +17,13 @@ struct Constants {
         static let detailSegueFromPopulariew = "Show Detail From PopularView"
     }
     
+    enum ForDetailView {
+        static let lastCells = 5
+        static let magicZoomValue: CGFloat = 0.0001
+        static let minZoom: CGFloat = 1.0
+        static let placeholder = "https://www.flickr.com/images/buddyicon.gif"
+    }
+    
     struct Paddings {
         static let horizontalContentPadding: CGFloat = 10
         static let verticalContentPadding: CGFloat = 10

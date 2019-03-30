@@ -60,13 +60,19 @@ class Photo {
     class func getBestImageModel(data: [String : AnyObject]) -> (url: String?,size: CGSize?) {
         for urlSuffix in Constants.listQualitySuffix {
             let url_best: String?
-            let width: String?
+            var width: String?
             var height : Int?
             url_best = data["url" + urlSuffix] as? String
             guard let url = url_best else {
                 continue
             }
             width = data["width" + urlSuffix] as? String
+            if width == nil {
+                if let lol_its_not_String = data["width" + urlSuffix] as? Int {
+                    width = String(lol_its_not_String)
+                }
+            }
+            
             height = data["height" + urlSuffix] as? Int
             if height == nil {
                 if let lol_its_not_Int = data["height" + urlSuffix] as? String {
