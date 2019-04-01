@@ -10,14 +10,20 @@ import UIKit
 import SDWebImage
 
 class ImageCollectionViewCell: UICollectionViewCell {
-    
     var imageArray: [[String: AnyObject]]?
     @IBOutlet weak var imageView: UIImageView!
     
-    func fetchImage(url: String?) {
-        guard let url = url else {
+    func fetchImage(url_Low: String?, url_High: String?) {
+        guard let urlLowQuality = url_Low else {
             return
         }
-        imageView.sd_setImage(with: URL(string: url), placeholderImage: UIImage(named: "placeholder.png"))
+        guard let urlHightQuality = url_High else {
+            return
+        }
+        let url_t = NSURL(string: urlLowQuality) as URL?
+        let url_h = NSURL(string: urlHightQuality) as URL?
+        imageView.sd_setImage(with: url_t) { (image, error, cache, url) in
+            self.imageView.sd_setImage(with: url_h, placeholderImage: self.imageView.image)
+        }
     }
 }

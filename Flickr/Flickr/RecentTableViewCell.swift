@@ -8,22 +8,19 @@
 
 import UIKit
 
-class RecentTableViewCell: UITableViewCell {
-    
-    var dataRecentSearches = [String]()
-    var index = Int()
-    weak var delegate: recentTableCellDelegate?
-    @IBOutlet weak var recentText: UILabel!
-    @IBAction func clearButton(_ sender: UIButton) {
-        delegate?.didTapClearButton(self)
-    }
-    
-    func setText(_ array: [String]) {
-        recentText.text = array[index]
-    }
-}
-
 protocol recentTableCellDelegate : class {
     func didTapClearButton(_ sender: RecentTableViewCell)
 }
 
+class RecentTableViewCell: UITableViewCell {
+    
+    weak var delegate: recentTableCellDelegate?
+    @IBOutlet weak var recentText: UILabel!
+    
+    @IBAction func clearButton(_ sender: UIButton) {
+        delegate?.didTapClearButton(self)
+    }
+    func setText(_ txt: String) {
+        recentText.text = txt
+    }
+}

@@ -29,14 +29,15 @@
                         <color key="tintColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                     </imageView>
                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="249" verticalHuggingPriority="251" horizontalCompressionResistancePriority="751" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="vef-Tp-x55">
-                        <rect key="frame" x="72" y="11.5" width="200" height="27"/>
+                        <rect key="frame" x="72" y="11.5" width="188" height="27"/>
                         <fontDescription key="fontDescription" name="Cormorant-Italic" family="Cormorant" pointSize="22"/>
                         <nil key="textColor"/>
                         <nil key="highlightedColor"/>
                     </label>
                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="WnG-ym-v0d">
-                        <rect key="frame" x="284" y="13" width="24" height="24"/>
+                        <rect key="frame" x="272" y="0.0" width="48" height="49.5"/>
                         <color key="tintColor" white="0.66666666669999997" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <inset key="contentEdgeInsets" minX="12" minY="12" maxX="12" maxY="12"/>
                         <state key="normal" image="close"/>
                         <connections>
                             <action selector="clearButton:" destination="KGk-i7-Jjw" eventType="touchUpInside" id="joi-Ft-Ele"/>
@@ -44,12 +45,13 @@
                     </button>
                 </subviews>
                 <constraints>
+                    <constraint firstItem="WnG-ym-v0d" firstAttribute="leading" secondItem="vef-Tp-x55" secondAttribute="trailing" constant="12" id="3XI-xu-SRW"/>
                     <constraint firstItem="ZlV-1i-IbD" firstAttribute="centerY" secondItem="H2p-sc-9uM" secondAttribute="centerY" id="4T4-g9-pqB"/>
-                    <constraint firstItem="WnG-ym-v0d" firstAttribute="centerY" secondItem="H2p-sc-9uM" secondAttribute="centerY" id="V4M-rf-xbu"/>
+                    <constraint firstAttribute="trailing" secondItem="WnG-ym-v0d" secondAttribute="trailing" id="DQ8-cE-Ig9"/>
+                    <constraint firstItem="WnG-ym-v0d" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" id="JEl-Yt-N4E"/>
                     <constraint firstItem="vef-Tp-x55" firstAttribute="leading" secondItem="ZlV-1i-IbD" secondAttribute="trailing" constant="12" id="hNa-AJ-999"/>
                     <constraint firstItem="vef-Tp-x55" firstAttribute="centerY" secondItem="H2p-sc-9uM" secondAttribute="centerY" id="iVT-Wd-v75"/>
-                    <constraint firstItem="WnG-ym-v0d" firstAttribute="leading" secondItem="vef-Tp-x55" secondAttribute="trailing" constant="12" id="pH2-jB-OmX"/>
-                    <constraint firstAttribute="trailing" secondItem="WnG-ym-v0d" secondAttribute="trailing" constant="12" id="tvE-7h-FfJ"/>
+                    <constraint firstAttribute="bottom" secondItem="WnG-ym-v0d" secondAttribute="bottom" id="sth-5z-WW5"/>
                     <constraint firstItem="ZlV-1i-IbD" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="12" id="yXD-Nv-QNV"/>
                 </constraints>
             </tableViewCellContentView>
