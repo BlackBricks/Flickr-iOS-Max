@@ -9,7 +9,7 @@
 import UIKit
 
 protocol recentTableCellDelegate : class {
-    func didTapClearButton(_ sender: RecentTableViewCell)
+    func recentTableCelldidTapClearButton(_ sender: RecentTableViewCell)
 }
 
 class RecentTableViewCell: UITableViewCell {
@@ -18,7 +18,7 @@ class RecentTableViewCell: UITableViewCell {
     @IBOutlet weak var recentText: UILabel!
     
     @IBAction func clearButton(_ sender: UIButton) {
-        delegate?.didTapClearButton(self)
+        delegate?.recentTableCelldidTapClearButton(self)
     }
     func setText(_ txt: String) {
         recentText.text = txt
