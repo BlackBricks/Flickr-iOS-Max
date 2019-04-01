@@ -10,32 +10,29 @@ import Foundation
 import UIKit
 import Alamofire
 
-class ImageCollectionViewController: UIViewController,  UICollectionViewDelegate, UICollectionViewDataSource, UITextFieldDelegate, UICollectionViewDelegateFlowLayout, UIScrollViewDelegate, UITableViewDelegate, UITableViewDataSource, recentTableCellDelegate {
+class ImageCollectionViewController: UIViewController {
     
     /// Mark: - variables for searchCollectionView
-    var searchImageData: [Photo] = [Photo]()
-    var searchImageSizes: [CGSize] = [CGSize]()
+    var searchImageData: [Photo] = []
+    var searchImageSizes: [CGSize] = []
     var lastEnteredTextValue: String?
     
     /// Mark: - variables for popularCollectionView
-    var popularImageData: [Photo] = [Photo]()
-    var popularImageSizes: [CGSize] = [CGSize]()
+    var popularImageData: [Photo] = []
+    var popularImageSizes: [CGSize] = []
     
     /// Mark: - variables for tableView history list
-    var defaultHistoryList = [String]()
-    var filteredHistoryList = [String]()
+    var defaultHistoryList: [String] = [], filteredHistoryList: [String] = []
     var isUserInTextFieldInteraction = false
     
     /// Mark: - common
-    var isOnSearchCollectionView = false
+    var isOnSearchCollectionView = false, isSearching = false
+    var isNotUpdating = true
     var lastContentOffset: CGFloat = 0
-    var isSearching = false
     var pageFlickr = 1
     var recentIndexCell: Int?
     var actualPosition: CGPoint?
-    var isNotUpdating = true
-    let refreshControlForSearch = UIRefreshControl()
-    let refreshControlForPopular = UIRefreshControl()
+    let refreshControlForSearch = UIRefreshControl(), refreshControlForPopular = UIRefreshControl()
     
     /// Mark: - Outlets
     @IBOutlet weak var heightConstraintTableView: NSLayoutConstraint!
@@ -631,8 +628,15 @@ class ImageCollectionViewController: UIViewController,  UICollectionViewDelegate
         recentIndexCell = indexPath.row
         searchTextByRecentList(indexPath.row)
     }
-    
-    func didTapClearButton(_ sender: RecentTableViewCell) {
+
+    override func didReceiveMemoryWarning() {
+        super.didReceiveMemoryWarning()
+    }
+}
+
+
+extension ImageCollectionViewController: recentTableCellDelegate {
+    func recentTableCelldidTapClearButton(_ sender: RecentTableViewCell) {
         guard let tappedIndexPath = tableViewHistorySearch.indexPath(for: sender) else {
             return
         }
@@ -641,26 +645,27 @@ class ImageCollectionViewController: UIViewController,  UICollectionViewDelegate
         UserDefaults.standard.set(defaultHistoryList, forKey: "historySearch")
         initUpdateHistoryTableView()
     }
-    
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-    }
 }
 
-extension Dictionary {
-    mutating func merge(dict: [Key: Value]){
-        for (k, v) in dict {
-            updateValue(v, forKey: k)
-        }
-    }
+extension ImageCollectionViewController: UITableViewDataSource {
 }
 
-extension UIViewController {
-    func setStatusBarStyle(_ style: UIStatusBarStyle) {
-        if let statusBar = UIApplication.shared.value(forKey: "statusBar") as? UIView {
-            statusBar.backgroundColor = style == .lightContent ? UIColor.black : .white
-            statusBar.setValue(style == .lightContent ? UIColor.white : .black, forKey: "foregroundColor")
-        }
-    }
+extension ImageCollectionViewController:  UITableViewDelegate {
 }
+
+extension ImageCollectionViewController: UIScrollViewDelegate {
+}
+
+extension ImageCollectionViewController:  UICollectionViewDelegateFlowLayout {
+}
+
+extension ImageCollectionViewController: UITextFieldDelegate {
+}
+
+extension ImageCollectionViewController:  UICollectionViewDataSource {
+}
+
+extension ImageCollectionViewController:  UICollectionViewDelegate {
+}
+
 

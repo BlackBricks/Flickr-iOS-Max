@@ -10,10 +10,10 @@ import UIKit
 import SDWebImage
 
 protocol imageDetailViewCellDelegate : class {
-    func didTapScrollView(_ sender: ImageDetailViewCell)
+    func imageDetailViewCelldidTapScrollView(_ sender: ImageDetailViewCell)
 }
 
-class ImageDetailViewCell: UICollectionViewCell, UIScrollViewDelegate, UIGestureRecognizerDelegate {
+class ImageDetailViewCell: UICollectionViewCell {
     
     weak var delegate: imageDetailViewCellDelegate?
     var isHided = false
@@ -96,7 +96,7 @@ class ImageDetailViewCell: UICollectionViewCell, UIScrollViewDelegate, UIGesture
     }
     
     @objc func tapCellAction() {
-        delegate?.didTapScrollView(self)
+        delegate?.imageDetailViewCelldidTapScrollView(self)
     }
     
     @objc func doubleTapped(touch: UITapGestureRecognizer) {
@@ -162,16 +162,11 @@ class ImageDetailViewCell: UICollectionViewCell, UIScrollViewDelegate, UIGesture
     }
 }
 
-extension UIScrollView {
+
+extension ImageDetailViewCell: UIScrollViewDelegate {
     
-    func zoomToPoint(zoomPoint: CGPoint, withScale scale: CGFloat, animated: Bool) {
-        let contentSize = CGSize(width: (self.contentSize.width / self.zoomScale), height: (self.contentSize.height / self.zoomScale))
-        let newZoomPoint = CGPoint(x: (zoomPoint.x / self.bounds.size.width) * contentSize.width, y: (zoomPoint.y / self.bounds.size.height) * contentSize.height)
-        let zoomSize = CGSize(width: self.bounds.size.width / scale, height: self.bounds.size.height / scale)
-        let zoomRect = CGRect(x: newZoomPoint.x - zoomSize.width / 2.0,
-                              y: newZoomPoint.y - zoomSize.height / 2.0,
-                              width: zoomSize.width,
-                              height: zoomSize.height)
-        self.zoom(to: zoomRect, animated: animated)
-    }
+}
+
+extension ImageDetailViewCell: UIGestureRecognizerDelegate {
+    
 }

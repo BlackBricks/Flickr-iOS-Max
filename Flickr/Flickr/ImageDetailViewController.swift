@@ -7,14 +7,13 @@
 //
 
 import UIKit
-import SDWebImage
 
-class ImageDetailViewController: UIViewController, UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, imageDetailViewCellDelegate {
+class ImageDetailViewController: UIViewController {
     
     var curIndexPath: IndexPath?
     var isHiden = false
     var cellOffset:CGFloat = 24
-    var detailPhotoData = [Photo]()
+    var detailPhotoData: [Photo] = []
     var indexCell: IndexPath?
     let BackIdentifier = "Show main view"
     @IBOutlet weak var collectionView: UICollectionView!
@@ -127,8 +126,12 @@ class ImageDetailViewController: UIViewController, UICollectionViewDelegate, UIC
         }
         imageCell.setScrollViewBehavior(for: imageSize)
     }
-    
-    func didTapScrollView(_ sender: ImageDetailViewCell) {
+
+}
+
+extension ImageDetailViewController: imageDetailViewCellDelegate {
+
+    func imageDetailViewCelldidTapScrollView(_ sender: ImageDetailViewCell) {
         for cell in self.collectionView.visibleCells {
             guard let cell = cell as? ImageDetailViewCell else {
                 continue
@@ -150,7 +153,16 @@ class ImageDetailViewController: UIViewController, UICollectionViewDelegate, UIC
             isHiden = true
         }
     }
-    
 }
+
+extension ImageDetailViewController: UICollectionViewDelegateFlowLayout {
+}
+
+extension ImageDetailViewController:  UICollectionViewDataSource {
+}
+
+extension ImageDetailViewController: UICollectionViewDelegate {
+}
+
 
 
